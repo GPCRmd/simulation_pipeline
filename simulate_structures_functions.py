@@ -5,6 +5,7 @@ import re
 import requests
 import zipfile,io
 import glob
+import shutil
 import numpy as np
 from shutil import copy2,copytree,rmtree
 import xml.etree.ElementTree as ET
@@ -167,7 +168,7 @@ def get_GPCRdb_nonsimulated(gpcrdb_dict):
 
     return not_simulated
 
-def download_GPCRdb_structures(pdb_set, strucpath):
+def auld_download_GPCRdb_structures(pdb_set, strucpath):
     """
     Download (if they exist) the refined GPCRdb structures for the pdb codes in the pdb_set.
     PDB codes without a refined structure will be removed from pdb_set
@@ -197,6 +198,46 @@ def download_GPCRdb_structures(pdb_set, strucpath):
                 zippy = zipfile.ZipFile(io.BytesIO(response.content))
                 zippy.extractall(mystrucpath)
 
+def download_GPCRdb_structures(pdb_set, strucpath):
+    """
+    Download (if they exist) the refined GPCRdb structures for the pdb codes in the pdb_set.
+    PDB codes without a refined structure will be removed from pdb_set
+    """
+    pdb_set_nonrefined = set()
+    set_length = len(pdb_set)
+    i = 0
+    for pdbcode in pdb_set:
+        mystrucpath = strucpath+pdbcode+'/'
+        os.makedirs(mystrucpath, exist_ok = True)
+        i += 1
+        
+        try:
+            print('Downloading %s structure (%d/%d)' % (pdbcode, i, set_length))
+            # If files for this simulation already exists
+            if glob(mystrucpath+'*pdb'):
+                print('Structure for %s already present. Skipping...' % pdbcode)
+            else:
+                # Accede to GPCRdb main page of this refined structure
+                response = requests.get('https://gpcrdb.org/structure/refined/'+pdbcode)
+                if response.ok:
+                    # Find the codename of this refined structure in its page
+                    soup = BeautifulSoup(response.content, 'html.parser')
+                    false_link = soup.find('a',attrs={'id':'download_btn'}).get('href')
+                    name = false_link.split('/')[1].replace('_full','')
+                    # Use the codename to download the refined structure of this pdbcode
+                    for stype in ['complex_models','homology_models']:
+                        link = "https://gpcrdb.org/structure/%s/view/%s"%(stype,name)
+                        response = requests.get(link)
+                        if response.ok:
+                            break
+                    pdbdata = response.content
+                    with open(mystrucpath+pdbcode+'_refined.pdb','wb') as out:
+                        out.write(pdbdata)
+                else:
+                    print('could not download %s refined structure. Skipping...' % (pdbcode))
+        
+        except Exception as E:
+                print("something failed in %s: %s"%(pdbcode,E))
 
 def ligand_dictionary(pdb_set, ligandsdict_path, modres_path, blacklist = {}):
     """
@@ -1154,6 +1195,7 @@ def covalent_ligands(mol, pdbcode, ligandsdict):
         protres_resname = str(mol.get('resname', withinsel)[0])
         protres_resid = str(mol.get('resid', withinsel)[0])
         protres_chain = str(mol.get('chain', withinsel)[0])
+        protres_segid = str(mol.get('segid', withinsel)[0])
         
         ligres_resid = str(mol.get('resid', 'index '+lig)[0])
         ligres_atoms = mol.get('index', 'resname %s and resid %s'%(lig, ligres_resid))
@@ -1179,7 +1221,7 @@ def covalent_ligands(mol, pdbcode, ligandsdict):
             mol.set('resid', protres_resid, 'resname LYR')
             mol.set('record', 'ATOM', 'resname LYR')
             mol.set('chain', protres_chain, 'resname LYR')
-            mol.set('segid', 'LYR', 'resname LYR')
+            mol.set('segid', protres_segid, 'resname LYR')
 
             # Change atom names to adapt to LYR nomenclature
             rettolyr = {
@@ -1527,34 +1569,54 @@ def get_caps(prot_segids, mol_solvated):
     caps_receptor = ['first ACE', 'last CT3']
     caps_not_receptor = ['first NTER', 'last CTER']
     caps = dict()
+    aa= ' LYR ALA ARG ASN ASP CYS GLU GLN GLY HIS ILE LEU LYS MET PHE PRO SER THR TRP TYR VAL ASH CYM CYX GLH HID HIE HIP LYN TYM AR0'
     for segid in prot_segids:
         caps[segid] = []
         resids = mol_solvated.get('resid','segid '+segid)
         min_res = str(min(resids))
         max_res = str(max(resids))
         # If first residue is a regular residue, cap it
-        if len(mol_solvated.get('name', 'segid %s and resid %s and protein and name CA N'%(segid,min_res)))>1:
+        if len(mol_solvated.get('name', 'resname %s and segid %s and resid %s and protein'%(aa,segid,min_res)))>1:
             if segid.startswith('P'):
                 caps[segid].append(caps_receptor[0])
             elif segid.startswith('L'):
                 caps[segid].append(caps_not_receptor[0])                
         # If last residue is a regular residue, cap it
-        if len(mol_solvated.get('name', 'segid %s and resid %s and protein and name CA C'%(segid,max_res)))>1:
+        if len(mol_solvated.get('name', 'resname %s and segid %s and resid %s and protein'%(aa,segid,max_res)))>1:
             if segid.startswith('P'):
                 caps[segid].append(caps_receptor[1])
             elif segid.startswith('L'):
                 caps[segid].append(caps_not_receptor[1])
-                
     return caps
+
+def cgenff_params(mol, topparpath):
+    """
+    Returns older or newer version of CGenFF depending if the system has or not organic hallogens
+    """
+    has_halo = bool(len(mol.get('name', 'element Br Cl I and not ion')))
+    if has_halo:
+        cgenff_par = [topparpath+'David_top_params/parameters/legacy_par_all36_cgenff.prm']
+        cgenff_top = [topparpath+'David_top_params/topologies/legacy_top_all36_cgenff.rtf']
+    else: 
+        cgenff_par = [topparpath+'General_top_params/parameters/par_all36_cgenff.prm']
+        cgenff_top = [topparpath+'General_top_params/topologies/top_all36_cgenff.rtf']
+    return (cgenff_par, cgenff_top, has_halo)
+
 
 def extra_parameters(pdbcode, ligandsdict, modresdict, blacklist, covligs, basepath, has_halo = False):
     """
     Get toppar files for ligand  molecules and modified residues 
     """
-    topparname = 'legacy_toppar.str' if has_halo else 'toppar.str'
+    
     # Make list of Ligand stringfiles (Parameters and topology)
     ligstreams = []
     for ligcode in ligandsdict[pdbcode]:
+        
+        # Get MOE-curated paramteers (if there are any) for this ligand in this pdbcode
+        if os.path.exists('%stoppar/Ligands/%s/%s_toppar.str'%(basepath,ligcode,pdbcode)):
+            topparname = pdbcode+'_legacy_toppar.str' if has_halo else pdbcode+'_toppar.str'
+        else:
+            topparname = 'legacy_toppar.str' if has_halo else 'toppar.str'
         #Skip blacklisted molecules and retinols or cholesterols 
         #(retinols and cholesterols already have their own parameters)
         if (ligcode not in blacklist) and not (ligcode in ['RET','CLR']):
@@ -1566,6 +1628,7 @@ def extra_parameters(pdbcode, ligandsdict, modresdict, blacklist, covligs, basep
     # Make list of modified-residue stringfiles (if there is any)
     modresstreams = []
     if pdbcode in modresdict:
+        topparname = 'legacy_toppar.str' if has_halo else 'toppar.str'
         for modres in modresdict[pdbcode]:
             ligstreams.append('%stoppar/mod_residues/%s/%s'%(basepath,modres,topparname))                        
 
@@ -1632,8 +1695,83 @@ def remove_aromatic_insertions(inputmol,protsegids,coldist=1.5,outpdb=None):
     
     return (mol,removed_indexes)
 
-def define_equilibration(const_sel):
-    simtime = 40
+def equilwrap_structure(equildir):
+    """
+    Build PDB structure from last frame of equillibrated structure
+    """
+    # Skip if already done
+    outfile = equildir+'equillibrated.pdb'
+    if os.path.exists(outfile):
+        return
+    
+    mol = Molecule(equildir+'structure.psf')
+    mol.read(equildir+'structure.pdb')
+    mol.read(equildir+'output.xtc')
+    gpcr_sel = "protein and chain P"
+
+    # Remove all frames except last
+    copmol = mol.copy()
+    copmol.dropFrames(keep=int(mol.numFrames-1))
+    
+    # Wrap system
+    copmol.wrap(gpcr_sel)
+
+    # Align frames
+    copmol.align('all', refmol=Molecule(equildir+'structure.pdb'))
+    
+    copmol.write(outfile)
+
+def mutate(mol, pdbcode, equildir, mutdir, mutations, basepath, topparpath):
+    """
+    Create mutant version of structure with PDBcode
+    """
+
+    # Skip if mutant already exists
+    if os.path.exists(mutdir+'structure.pdb'):
+        return
+    
+    # Load and mutate structure according to what the dict says
+    selection_mutated = "chain P and resid "
+    for mut in mutations:
+        mol.mutateResidue('chain P and resid %s'%mut[0], mut[1])
+        selection_mutated += mut[0]+' '
+
+    # Use proteinPrepare to put side-chains in mutated residues
+    # proteinPrepare will be applied only to protein, ligand and protein waters
+    nonprot_chains = 'chain I W T M' 
+    scafmol = mol.copy()
+    mol.remove(nonprot_chains)
+    scafmol.filter(nonprot_chains)
+    prepared_mol = proteinPrepare(mol,
+                          holdSelection= "not (%s)" %selection_mutated
+                         )
+    prepared_mol.append(scafmol)
+    prepared_mol.set('resname', 'TIP3', 'resname TIP')
+
+    #Remove 5 CLA and SOD atoms to leave charmm.build some margin to redo system charge
+    cla_remove = ' '.join(map(str, prepared_mol.get('resid',"segid I and resname CLA")[:5]))
+    sod_remove = ' '.join(map(str, prepared_mol.get('resid',"segid I and resname SOD")[:5]))        
+    prepared_mol.remove("segid I and resid "+cla_remove+sod_remove)
+
+    # Check if system has lone-pair hallogen atoms. If it does, use legacy CGenFF parameters
+    (cgenff_par,cgenff_top,has_halo) =cgenff_params(mol, topparpath)
+
+    #Obtain extra parameters for ligands and modified residues 
+    ligstreams=extra_parameters(pdbcode, ligandsdict, modresdict, blacklist, [], basepath, has_halo)
+
+    # Caps
+    caps = get_caps(set(mol.get('segid', 'protein and chain P')), mol)
+
+    #Build system with changes
+    buildmol = charmm.build(prepared_mol, 
+                               topo=topos+cgenff_top, 
+                               param=params+cgenff_par,
+                               stream=streams+ligstreams,
+                               outdir=mutdir,
+                               caps=caps,
+                               saltconc=0.15)
+
+def define_equilibration(const_sel, simtime = 40, minimize = 5000):
     restr = AtomRestraint(const_sel, 2, [(0,"0"),(1,"%dns" % int(simtime*0.5)),(0,"%dns" % int(simtime*0.75))], "xyz")
     md = Equilibration()
     md.runtime = simtime
@@ -1641,8 +1779,7 @@ def define_equilibration(const_sel):
     md.temperature = 310
     md.nvtsteps = 0
     md.acemd.barostatconstratio = 'on'
-    md.acemd.minimize = 5000
-    #md.acemd.minimize = str(5000)
+    md.acemd.minimize = minimize
     md.acemd.restart = 'off'
     md.acemd.timestep = 2
     md.restraints = restr
@@ -1670,9 +1807,9 @@ def job_commands(sourcedir, nodedir):
     And then exit the bash script
     """
     return [
-               'touch %ssimrunning' %sourcedir,                
                'mkdir -p '+nodedir,
                'mv %s* %s'%(sourcedir, nodedir),
+               'touch %ssimrunning' %sourcedir,                
                'cd '+nodedir,
                nodedir+'run.sh',
                'mv %s* %s'%(nodedir, sourcedir),
@@ -1714,3 +1851,93 @@ def count_atoms(pdb_set, basepath):
 
         except Exception as e:
             pass    
+
+def moecurated_paramchem(username,password,ligpath,ligcode,pdbcode):
+    """
+    Submit ligand to paramchem to obtain topology-parametrs file
+    Version for ligands manually protonated with MOE
+    """
+
+    # Make two paramchems: one with legacy parameters and the other with modern ones (for hallogen systems)
+    for c_option in ['c','']:
+        
+        #Pattern to find non-HTMD-compatible lines
+        lph_pat = re.compile('^ATOM.*LPH|LONEPAIR')
+
+        # Ligand mol2file
+        mol2file = ligpath+pdbcode+"_protonlig.mol2"
+        # topology-parametetrs file output
+        topparfile_path = ligpath+pdbcode+"_legacy_toppar.str" if c_option else ligpath+pdbcode+"_toppar.str"
+        # Errors and warnings file output
+        erwar_path = ligpath+"legacy_paramchem_stder.txt" if c_option else ligpath+"legacy_paramchem_stder.txt"
+    
+        # Omit ligand if its toppar file already exists
+        if os.path.exists(topparfile_path):
+            leg = 'legacy' if c_option else 'latest'
+            print('%s toppar for ligand %s already exists. Skipping...' % (leg,ligcode))
+            continue
+        
+        # Ligands for which chimera creates wrong topology have to be autodetermined in paramchem
+        badtop_lig = {'7AB'}
+        b_option = 'b' if ligcode in badtop_lig else ''
+
+        #Open ligandfile to upload in paramchem
+        myfile = {
+                'filename': open(mol2file)
+        }
+
+        # Define POST variables for login in Paramchem
+        datalogin = {
+            'usrName': username,
+            'curPwd': password,
+            'rndNo': str(random.randrange(100000000, 999999999)),
+            'submitBtn': 'Submit',
+        }
+
+        # Variables for paramchem
+        myparam = {
+                #'param_a': 'a', #Include parameters usually included in newer versions of CGenff (versions that we cant use)
+                'param_b' : b_option , # Make paramchem determine bond order (active if covalent-bound ligand)
+                'param_c': c_option, # Use CGenFF legacy v1.0, for HTMD is not yet prepared for newer Charmm versions             
+        }
+
+        # Open web session
+        with requests.Session() as s:
+
+            # Login into paramchem
+            response_login = s.post('http://cgenff.umaryland.edu/userAccount/userWelcome.php', 
+                       data=datalogin,
+                       verify=False)
+
+            # Submit our ligand molecule into paramchem
+            response_upload = s.post('http://cgenff.umaryland.edu/initguess/processdata.php', 
+                       files = myfile,
+                       data = myparam,
+                        )
+
+            # Download Topology-parameters of our molecule file from paramchem, and store it.
+            # But remember submissions in paramchem are limited weekly
+            # Download also stderr, just in case
+            match = re.search('<path>(\w+)</path>', response_upload.text)
+            if match:
+                code = match.group(1)
+                response_ligfile = s.get('http://cgenff.umaryland.edu/initguess/filedownload.php?file='+code+'/'+pdbcode+'_protonlig.str')
+                response_stder = s.get('https://cgenff.umaryland.edu/initguess/filedownload.php?file='+code+'/'+pdbcode+'_protonlig.err')
+                with open(topparfile_path, 'wb') as topparfile:
+                        topparfile.write(response_ligfile.content)
+                with open(erwar_path, 'wb') as erwar:
+                        erwar.write(response_stder.content)                            
+            else:
+                print(response_upload, response_upload.content)
+                print('Your paramchem account has reached its weekly submission limit. Please, intrudce a new account or wait to the next monday to continue')            
+                return
+
+            #Delete lines with LPH (new feature from CHARMM not tolerated by HTMD)
+            """
+            with open(topparfile_path, "r") as f:
+                lines = f.readlines()
+            with open(topparfile_path, "w") as f:
+                for line in lines:
+                    if not re.match(lph_pat, line):
+                        f.write(line)
+            """
