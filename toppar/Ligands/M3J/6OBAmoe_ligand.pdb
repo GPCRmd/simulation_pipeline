@@ -1,0 +1,63 @@
+REMARK  99                                                                      
+REMARK  99 MOE v2019.01 (Chemical Computing Group ULC) Thu Apr  8 11:12:25 2021 
+HETATM    1  C10 M3J L   4      -2.465  -7.805  33.650  0.79  0.00           C  
+HETATM    2  N12 M3J L   4      -3.870  -7.049  37.562  0.79  0.00           N  
+HETATM    3  C13 M3J L   4      -3.808  -7.632  38.789  0.79  0.00           C  
+HETATM    4  C15 M3J L   4      -4.097  -9.582  40.217  0.79  0.00           C  
+HETATM    5  C02 M3J L   4      -3.057  -5.524  39.638  0.79  0.00           C  
+HETATM    6  C04 M3J L   4      -3.541  -5.778  37.390  0.79  0.00           C  
+HETATM    7  C06 M3J L   4      -3.503  -6.018  34.873  0.79  0.00           C  
+HETATM    8  C07 M3J L   4      -4.349  -5.779  33.804  0.79  0.00           C  
+HETATM    9  C08 M3J L   4      -4.254  -6.550  32.658  0.79  0.00           C  
+HETATM   10  C09 M3J L   4      -3.313  -7.563  32.582  0.79  0.00           C  
+HETATM   11  C11 M3J L   4      -2.561  -7.032  34.795  0.79  0.00           C  
+HETATM   12  C14 M3J L   4      -4.164  -9.003  38.958  0.79  0.00           C  
+HETATM   13  C16 M3J L   4      -3.682  -8.819  41.311  0.79  0.00           C  
+HETATM   14  C18 M3J L   4      -3.335  -7.483  41.149  0.79  0.00           C  
+HETATM   15  C19 M3J L   4      -3.402  -6.889  39.858  0.79  0.00           C  
+HETATM   16  N01 M3J L   4      -2.619  -4.689  40.742  0.79  0.00           N  
+HETATM   17  N03 M3J L   4      -3.139  -5.024  38.412  0.79  0.00           N  
+HETATM   18  N05 M3J L   4      -3.618  -5.195  36.065  0.79  0.00           N  
+HETATM   19 BR1  M3J L   4      -3.587  -9.629  43.068  0.79  0.00          BR  
+HETATM   20  H05 M3J L   4      -3.754  -4.199  35.969  1.00  0.00           H  
+HETATM   21  H10 M3J L   4      -1.731  -8.595  33.590  1.00  0.00           H  
+HETATM   22  H15 M3J L   4      -4.365 -10.620  40.351  1.00  0.00           H  
+HETATM   23  H07 M3J L   4      -5.084  -4.990  33.864  1.00  0.00           H  
+HETATM   24  H08 M3J L   4      -4.913  -6.361  31.824  1.00  0.00           H  
+HETATM   25  H09 M3J L   4      -3.240  -8.165  31.689  1.00  0.00           H  
+HETATM   26  H11 M3J L   4      -1.901  -7.220  35.629  1.00  0.00           H  
+HETATM   27  H14 M3J L   4      -4.485  -9.588  38.109  1.00  0.00           H  
+HETATM   28  H18 M3J L   4      -3.016  -6.898  41.999  1.00  0.00           H  
+HETATM   29 H011 M3J L   4      -2.375  -3.723  40.578  1.00  0.00           H  
+HETATM   30 H012 M3J L   4      -2.558  -5.074  41.674  1.00  0.00           H  
+CONECT    1   10   10   11   21
+CONECT    2    3    3    6
+CONECT    3    2    2   12   15
+CONECT    4   12   12   13   22
+CONECT    5   15   15   16   17
+CONECT    6    2   17   17   18
+CONECT    7    8   11   11   18
+CONECT    8    7    9    9   23
+CONECT    9    8    8   10   24
+CONECT   10    1    1    9   25
+CONECT   11    1    7    7   26
+CONECT   12    3    4    4   27
+CONECT   13    4   14   14   19
+CONECT   14   13   13   15   28
+CONECT   15    3    5    5   14
+CONECT   16    5   29   30
+CONECT   17    5    6    6
+CONECT   18    6    7   20
+CONECT   19   13
+CONECT   20   18
+CONECT   21    1
+CONECT   22    4
+CONECT   23    8
+CONECT   24    9
+CONECT   25   10
+CONECT   26   11
+CONECT   27   12
+CONECT   28   14
+CONECT   29   16
+CONECT   30   16
+END

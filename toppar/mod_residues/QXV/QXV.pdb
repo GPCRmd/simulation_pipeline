@@ -1,0 +1,37 @@
+MODEL        1
+ATOM      1  N   MET B   4     -29.717  25.889  13.110  1.00 81.30      X    N  
+ATOM      2  CA  MET B   4     -30.151  25.304  11.857  1.00 74.14      X    C  
+ATOM      3  CYX MET B   4     -29.617  26.148  10.701  1.00 80.50      X    C  
+ATOM      4  OYX MET B   4     -29.606  27.330  10.785  1.00 79.60      X    O  
+ATOM      5  CB  MET B   4     -31.679  25.291  11.803  1.00 71.28      X    C  
+ATOM      6  CG  MET B   4     -32.295  24.021  12.404  1.00 69.90      X    C  
+ATOM      7  SD  MET B   4     -34.015  24.409  12.878  1.00 79.27      X    S  
+ATOM      8  CE  MET B   4     -34.909  22.885  13.285  1.00 88.37      X    C  
+ATOM      9  N   VAL B   5     -29.120  25.494   9.488  1.00 82.21      X    N  
+ATOM     10  CA  VAL B   5     -28.622  26.323   8.398  1.00 83.20      X    C  
+ATOM     11  CYX VAL B   5     -29.804  27.024   7.734  1.00 75.78      X    C  
+ATOM     12  OYX VAL B   5     -30.888  26.530   7.753  1.00 72.34      X    O  
+ATOM     13  CB  VAL B   5     -27.874  25.452   7.387  1.00 78.92      X    C  
+ATOM     14  CG1 VAL B   5     -26.686  24.752   8.042  1.00 71.64      X    C  
+ATOM     15  CG2 VAL B   5     -28.796  24.436   6.730  1.00 78.50      X    C  
+HETATM   16  N   QXV B   6     -29.615  28.322   7.082  1.00 69.05      X    N  
+HETATM   17  CA  QXV B   6     -30.753  28.969   6.459  1.00 76.30      X    C  
+HETATM   18  CYX QXV B   6     -30.992  30.342   7.085  1.00 81.75      X    C  
+HETATM   19  OYX QXV B   6     -32.077  30.814   7.071  1.00 82.73      X    O  
+HETATM   20  CB  QXV B   6     -30.488  29.138   4.959  1.00 79.80      X    C  
+HETATM   21  CG  QXV B   6     -29.726  27.976   4.339  1.00 76.21      X    C  
+HETATM   22  SD  QXV B   6     -30.899  26.830   3.553  1.00 82.92      X    S  
+HETATM   23  CE  QXV B   6     -31.743  27.644   2.161  1.00 83.44      X    C  
+HETATM   24  NXT QXV B   6     -29.889  31.066   7.688  1.00 80.97      X    N  
+CONECT   11   16
+CONECT   16   11   17
+CONECT   17   16   18   20
+CONECT   18   17   19   24
+CONECT   19   18
+CONECT   20   17   21
+CONECT   21   20   22
+CONECT   22   21   23
+CONECT   23   22
+CONECT   24   18
+ENDMDL
+END

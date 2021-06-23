@@ -1,0 +1,117 @@
+REMARK  99                                                                      
+REMARK  99 MOE v2019.01 (Chemical Computing Group ULC) Thu Apr  8 11:30:34 2021 
+HETATM    1  CAB AQD L   1     -16.765  11.793 -16.344  1.00  0.00           C  
+HETATM    2  OAR AQD L   1     -16.479  13.184 -16.085  1.00  0.00           O  
+HETATM    3  CAW AQD L   1     -15.615  13.449 -14.994  1.00  0.00           C  
+HETATM    4  CAK AQD L   1     -15.231  12.434 -14.098  1.00  0.00           C  
+HETATM    5  CAV AQD L   1     -14.376  12.763 -13.031  1.00  0.00           C  
+HETATM    6  NAP AQD L   1     -13.960  11.763 -12.096  1.00  0.00           N  
+HETATM    7  CAA AQD L   1     -14.651  10.489 -12.085  1.00  0.00           C  
+HETATM    8  CAU AQD L   1     -13.891  14.071 -12.887  1.00  0.00           C  
+HETATM    9  CLA AQD L   1     -12.777  14.490 -11.593  1.00  0.00           C  
+HETATM   10  CAL AQD L   1     -14.265  15.058 -13.780  1.00  0.00           C  
+HETATM   11  CAX AQD L   1     -15.118  14.748 -14.834  1.00  0.00           C  
+HETATM   12  CAS AQD L   1     -15.526  15.904 -15.744  1.00  0.00           C  
+HETATM   13  OAD AQD L   1     -14.929  16.950 -15.642  1.00  0.00           O  
+HETATM   14  NAQ AQD L   1     -16.638  15.809 -16.648  1.00  0.00           N  
+HETATM   15  CAZ AQD L   1     -16.997  16.959 -17.469  1.00  0.00           C  
+HETATM   16  CAY AQD L   1     -17.416  16.578 -18.817  1.00  0.00           C  
+HETATM   17  CAC AQD L   1     -16.699  15.290 -19.320  1.00  0.00           C  
+HETATM   18  CAM AQD L   1     -18.166  17.653 -16.797  1.00  0.00           C  
+HETATM   19  CAN AQD L   1     -19.349  17.390 -17.881  1.00  0.00           C  
+HETATM   20  NBA AQD L   1     -18.795  16.355 -18.773  1.00  0.00           N1+
+HETATM   21  CAO AQD L   1     -19.331  16.401 -20.098  1.00  0.00           C  
+HETATM   22  CAT AQD L   1     -20.852  16.758 -20.138  1.00  0.00           C  
+HETATM   23  CAI AQD L   1     -21.259  18.001 -20.632  1.00  0.00           C  
+HETATM   24  CAG AQD L   1     -22.616  18.335 -20.665  1.00  0.00           C  
+HETATM   25  CAF AQD L   1     -23.565  17.421 -20.210  1.00  0.00           C  
+HETATM   26  CAH AQD L   1     -23.166  16.184 -19.721  1.00  0.00           C  
+HETATM   27  CAJ AQD L   1     -21.806  15.847 -19.682  1.00  0.00           C  
+HETATM   28 HAB1 AQD L   1     -17.435  11.713 -17.200  1.00  0.00           H  
+HETATM   29 HAB2 AQD L   1     -17.240  11.351 -15.468  1.00  0.00           H  
+HETATM   30 HAB3 AQD L   1     -15.836  11.265 -16.559  1.00  0.00           H  
+HETATM   31  HAK AQD L   1     -15.586  11.422 -14.227  1.00  0.00           H  
+HETATM   32  HAP AQD L   1     -13.199  11.941 -11.456  1.00  0.00           H  
+HETATM   33 HAA1 AQD L   1     -15.434  10.494 -12.844  1.00  0.00           H  
+HETATM   34 HAA2 AQD L   1     -15.097  10.326 -11.104  1.00  0.00           H  
+HETATM   35 HAA3 AQD L   1     -13.942   9.689 -12.299  1.00  0.00           H  
+HETATM   36 HLA1 AQD L   1     -12.584  13.609 -10.981  1.00  0.00           H  
+HETATM   37 HLA2 AQD L   1     -13.216  15.273 -10.975  1.00  0.00           H  
+HETATM   38 HLA3 AQD L   1     -11.841  14.848 -12.021  1.00  0.00           H  
+HETATM   39  HAL AQD L   1     -13.896  16.066 -13.660  1.00  0.00           H  
+HETATM   40  HAQ AQD L   1     -17.168  14.952 -16.714  1.00  0.00           H  
+HETATM   41  HAZ AQD L   1     -16.120  17.599 -17.560  1.00  0.00           H  
+HETATM   42  HAY AQD L   1     -17.152  17.376 -19.511  1.00  0.00           H  
+HETATM   43 HAC1 AQD L   1     -15.623  15.463 -19.355  1.00  0.00           H  
+HETATM   44 HAC2 AQD L   1     -17.059  15.040 -20.318  1.00  0.00           H  
+HETATM   45 HAC3 AQD L   1     -16.913  14.466 -18.639  1.00  0.00           H  
+HETATM   46 HAM1 AQD L   1     -17.976  18.718 -16.663  1.00  0.00           H  
+HETATM   47 HAM2 AQD L   1     -18.399  17.201 -15.833  1.00  0.00           H  
+HETATM   48 HAN1 AQD L   1     -19.574  18.300 -18.437  1.00  0.00           H  
+HETATM   49 HAN2 AQD L   1     -20.253  17.033 -17.388  1.00  0.00           H  
+HETATM   50  HBA AQD L   1     -19.036  15.443 -18.413  1.00  0.00           H  
+HETATM   51 HAO1 AQD L   1     -19.193  15.424 -20.561  1.00  0.00           H  
+HETATM   52 HAO2 AQD L   1     -18.784  17.153 -20.666  1.00  0.00           H  
+HETATM   53  HAI AQD L   1     -20.523  18.705 -20.989  1.00  0.00           H  
+HETATM   54  HAG AQD L   1     -22.928  19.298 -21.042  1.00  0.00           H  
+HETATM   55  HAF AQD L   1     -24.614  17.676 -20.238  1.00  0.00           H  
+HETATM   56  HAH AQD L   1     -23.906  15.480 -19.370  1.00  0.00           H  
+HETATM   57  HAJ AQD L   1     -21.497  14.885 -19.300  1.00  0.00           H  
+CONECT    1    2   28   29   30
+CONECT    2    1    3
+CONECT    3    2    4   11   11
+CONECT    4    3    5    5   31
+CONECT    5    4    4    6    8
+CONECT    6    5    7   32
+CONECT    7    6   33   34   35
+CONECT    8    5    9   10   10
+CONECT    9    8   36   37   38
+CONECT   10    8    8   11   39
+CONECT   11    3    3   10   12
+CONECT   12   11   13   13   14
+CONECT   13   12   12
+CONECT   14   12   15   40
+CONECT   15   14   16   18   41
+CONECT   16   15   17   20   42
+CONECT   17   16   43   44   45
+CONECT   18   15   19   46   47
+CONECT   19   18   20   48   49
+CONECT   20   16   19   21   50
+CONECT   21   20   22   51   52
+CONECT   22   21   23   27   27
+CONECT   23   22   24   24   53
+CONECT   24   23   23   25   54
+CONECT   25   24   26   26   55
+CONECT   26   25   25   27   56
+CONECT   27   22   22   26   57
+CONECT   28    1
+CONECT   29    1
+CONECT   30    1
+CONECT   31    4
+CONECT   32    6
+CONECT   33    7
+CONECT   34    7
+CONECT   35    7
+CONECT   36    9
+CONECT   37    9
+CONECT   38    9
+CONECT   39   10
+CONECT   40   14
+CONECT   41   15
+CONECT   42   16
+CONECT   43   17
+CONECT   44   17
+CONECT   45   17
+CONECT   46   18
+CONECT   47   18
+CONECT   48   19
+CONECT   49   19
+CONECT   50   20
+CONECT   51   21
+CONECT   52   21
+CONECT   53   23
+CONECT   54   24
+CONECT   55   25
+CONECT   56   26
+CONECT   57   27
+END

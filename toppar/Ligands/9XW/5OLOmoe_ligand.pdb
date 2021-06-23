@@ -1,0 +1,111 @@
+REMARK  99                                                                      
+REMARK  99 MOE v2019.01 (Chemical Computing Group ULC) Thu Apr  8 11:00:02 2021 
+HETATM    1  C13 9XW L   1      20.672 174.932  18.259  1.00  0.00           C  
+HETATM    2  C15 9XW L   1      18.749 173.239  18.482  1.00  0.00           C  
+HETATM    3  C17 9XW L   1      18.238 170.780  18.121  1.00  0.00           C  
+HETATM    4  C20 9XW L   1      17.453 168.349  17.826  1.00  0.00           C  
+HETATM    5  C21 9XW L   1      16.578 168.031  16.619  1.00  0.00           C  
+HETATM    6  C22 9XW L   1      15.127 168.353  16.859  1.00  0.00           C  
+HETATM    7  C26 9XW L   1      15.834 169.994  18.607  1.00  0.00           C  
+HETATM    8  C28 9XW L   1      19.470 175.372  18.816  1.00  0.00           C  
+HETATM    9  C01 9XW L   1      17.700 178.511  19.429  1.00  0.00           C  
+HETATM   10  C03 9XW L   1      19.321 176.726  19.248  1.00  0.00           C  
+HETATM   11  C04 9XW L   1      20.359 177.599  19.120  1.00  0.00           C  
+HETATM   12  C05 9XW L   1      21.593 177.156  18.551  1.00  0.00           C  
+HETATM   13  C06 9XW L   1      21.747 175.829  18.123  1.00  0.00           C  
+HETATM   14  C08 9XW L   1      24.112 175.107  18.414  1.00  0.00           C  
+HETATM   15  C09 9XW L   1      25.440 175.194  17.726  1.00  0.00           C  
+HETATM   16  C11 9XW L   1      24.383 174.814  15.630  1.00  0.00           C  
+HETATM   17  C12 9XW L   1      23.043 174.725  16.310  1.00  0.00           C  
+HETATM   18  C23 9XW L   1      14.378 168.297  15.534  1.00  0.00           C  
+HETATM   19  C25 9XW L   1      14.905 169.717  17.450  1.00  0.00           C  
+HETATM   20  N07 9XW L   1      23.009 175.406  17.549  1.00  0.00           N  
+HETATM   21  N16 9XW L   1      17.845 172.121  18.495  1.00  0.00           N  
+HETATM   22  N19 9XW L   1      17.212 169.722  18.192  1.00  0.00           N  
+HETATM   23  N27 9XW L   1      18.463 174.464  18.925  1.00  0.00           N  
+HETATM   24  O02 9XW L   1      18.074 177.159  19.818  1.00  0.00           O  
+HETATM   25  O10 9XW L   1      25.453 174.428  16.514  1.00  0.00           O  
+HETATM   26  O18 9XW L   1      19.374 170.506  17.756  1.00  0.00           O  
+HETATM   27  O24 9XW L   1      14.582 167.376  17.741  1.00  0.00           O  
+HETATM   28  S14 9XW L   1      20.397 173.269  17.890  1.00  0.00           S  
+HETATM   29 H201 9XW L   1      18.503 168.212  17.569  1.00  0.00           H  
+HETATM   30 H202 9XW L   1      17.193 167.692  18.656  1.00  0.00           H  
+HETATM   31 H211 9XW L   1      16.668 166.969  16.392  1.00  0.00           H  
+HETATM   32 H212 9XW L   1      16.930 168.615  15.768  1.00  0.00           H  
+HETATM   33 H261 9XW L   1      15.572 169.351  19.447  1.00  0.00           H  
+HETATM   34 H262 9XW L   1      15.742 171.038  18.906  1.00  0.00           H  
+HETATM   35 H011 9XW L   1      16.750 178.773  19.894  1.00  0.00           H  
+HETATM   36 H012 9XW L   1      17.600 178.563  18.345  1.00  0.00           H  
+HETATM   37 H013 9XW L   1      18.470 179.209  19.757  1.00  0.00           H  
+HETATM   38  H04 9XW L   1      20.250 178.622  19.447  1.00  0.00           H  
+HETATM   39  H05 9XW L   1      22.415 177.849  18.450  1.00  0.00           H  
+HETATM   40 H081 9XW L   1      24.104 175.814  19.243  1.00  0.00           H  
+HETATM   41 H082 9XW L   1      23.986 174.095  18.799  1.00  0.00           H  
+HETATM   42 H091 9XW L   1      26.211 174.812  18.395  1.00  0.00           H  
+HETATM   43 H092 9XW L   1      25.649 176.237  17.488  1.00  0.00           H  
+HETATM   44 H111 9XW L   1      24.547 175.841  15.304  1.00  0.00           H  
+HETATM   45 H112 9XW L   1      24.384 174.153  14.763  1.00  0.00           H  
+HETATM   46 H121 9XW L   1      22.810 173.674  16.484  1.00  0.00           H  
+HETATM   47 H122 9XW L   1      22.290 175.160  15.653  1.00  0.00           H  
+HETATM   48 H231 9XW L   1      14.789 169.042  14.853  1.00  0.00           H  
+HETATM   49 H232 9XW L   1      13.322 168.504  15.705  1.00  0.00           H  
+HETATM   50 H233 9XW L   1      14.487 167.305  15.096  1.00  0.00           H  
+HETATM   51 H251 9XW L   1      13.876 169.784  17.802  1.00  0.00           H  
+HETATM   52 H252 9XW L   1      15.074 170.467  16.677  1.00  0.00           H  
+HETATM   53  H16 9XW L   1      16.889 172.280  18.779  1.00  0.00           H  
+HETATM   54  H24 9XW L   1      13.644 167.558  17.832  1.00  0.00           H  
+CONECT    1    8   13   13   28
+CONECT    2   21   23   23   28
+CONECT    3   21   22   26   26
+CONECT    4    5   22   29   30
+CONECT    5    4    6   31   32
+CONECT    6    5   18   19   27
+CONECT    7   19   22   33   34
+CONECT    8    1   10   10   23
+CONECT    9   24   35   36   37
+CONECT   10    8    8   11   24
+CONECT   11   10   12   12   38
+CONECT   12   11   11   13   39
+CONECT   13    1    1   12   20
+CONECT   14   15   20   40   41
+CONECT   15   14   25   42   43
+CONECT   16   17   25   44   45
+CONECT   17   16   20   46   47
+CONECT   18    6   48   49   50
+CONECT   19    6    7   51   52
+CONECT   20   13   14   17
+CONECT   21    2    3   53
+CONECT   22    3    4    7
+CONECT   23    2    2    8
+CONECT   24    9   10
+CONECT   25   15   16
+CONECT   26    3    3
+CONECT   27    6   54
+CONECT   28    1    2
+CONECT   29    4
+CONECT   30    4
+CONECT   31    5
+CONECT   32    5
+CONECT   33    7
+CONECT   34    7
+CONECT   35    9
+CONECT   36    9
+CONECT   37    9
+CONECT   38   11
+CONECT   39   12
+CONECT   40   14
+CONECT   41   14
+CONECT   42   15
+CONECT   43   15
+CONECT   44   16
+CONECT   45   16
+CONECT   46   17
+CONECT   47   17
+CONECT   48   18
+CONECT   49   18
+CONECT   50   18
+CONECT   51   19
+CONECT   52   19
+CONECT   53   21
+CONECT   54   27
+END

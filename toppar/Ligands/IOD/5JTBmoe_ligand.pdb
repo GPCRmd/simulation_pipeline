@@ -1,0 +1,9 @@
+REMARK  99                                                                      
+REMARK  99 MOE v2019.01 (Chemical Computing Group ULC) Thu Apr  8 10:50:03 2021 
+HETATM    1  I   IOD N   1     -10.858 -23.163  66.625  0.40  0.40           I1-
+HETATM    2  I   IOD N   2     -14.160  30.013  62.298  0.40  0.00           I1-
+HETATM    3  I   IOD N   3      -8.684 -10.893  32.168  0.50  0.00           I1-
+HETATM    4  I   IOD N   4      14.767  31.409  44.456  0.50  0.21           I1-
+HETATM    5  I   IOD N   5       7.172  36.757  41.152  0.50  0.00           I1-
+HETATM    6  I   IOD N   6      14.098  30.034  58.707  0.40  0.08           I1-
+END

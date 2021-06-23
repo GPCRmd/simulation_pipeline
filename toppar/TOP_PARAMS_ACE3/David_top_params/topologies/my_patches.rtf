@@ -1,0 +1,31 @@
+* Customized patches and topology Stuff
+* By David Aranda
+*
+*
+36 1
+
+PRES ORNC        -0.169! patch for Ornitin sidechain-to-carboxil special bond
+					   ! note we assume that the free c-term was already previously patched
+                       ! use in a patch statement
+                       ! follow with AUTOgenerate ANGLes DIHEdrals command
+GROUP                  
+ATOM 1NE  NG2S1  -0.494!          2O
+ATOM 1CD  CG321  -0.027!          \\
+ATOM 1HE  HGP1    0.313!           2C--2CA--
+GROUP                  !          /
+ATOM 2O   O      -0.510! -1CD--1NE
+ATOM 2C   C       0.507!          \
+ATOM 2CA  CT1     0.042!           1HE
+DELETE ATOM 1HE1   
+DELETE ATOM 1HE2   
+DELETE ATOM 1HE3   
+DELETE ATOM 2OT1       
+DELETE ATOM 2OT2       
+BOND 1HE 1NE   
+BOND 1NE 2C   
+BOND 2C  2O
+IC 1CD  1NE  2C   2CA   0.0000  0.0000  180.0000  0.0000  0.0000
+IC 1CD  1NE  2C   2O    0.0000  0.0000    0.0000  0.0000  0.0000
+IC 1HE  1NE  2C   2CA   0.0000  0.0000  180.0000  0.0000  0.0000
+
+END

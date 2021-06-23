@@ -1,0 +1,76 @@
+MODEL        1
+ATOM      1  N   PRO A   7     196.948 -11.302  69.077  1.00 62.58      X    N  
+ATOM      2  CA  PRO A   7     195.588 -11.656  68.624  1.00 62.24      X    C  
+ATOM      3  CYX PRO A   7     194.498 -11.470  69.679  1.00 66.12      X    C  
+ATOM      4  OYX PRO A   7     194.714 -11.762  70.858  1.00 65.68      X    O  
+ATOM      5  CB  PRO A   7     195.717 -13.124  68.197  1.00 63.95      X    C  
+ATOM      6  CG  PRO A   7     197.180 -13.378  68.077  1.00 68.38      X    C  
+ATOM      7  CD  PRO A   7     197.822 -12.491  69.086  1.00 64.06      X    C  
+HETATM    8  N   HRG A   8     193.329 -10.969  69.238  1.00 62.69      X    N  
+HETATM    9  CA  HRG A   8     192.145 -10.712  70.059  1.00 62.53      X    C  
+HETATM   10  CB  HRG A   8     191.891  -9.182  70.139  1.00 62.54      X    C  
+HETATM   11  CG  HRG A   8     190.610  -7.384  71.424  1.00 63.26      X    C  
+HETATM   12  CG' HRG A   8     190.697  -8.846  71.028  1.00 62.90      X    C  
+HETATM   13  CD  HRG A   8     189.437  -7.107  72.340  1.00 63.71      X    C  
+HETATM   14  NE  HRG A   8     189.638  -5.919  73.158  1.00 63.96      X    N  
+HETATM   15  CZ  HRG A   8     190.422  -5.891  74.350  1.00 64.16      X    C  
+HETATM   16  NH1 HRG A   8     191.125  -4.809  74.538  1.00 64.66      X    N  
+HETATM   17  NH2 HRG A   8     190.357  -7.012  75.207  1.00 64.13      X    N  
+HETATM   18  CYX HRG A   8     190.935 -11.439  69.459  1.00 66.48      X    C  
+HETATM   19  OYX HRG A   8     190.723 -11.381  68.245  1.00 66.03      X    O  
+HETATM   20  N   ALC A   9     190.148 -12.115  70.320  1.00 63.16      X    N  
+HETATM   21  CA  ALC A   9     188.947 -12.870  69.937  1.00 63.10      X    C  
+HETATM   22  CYX ALC A   9     187.832 -11.908  69.515  1.00 66.63      X    C  
+HETATM   23  OYX ALC A   9     187.710 -10.823  70.089  1.00 65.93      X    O  
+HETATM   24  CB  ALC A   9     188.395 -13.806  71.016  1.00 63.55      X    C  
+HETATM   25  CG  ALC A   9     189.387 -14.853  71.526  1.00 63.83      X    C  
+HETATM   26  CD2 ALC A   9     188.939 -15.477  72.848  1.00 64.27      X    C  
+HETATM   27  CE2 ALC A   9     189.944 -16.501  73.378  1.00 64.28      X    C  
+HETATM   28  CZ  ALC A   9     190.231 -17.590  72.346  1.00 64.16      X    C  
+HETATM   29  CE1 ALC A   9     190.668 -16.986  71.013  1.00 63.60      X    C  
+HETATM   30  CD1 ALC A   9     189.651 -15.963  70.507  1.00 63.64      X    C  
+ATOM     31  Y0  GLH A  10     187.040 -12.298  68.488  1.00 63.25      X    N  
+ATOM     32  CA  GLH A  10     185.939 -11.507  67.914  1.00 62.97      X    C  
+ATOM     33  CYX GLH A  10     184.889 -12.370  67.171  1.00 66.88      X    C  
+ATOM     34  OYX GLH A  10     184.977 -13.599  67.207  1.00 66.72      X    O  
+ATOM     35  CB  GLH A  10     186.494 -10.387  67.006  1.00 64.03      X    C  
+ATOM     36  CG  GLH A  10     187.332 -10.854  65.824  1.00 74.55      X    C  
+ATOM     37  CD  GLH A  10     188.008  -9.723  65.076  1.00 94.97      X    C  
+ATOM     38  OE1 GLH A  10     189.001  -9.171  65.602  1.00 92.36      X    O  
+ATOM     39  N   HIS A  11     183.890 -11.720  66.519  1.00 63.36      X    N  
+ATOM     40  CA  HIS A  11     182.829 -12.370  65.729  1.00 63.45      X    C  
+ATOM     41  CYX HIS A  11     183.332 -12.712  64.313  1.00 66.46      X    C  
+ATOM     42  OYX HIS A  11     184.432 -12.297  63.938  1.00 65.54      X    O  
+ATOM     43  CB  HIS A  11     181.588 -11.456  65.621  1.00 64.42      X    C  
+ATOM     44  CG  HIS A  11     180.728 -11.418  66.846  1.00 68.25      X    C  
+ATOM     45  ND1 HIS A  11     180.689 -10.301  67.662  1.00 69.85      X    N  
+ATOM     46  CD2 HIS A  11     179.875 -12.347  67.338  1.00 70.64      X    C  
+ATOM     47  CE1 HIS A  11     179.833 -10.591  68.629  1.00 69.66      X    C  
+ATOM     48  NE2 HIS A  11     179.319 -11.812  68.477  1.00 70.50      X    N  
+CONECT    3    8
+CONECT    8    3    9
+CONECT    9    8   10   18
+CONECT   10    9   12
+CONECT   11   12   13
+CONECT   12   10   11
+CONECT   13   11   14
+CONECT   14   13   15
+CONECT   15   14   16   17
+CONECT   16   15
+CONECT   17   15
+CONECT   18    9   19   20
+CONECT   19   18
+CONECT   20   18   21
+CONECT   21   20   22   24
+CONECT   22   21   23   31
+CONECT   23   22
+CONECT   24   21   25
+CONECT   25   24   26   30
+CONECT   26   25   27
+CONECT   27   26   28
+CONECT   28   27   29
+CONECT   29   28   30
+CONECT   30   25   29
+CONECT   31   22
+ENDMDL
+END

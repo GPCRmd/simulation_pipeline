@@ -1,0 +1,166 @@
+#WARNING: illegal value: no bond parameters exist for cg2o1 nh1
+#WARNING: illegal value: no bond parameters exist for c ng2s1
+#WARNING: illegal value: no angle parameters exist for cg311 cg2o1 nh1
+#WARNING: illegal value: no angle parameters exist for ct2 nh1 cg2o1
+#WARNING: illegal value: no angle parameters exist for c ng2s1 cg301
+#WARNING: illegal value: no angle parameters exist for cg301 cg2o1 nh1
+#WARNING: illegal value: no angle parameters exist for og2d1 cg2o1 nh1
+#WARNING: illegal value: no angle parameters exist for h nh1 cg2o1
+#WARNING: illegal value: no angle parameters exist for ct1 nh1 cg2o1
+#WARNING: illegal value: no angle parameters exist for c ng2s1 hgp1
+#WARNING: illegal value: no angle parameters exist for c ng2s1 cg311
+#WARNING: illegal value: no angle parameters exist for ng2s1 c o
+#WARNING: illegal value: no angle parameters exist for ng2s1 c ct1
+#WARNING: illegal value: no parameters exist for dihedral cg2o1 nh1 ct2 c
+#WARNING: illegal value: no parameters exist for dihedral cg2o1 nh1 ct2 hb2
+#WARNING: illegal value: no parameters exist for dihedral cg311 cg2o1 nh1 h
+#WARNING: illegal value: no parameters exist for dihedral cg311 cg2o1 nh1 ct2
+#WARNING: illegal value: no parameters exist for dihedral cg321 cg311 cg2o1 nh1
+#WARNING: illegal value: no parameters exist for dihedral ng2s1 cg311 cg2o1 nh1
+#WARNING: illegal value: no parameters exist for dihedral og2d1 cg2o1 nh1 ct2
+#WARNING: illegal value: no parameters exist for dihedral hga1 cg311 cg2o1 nh1
+#WARNING: illegal value: no parameters exist for dihedral ct1 c ng2s1 cg301
+#WARNING: illegal value: no parameters exist for dihedral ct1 ct1 c ng2s1
+#WARNING: illegal value: no parameters exist for dihedral c ng2s1 cg301 cg2o1
+#WARNING: illegal value: no parameters exist for dihedral c ng2s1 cg301 cg331
+#WARNING: illegal value: no parameters exist for dihedral c ng2s1 cg301 cg321
+#WARNING: illegal value: no parameters exist for dihedral o c ng2s1 cg301
+#WARNING: illegal value: no parameters exist for dihedral cg2o1 nh1 ct1 ct1
+#WARNING: illegal value: no parameters exist for dihedral cg2o1 nh1 ct1 c
+#WARNING: illegal value: no parameters exist for dihedral cg2o1 nh1 ct1 hb1
+#WARNING: illegal value: no parameters exist for dihedral cg301 cg2o1 nh1 h
+#WARNING: illegal value: no parameters exist for dihedral cg301 cg2o1 nh1 ct1
+#WARNING: illegal value: no parameters exist for dihedral cg331 cg301 cg2o1 nh1
+#WARNING: illegal value: no parameters exist for dihedral cg321 cg301 cg2o1 nh1
+#WARNING: illegal value: no parameters exist for dihedral ng2s1 cg301 cg2o1 nh1
+#WARNING: illegal value: no parameters exist for dihedral og2d1 cg2o1 nh1 h
+#WARNING: illegal value: no parameters exist for dihedral og2d1 cg2o1 nh1 ct1
+#WARNING: illegal value: no parameters exist for dihedral nh1 ct1 c ng2s1
+#WARNING: illegal value: no parameters exist for dihedral ct1 c ng2s1 cg311
+#WARNING: illegal value: no parameters exist for dihedral ct1 c ng2s1 hgp1
+#WARNING: illegal value: no parameters exist for dihedral hb1 ct1 c ng2s1
+#WARNING: illegal value: no parameters exist for dihedral ct2a ct1 c ng2s1
+#WARNING: illegal value: no parameters exist for dihedral c ng2s1 cg311 cg321
+#WARNING: illegal value: no parameters exist for dihedral c ng2s1 cg311 cg2o1
+#WARNING: illegal value: no parameters exist for dihedral c ng2s1 cg311 hga1
+#WARNING: illegal value: no parameters exist for dihedral o c ng2s1 cg311
+#WARNING: illegal value: no parameters exist for dihedral o c ng2s1 hgp1
+#WARNING: illegal value: no parameters exist for improper cg2o1 cg311 nh1 og2d1
+#WARNING: illegal value: no parameters exist for improper cg2o1 cg301 nh1 og2d1
+
+#WARNING: illegal value: no angle parameters exist for c cg311 cg321
+#WARNING: illegal value: no angle parameters exist for c ng2s1 cg2o1
+#WARNING: illegal value: no angle parameters exist for cg3c50 cg2o1 nh1
+#WARNING: illegal value: no angle parameters exist for cg3c51 ng2s0 c
+#WARNING: illegal value: no angle parameters exist for cg3c53 cg2o1 nh1
+#WARNING: illegal value: no angle parameters exist for cg3rc1 ng2s0 c
+#WARNING: illegal value: no angle parameters exist for cg311 c ng2s1
+#WARNING: illegal value: no angle parameters exist for cg311 c o
+#WARNING: illegal value: no angle parameters exist for cg311 cg2o1 n
+#WARNING: illegal value: no angle parameters exist for cg321 ng2s1 c
+#WARNING: illegal value: no angle parameters exist for cp1 c ng2s1
+#WARNING: illegal value: no angle parameters exist for cp1 n cg2o1
+#WARNING: illegal value: no angle parameters exist for cp3 n cg2o1
+#WARNING: illegal value: no angle parameters exist for ct1 c ng2s0
+#WARNING: illegal value: no angle parameters exist for ct3 c ng2s1
+#WARNING: illegal value: no angle parameters exist for hga1 cg311 c
+#WARNING: illegal value: no angle parameters exist for ng2s0 c o
+#WARNING: illegal value: no angle parameters exist for ng2s1 c ng2s1
+#WARNING: illegal value: no angle parameters exist for ng2s1 cg311 c
+#WARNING: illegal value: no angle parameters exist for nh1 c cg311
+#WARNING: illegal value: no angle parameters exist for nh1 c ng2s1
+#WARNING: illegal value: no angle parameters exist for og2d1 cg2o1 n
+#WARNING: illegal value: no bond parameters exist for c ng2s0
+#WARNING: illegal value: no bond parameters exist for cg2o1 n
+#WARNING: illegal value: no bond parameters exist for cg311 c
+#WARNING: illegal value: no crossterm parameters exist for c c n cp1 c n cp1 c ng2s1
+#WARNING: illegal value: no crossterm parameters exist for c c nh1 ct1 c nh1 ct1 c ng2s0
+#WARNING: illegal value: no crossterm parameters exist for c c nh1 ct1 c nh1 ct1 c ng2s1
+#WARNING: illegal value: no crossterm parameters exist for c cg2o1 n cp1 c n cp1 c ng2s1
+#WARNING: illegal value: no crossterm parameters exist for c cg2o1 nh1 ct1 c nh1 ct1 c ng2s1
+#WARNING: illegal value: no crossterm parameters exist for c cg2o1 nh1 ct1 c nh1 ct1 c nh1
+#WARNING: illegal value: no crossterm parameters exist for c cg2o1 nh1 ct2 c nh1 ct2 c n
+#WARNING: illegal value: no parameters exist for dihedral c cg311 cg321 cg2r61
+#WARNING: illegal value: no parameters exist for dihedral c cg311 cg321 hga2
+#WARNING: illegal value: no parameters exist for dihedral c cg311 ng2s1 hgp1
+#WARNING: illegal value: no parameters exist for dihedral c ng2s0 cg3c51 cg2o1
+#WARNING: illegal value: no parameters exist for dihedral c ng2s0 cg3c51 cg3c52
+#WARNING: illegal value: no parameters exist for dihedral c ng2s0 cg3c51 hga1
+#WARNING: illegal value: no parameters exist for dihedral c ng2s0 cg3rc1 cg3rc1
+#WARNING: illegal value: no parameters exist for dihedral c ng2s0 cg3rc1 cg321
+#WARNING: illegal value: no parameters exist for dihedral c ng2s0 cg3rc1 hga1
+#WARNING: illegal value: no parameters exist for dihedral c ng2s1 cg2o1 cg311
+#WARNING: illegal value: no parameters exist for dihedral c ng2s1 cg2o1 og2d1
+#WARNING: illegal value: no parameters exist for dihedral c ng2s1 cg311 c
+#WARNING: illegal value: no parameters exist for dihedral c ng2s1 cg311 cg2o3
+#WARNING: illegal value: no parameters exist for dihedral c ng2s1 cg321 cg321
+#WARNING: illegal value: no parameters exist for dihedral c ng2s1 cg321 hga2
+#WARNING: illegal value: no parameters exist for dihedral cg2o1 n cp1 c
+#WARNING: illegal value: no parameters exist for dihedral cg2o1 n cp1 cp2
+#WARNING: illegal value: no parameters exist for dihedral cg2o1 n cp1 hb1
+#WARNING: illegal value: no parameters exist for dihedral cg2o1 n cp3 cp2
+#WARNING: illegal value: no parameters exist for dihedral cg2o1 n cp3 ha2
+#WARNING: illegal value: no parameters exist for dihedral cg2o1 nh1 ct1 ct2
+#WARNING: illegal value: no parameters exist for dihedral cg2o1 nh1 ct1 ct2a
+#WARNING: illegal value: no parameters exist for dihedral cg2o1 nh1 ct1 ct3
+#WARNING: illegal value: no parameters exist for dihedral cg3c50 cg2o1 nh1 ct1
+#WARNING: illegal value: no parameters exist for dihedral cg3c50 cg2o1 nh1 h
+#WARNING: illegal value: no parameters exist for dihedral cg3c52 cg3c50 cg2o1 nh1
+#WARNING: illegal value: no parameters exist for dihedral cg3c52 cg3c53 cg2o1 nh1
+#WARNING: illegal value: no parameters exist for dihedral cg3c53 cg2o1 nh1 ct1
+#WARNING: illegal value: no parameters exist for dihedral cg3c53 cg2o1 nh1 ct2
+#WARNING: illegal value: no parameters exist for dihedral cg3c53 cg2o1 nh1 h
+#WARNING: illegal value: no parameters exist for dihedral cg311 c ng2s1 cg311
+#WARNING: illegal value: no parameters exist for dihedral cg311 c ng2s1 hgp1
+#WARNING: illegal value: no parameters exist for dihedral cg311 c nh1 ct3
+#WARNING: illegal value: no parameters exist for dihedral cg311 c nh1 h
+#WARNING: illegal value: no parameters exist for dihedral cg311 cg2o1 n cp1
+#WARNING: illegal value: no parameters exist for dihedral cg311 cg2o1 n cp3
+#WARNING: illegal value: no parameters exist for dihedral cg311 cg2o1 nh1 ct1
+#WARNING: illegal value: no parameters exist for dihedral cg311 ng2s1 c ng2s1
+#WARNING: illegal value: no parameters exist for dihedral cg321 cg311 c ng2s1
+#WARNING: illegal value: no parameters exist for dihedral cg321 cg311 cg2o1 n
+#WARNING: illegal value: no parameters exist for dihedral cp1 c ng2s1 cg311
+#WARNING: illegal value: no parameters exist for dihedral cp1 c ng2s1 hgp1
+#WARNING: illegal value: no parameters exist for dihedral ct1 c ng2s0 cg3c51
+#WARNING: illegal value: no parameters exist for dihedral ct1 c ng2s0 cg3rc1
+#WARNING: illegal value: no parameters exist for dihedral ct1 c ng2s1 cg321
+#WARNING: illegal value: no parameters exist for dihedral ct2 ct1 c ng2s0
+#WARNING: illegal value: no parameters exist for dihedral ct2 ct1 c ng2s1
+#WARNING: illegal value: no parameters exist for dihedral ct3 c ng2s1 cg2o1
+#WARNING: illegal value: no parameters exist for dihedral ct3 c ng2s1 cg311
+#WARNING: illegal value: no parameters exist for dihedral ct3 c ng2s1 hgp1
+#WARNING: illegal value: no parameters exist for dihedral ct3 ct1 c ng2s1
+#WARNING: illegal value: no parameters exist for dihedral ct3 nh1 c ng2s1
+#WARNING: illegal value: no parameters exist for dihedral h nh1 c ng2s1
+#WARNING: illegal value: no parameters exist for dihedral ha3 ct3 c ng2s1
+#WARNING: illegal value: no parameters exist for dihedral hb1 ct1 c ng2s0
+#WARNING: illegal value: no parameters exist for dihedral hga1 cg3c53 cg2o1 nh1
+#WARNING: illegal value: no parameters exist for dihedral hga1 cg311 cg2o1 n
+#WARNING: illegal value: no parameters exist for dihedral ng2s1 c cg311 hga1
+#WARNING: illegal value: no parameters exist for dihedral ng2s1 c ng2s1 cg321
+#WARNING: illegal value: no parameters exist for dihedral ng2s1 c ng2s1 hgp1
+#WARNING: illegal value: no parameters exist for dihedral ng2s1 cg311 c ng2s1
+#WARNING: illegal value: no parameters exist for dihedral ng2s1 cg311 c nh1
+#WARNING: illegal value: no parameters exist for dihedral ng2s1 cg311 c o
+#WARNING: illegal value: no parameters exist for dihedral ng2s1 cg311 cg2o1 n
+#WARNING: illegal value: no parameters exist for dihedral ng3p2 cg3c53 cg2o1 nh1
+#WARNING: illegal value: no parameters exist for dihedral ng3p3 cg3c50 cg2o1 nh1
+#WARNING: illegal value: no parameters exist for dihedral nh1 c cg311 cg321
+#WARNING: illegal value: no parameters exist for dihedral nh1 c cg311 hga1
+#WARNING: illegal value: no parameters exist for dihedral nh1 c ng2s1 cg311
+#WARNING: illegal value: no parameters exist for dihedral nh1 c ng2s1 hgp1
+#WARNING: illegal value: no parameters exist for dihedral nh1 ct1 c ng2s0
+#WARNING: illegal value: no parameters exist for dihedral nh3 ct1 c ng2s1
+#WARNING: illegal value: no parameters exist for dihedral o c cg311 cg321
+#WARNING: illegal value: no parameters exist for dihedral o c cg311 hga1
+#WARNING: illegal value: no parameters exist for dihedral o c ng2s0 cg3c51
+#WARNING: illegal value: no parameters exist for dihedral o c ng2s0 cg3rc1
+#WARNING: illegal value: no parameters exist for dihedral o c ng2s1 cg2o1
+#WARNING: illegal value: no parameters exist for dihedral o c ng2s1 cg321
+#WARNING: illegal value: no parameters exist for dihedral og2d1 cg2o1 n cp1
+#WARNING: illegal value: no parameters exist for dihedral og2d1 cg2o1 n cp3
+#WARNING: illegal value: no parameters exist for improper cg2o1 cg3c50 nh1 og2d1
+#WARNING: illegal value: no parameters exist for improper cg2o1 cg3c53 nh1 og2d1
+#WARNING: illegal value: no parameters exist for improper cg2o1 cg311 n og2d1
+#WARNING: illegal value: no parameters exist for improper n cg2o1 cp1 cp3
