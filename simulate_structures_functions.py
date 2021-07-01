@@ -385,7 +385,7 @@ writeMol2(openModels.list(modelTypes=[Molecule]), "%s")
     os.system('chimera --nogui %s'%pyfile)
 
 
-def download_ligands(ligandsset, basepath, aminergic_lig, modres = False):
+def download_ligands(ligandsset, basepath, modres = False):
     """
     Download ligand CIF file from rcsb (using its residue name (ligcode)) and convert it to mol2
     mol2 file will be used later for paramterization
