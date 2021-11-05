@@ -10,7 +10,6 @@ import numpy as np
 from shutil import copy2,copytree,rmtree
 import xml.etree.ElementTree as ET
 from bs4 import BeautifulSoup
-import openbabel
 import time
 import random
 import sys
@@ -18,13 +17,14 @@ import tempfile
 from Bio import pairwise2
 from Bio.Align import substitution_matrices 
 import tarfile
+from requests_toolbelt import MultipartEncoder
 #import pymol
 
 #HTMD things
 import htmd
 from htmd.ui import *
 from moleculekit.tools.sequencestructuralalignment import sequenceStructureAlignment
-from htmd.protocols.equilibration_v2 import Equilibration
+from htmd.protocols.equilibration_v3 import Equilibration
 from htmd.protocols.production_v6 import Production
 from htmd.builder.builder import removeLipidsInProtein, tileMembrane, minimalRotation,removeAtomsInHull
 from moleculekit.util import rotationMatrix, sequenceID, opm
@@ -140,6 +140,45 @@ def json_dict(path):
     json_data = json.loads(json_str)
     return json_data
 
+def get_complexsignal_pdbs():
+    """
+    Obtain PDB codes of GPCRdb refined structures with coupled auxiliary proteins
+    Also get the name of this GPCR family
+    """
+    
+    # Download crude HTML data from gpcrdb/structure and process its table into a list of lists
+    html_data = requests.get('http://gpcrdb.org/structure/').text
+    table_data = [[cell.text.replace('\n','') for cell in row("td")]
+                             for row in BeautifulSoup(html_data)("tr")]
+
+    # From this list of lists, extract information about the signaling proteins associated to each structure
+    gprdb_extradata = { entry[7] : { 'signal_prot' : entry[14], 'family' : entry[3], 'type' : entry[2] } for entry in table_data 
+                       if (len(entry) >= 8) and (len(entry[7]) == 4) }
+
+    # Get PDB codes of structures with signaling proteins
+    complex_signal_pdbset = { pdbcode for pdbcode,data in gprdb_extradata.items() if data['signal_prot'] != '-' }
+
+    # Classify obtained GPCRs pdbcodes by family and type
+    complexsignal_byfamily = {}
+    for pdbcode,data in gpcrbd_extradata.items():
+        family = data['family']
+        gpcr_type = data['type'] 
+        signal = data['signal_prot']
+
+        # Skip those not bound to a signal protein
+        if signal == '-':
+            continue
+        try:
+            complexsignal_byfamily[family][gpcr_type].append(pdbcode)
+        except KeyError:
+            try:
+                complexsignal_byfamily[family][gpcr_type] = [pdbcode]
+            except KeyError:
+                complexsignal_byfamily[family] = { gpcr_type : [pdbcode] }
+            
+
+    return(gprdb_extradata, complex_signal_pdbset, complex_signal_byfamily)
+
 def get_GPCRdb_nonsimulated(gpcrdb_dict):
     """
     Returns a list of PDB codes from the GPCRdb refined structures not yet simulated in GPCRmd
@@ -205,6 +244,7 @@ def download_GPCRdb_structures(pdb_set, strucpath):
     """
     pdb_set_nonrefined = set()
     set_length = len(pdb_set)
+    refined_baselink = 'https://gpcrdb.org/structure/refined/'
     i = 0
     for pdbcode in pdb_set:
         mystrucpath = strucpath+pdbcode+'/'
@@ -218,26 +258,31 @@ def download_GPCRdb_structures(pdb_set, strucpath):
                 print('Structure for %s already present. Skipping...' % pdbcode)
             else:
                 # Accede to GPCRdb main page of this refined structure
-                response = requests.get('https://gpcrdb.org/structure/refined/'+pdbcode)
+                response = requests.get(refined_baselink+pdbcode)
                 if response.ok:
-                    # Find the codename of this refined structure in its page
+                    # Find the link to the refined structure and donwload it
                     soup = BeautifulSoup(response.content, 'html.parser')
-                    false_link = soup.find('a',attrs={'id':'download_btn'}).get('href')
-                    name = false_link.split('/')[1].replace('_full','')
-                    # Use the codename to download the refined structure of this pdbcode
-                    for stype in ['complex_models','homology_models']:
-                        link = "https://gpcrdb.org/structure/%s/view/%s"%(stype,name)
-                        response = requests.get(link)
-                        if response.ok:
-                            break
+                    link = soup.find('a',attrs={'id':'download_btn'}).get('href')
+                    response = requests.get(refined_baselink+link)
                     pdbdata = response.content
                     with open(mystrucpath+pdbcode+'_refined.pdb','wb') as out:
                         out.write(pdbdata)
+                    if response.ok:
+                        #Extract pdb file from download zip and save it into a separate file
+                        zippy = zipfile.ZipFile(io.BytesIO(response.content))
+                        for zippedfile in zippy.namelist():
+                            if zippedfile.endswith('.pdb'):
+                                pdbfile = zippy.open(zippedfile)
+                                content = pdbfile.read()
+                                with open(mystrucpath+pdbcode+'_refined.pdb','wb') as out:
+                                    out.write(content)
+                    else:
+                        print('could not find link to %s refined structure. Skipping...' % (pdbcode))
                 else:
                     print('could not download %s refined structure. Skipping...' % (pdbcode))
         
         except Exception as E:
-                print("something failed in %s: %s"%(pdbcode,E))
+                print("something failed in downloading refined structure of %s: %s"%(pdbcode,E))
 
 def ligand_dictionary(pdb_set, ligandsdict_path, modres_path, blacklist = {}):
     """
@@ -950,6 +995,25 @@ def internal_waters(mystrucpath, pdbcode, gpcrdb_dict, apo=False, pdbpath=False)
             add_peplig(watered_filename, pdbcode)
 
     return (sod == 'sod_yes', watered_filename)
+
+def remove_ligmols(gpcrdb_mol, blacklist, gpcrdb_dict, pdbmol, apo):
+    """
+    Check some stuff concerning to ligand molecules
+    """
+    # Remove unnecessary ligand molecules: mostly crystalization detergents, quelants, buffers,
+    # or post-traductional glicosilations
+    gpcrdb_mol.remove('resname '+' '.join(blacklist))
+
+    # Remove 2x50Sodium from non-A-class GPCRs
+    if not gpcrdb_dict[pdbcode]['family'].startswith('001'):
+        gpcrdb_mol.remove('element NA')
+
+    # Remove ligands if is apo form
+    if apo:
+        gpcrdb_mol.remove('not ((same chain as protein) or lipid or ion)')
+
+    return gpcrdb_mol
+
 
 def get_opm(pdbcode):
     """
@@ -1771,8 +1835,12 @@ def mutate(mol, pdbcode, equildir, mutdir, mutations, basepath, topparpath):
                                caps=caps,
                                saltconc=0.15)
 
-def define_equilibration(const_sel, simtime = 40, minimize = 5000):
-    restr = AtomRestraint(const_sel, 2, [(0,"0"),(1,"%dns" % int(simtime*0.5)),(0,"%dns" % int(simtime*0.75))], "xyz")
+def define_equilibration(const_sels, simtime = 40, minimize = 5000):
+    restrs = []
+    for const_sel in const_sels:
+        restr = AtomRestraint(const_sel, 2, [(0,"0"),(1,"%dns" % int(simtime*0.5)),(0,"%dns" % int(simtime*0.75))], "xyz")
+        restrs.append(restr) 
+    md.restraints = restrs
     md = Equilibration()
     md.runtime = simtime
     md.timeunits = 'ns'
@@ -1786,9 +1854,9 @@ def define_equilibration(const_sel, simtime = 40, minimize = 5000):
     md._version = 3
     return md
 
-def define_production(timestep, trajperiod):
+def define_production(timestep, trajperiod, runtime=500):
     md = Production()
-    md.runtime = 500
+    md.runtime = runtime
     md.timeunits = 'ns'
     md.temperature = 310
     md.acemd.restart = 'off'    
