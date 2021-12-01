@@ -406,6 +406,26 @@ def run_propka(infile, outname, strucpath):
 
     return Molecule(pdbfile)
 
+def chimera_conversion(infile, mol2file, pyfile, resname="COV"):
+    """
+    Write a python scripts with instructions for chimera to read a pdb and save a mol2file, without further changes
+    """
+    with open(pyfile,'w') as f:
+        f.write("""
+import os 
+from chimera import runCommand as rc 
+from chimera import replyobj,openModels,Molecule 
+from WriteMol2 import writeMol2 
+os.chdir(".") 
+rc("open %s") 
+rc("setattr m name '%s'") 
+writeMol2(openModels.list(modelTypes=[Molecule]), "%s") 
+""" % (infile, resname, mol2file))
+
+    # Execute script in chimera 
+    os.system('chimera --nogui %s'%pyfile)
+
+
 def chimera_addH(infile, mol2file, pyfile, resname="COV"):
     """
     # Write a python script giving instructions to chimera for adding hydrogens to our molecule
@@ -429,6 +449,46 @@ writeMol2(openModels.list(modelTypes=[Molecule]), "%s")
     # Execute script in chimera 
     os.system('chimera --nogui %s'%pyfile)
 
+def save_smalmol_mol2(input_dict):
+    """
+    From the submitted PDB files, extract PDB of small molecule and convert it into mol2
+    """
+    
+    def create_files(smalmol, moltype):
+        # Write directory for molecule in case doesn't exists
+        smalmol_folder = basepath+'/toppar/'+moltype+'/'+smalmol+'/'
+        os.makedirs(smalmol_folder, exist_ok=True)
+
+        #filenames
+        smalmol_pdb = "%s%s.pdb"%(smalmol_folder,smalmol) 
+        smalmol_mol2 = "%s%s.mol2"%(smalmol_folder,smalmol)
+        smalmol_script = "%s%s.py"%(smalmol_folder,smalmol)
+        
+        # Skip if mol2file already exists
+        if os.path.exists(smalmol_mol2):
+            return
+        
+        # Write PDB file of smalmol 
+        mymol.write(smalmol_folder+smalmol+'.pdb', 'resname '+smalmol)
+        # Convert it to mol2file
+        chimera_conversion(smalmol_pdb, smalmol_mol2, smalmol_script, smalmol)
+    
+    # For everyone of the files we want to simulate
+    ligandsdict = {}
+    for entry in input_dict:
+        mymol = Molecule(basepath+entry['pdbfile'])
+        ligandsdict[entry['name']] = {}
+        # For every small molecule in this system
+        for smalmol in entry['ligands']:
+            ligandsdict[entry['name']][smalmol['resname']] = [smalmol['name'],smalmol['covalently_bound']]
+            create_files(smalmol['resname'],'Ligands')
+        # For every modified residue in this system
+        for smalmol in entry['modres']:
+            create_files(smalmol,'mod_residues')
+
+    modresdict= { a['name'] : a['modres'] for a in input_dict}
+    pdbfilesdict= { a['name'] : a['pdbfile'] for a in input_dict}
+    return (modresdict,ligandsdict, pdbfilesdict)
 
 def download_ligands(ligandsset, basepath, modres = False):
     """
@@ -570,7 +630,7 @@ def paramchem(username,password,ligpath,ligcode):
             """
 
         
-def get_lig_toppar(ligandsdict, basepath, username, password):
+def get_lig_toppar(ligandsdict, basepath, username, password, pdbfiles = {}):
     """
     Get the topology-parameters string file from paramchem for the submited ligand PDB codes
     ALERT: paramchem only allows 100 submissions by month, so it may be possible that not all 
@@ -598,7 +658,7 @@ def get_lig_toppar(ligandsdict, basepath, username, password):
                                 
             # IF is a covalent-bound ligand
             if ligcov:
-                modres_covlig_toppar(pdbcode, ligcode, ligpath, covlig = True)
+                modres_covlig_toppar(pdbcode, ligcode, ligpath, covlig = True, pdbfiles = pdbfiles)
             else:
                 paramchem(username,password,ligpath,ligcode)
 
@@ -654,7 +714,7 @@ def fix_ARG(inpath, outpath):
     outfile.close()
     infile.close()
     
-def get_modres_toppar(modresdict, basepath, username, password):
+def get_modres_toppar(modresdict, basepath, username, password, pdbfiles={}):
     """
     Get topologies and parameters for modified residues
     """
@@ -665,7 +725,7 @@ def get_modres_toppar(modresdict, basepath, username, password):
         # For each PDB structure, iterate on its modified residues
         for modres in modresdict[pdbcode]:
             modrespath = basepath+'toppar/mod_residues/'+modres+'/'
-            modres_covlig_toppar(pdbcode, modres, modrespath)
+            modres_covlig_toppar(pdbcode, modres, modrespath, pdbfiles)
 
 
 def renumber_covlig(mol, lig):
@@ -682,7 +742,7 @@ def renumber_covlig(mol, lig):
     return(mol)
 
 
-def modres_covlig_toppar(pdbcode, modres, modrespath, covlig = False):
+def modres_covlig_toppar(pdbcode, modres, modrespath, covlig = False, pdbfiles = {}):
     """
     Prepare residue to be parameterized, send it to paramchem, and adjust its topology
     """
@@ -700,7 +760,10 @@ def modres_covlig_toppar(pdbcode, modres, modrespath, covlig = False):
         pass
 
     # Load main structure
-    main_pdb = Molecule(pdbcode)
+    if pdbcode in pdbfiles:
+        main_pdb = Molecule(pdbfiles[pdbcode])
+    else:
+        main_pdb = Molecule(pdbcode)
 
     # Find out if this structure has hallogens
     has_halo = bool(len(main_pdb.get('name', 'element Cl Br I and not ion')))
@@ -895,24 +958,24 @@ def add_peplig(filename, pdbcode):
     # Re-write result
     mymol.write(filename)
 
-def internal_waters(mystrucpath, pdbcode, gpcrdb_dict, apo=False, pdbpath=False):
+def internal_waters(mystrucpath, pdbcode, gpcrdb_dict, apo=False, pdbpath=False,sod="autoselect"):
     """
     Place internal waters and E2x50 sodium in GPCR structure using homolwat online tool
     """
 
-    sod = None
     agoset = {'Agonist', 'Agonist (partial)'}
     ligands = gpcrdb_dict[pdbcode]['ligands']
     family = gpcrdb_dict[pdbcode]['family'] 
     # Gess if this structure needs or not a sodium
-    if not (family.startswith('001')) or (family == '001_002_023') : # If not a class-A gpcr OR is a orexin
-        sod = "sod_no"
-    elif (len(ligands) == 0) or (apo): # If apoform, do not add the ion (we want to see how it enters)
-        sod = "sod_no"
-    elif (ligands[0]['function'] in agoset): # If agonist-bound complex
-        sod = "sod_no"
-    else:
-        sod = "sod_yes"
+    if sod=="autoselect":
+        if not (family.startswith('001')) or (family == '001_002_023') : # If not a class-A gpcr OR is a orexin
+            sod = "sod_no"
+        elif (len(ligands) == 0) or (apo): # If apoform, do not add the ion (we want to see how it enters)
+            sod = "sod_no"
+        elif (ligands[0]['function'] in agoset): # If agonist-bound complex
+            sod = "sod_no"
+        else:
+            sod = "sod_yes"
     
     # Check if there is already a watered structure here
     watered_filename = (glob(mystrucpath+'*_apoHW.pdb') if apo else glob(mystrucpath+'*_HW.pdb'))
@@ -990,9 +1053,6 @@ def internal_waters(mystrucpath, pdbcode, gpcrdb_dict, apo=False, pdbpath=False)
         else:
             print("could not add internal waters to %s. Skipping..." % (pdbpath))
             
-        # If system has a peptide ligand, add it from original PDB structure
-        if any([ True for lig in gpcrdb_dict[pdbcode]['ligands'] if lig['type'] in {'protein', 'peptide'} ]) and not (apo):
-            add_peplig(watered_filename, pdbcode)
 
     return (sod == 'sod_yes', watered_filename)
 
