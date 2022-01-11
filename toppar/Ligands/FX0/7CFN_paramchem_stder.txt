@@ -1,0 +1,4 @@
+readmol2 warning: non-unique atoms were renamed.
+Now processing molecule FX0 ...
+attype warning: monovalent carbon not supported;
+skipped molecule.

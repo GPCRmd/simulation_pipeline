@@ -1,0 +1,65 @@
+MODEL        1
+HETATM    1  C0  UN1 L   0      97.824 102.458  96.224  1.00  0.00      1    C  
+HETATM    2  N0  UN1 L   0      98.092 103.886  96.218  1.00  0.00      1    N  
+HETATM    3  C1  UN1 L   0      97.205 104.885  95.880  1.00  0.00      1    C  
+HETATM    4  C2  UN1 L   0      97.836 106.087  95.974  1.00  0.00      1    C  
+HETATM    5  C3  UN1 L   0      97.200 107.449  95.769  1.00  0.00      1    C  
+HETATM    6  C4  UN1 L   0      96.742 107.590  94.308  1.00  0.00      1    C  
+HETATM    7  N1  UN1 L   0      95.515 106.826  94.008  1.00  0.00      1    N  
+HETATM    8  C5  UN1 L   0      99.168 105.841  96.399  1.00  0.00      1    C  
+HETATM    9  C6  UN1 L   0     100.275 106.660  96.701  1.00  0.00      1    C  
+HETATM   10  C7  UN1 L   0     101.437 106.060  97.161  1.00  0.00      1    C  
+HETATM   11  O0  UN1 L   0     102.523 106.824  97.465  1.00  0.00      1    O  
+HETATM   12  C8  UN1 L   0     101.544 104.665  97.339  1.00  0.00      1    C  
+HETATM   13  C9  UN1 L   0     100.472 103.852  97.028  1.00  0.00      1    C  
+HETATM   14  C10 UN1 L   0      99.299 104.464  96.558  1.00  0.00      1    C  
+HETATM   15  H0  UN1 L   0      96.757 102.329  96.288  1.00  0.00      1    H  
+HETATM   16  H1  UN1 L   0      98.317 102.032  97.086  1.00  0.00      1    H  
+HETATM   17  H2  UN1 L   0      98.224 102.051  95.307  1.00  0.00      1    H  
+HETATM   18  H3  UN1 L   0      96.198 104.666  95.642  1.00  0.00      1    H  
+HETATM   19  H4  UN1 L   0      97.934 108.225  95.983  1.00  0.00      1    H  
+HETATM   20  H5  UN1 L   0      96.360 107.576  96.453  1.00  0.00      1    H  
+HETATM   21  H6  UN1 L   0      97.557 107.284  93.647  1.00  0.00      1    H  
+HETATM   22  H7  UN1 L   0      96.541 108.650  94.132  1.00  0.00      1    H  
+HETATM   23  H8  UN1 L   0      95.628 105.830  94.130  1.00  0.00      1    H  
+HETATM   24  H9  UN1 L   0      95.116 107.011  93.106  1.00  0.00      1    H  
+HETATM   25  H10 UN1 L   0      94.786 107.065  94.697  1.00  0.00      1    H  
+HETATM   26  H11 UN1 L   0     100.222 107.711  96.599  1.00  0.00      1    H  
+HETATM   27  H12 UN1 L   0     103.143 106.282  97.993  1.00  0.00      1    H  
+HETATM   28  H13 UN1 L   0     102.437 104.244  97.711  1.00  0.00      1    H  
+HETATM   29  H14 UN1 L   0     100.527 102.802  97.152  1.00  0.00      1    H  
+CONECT    1    2   15   16
+CONECT    1   17
+CONECT    2    1    3   14
+CONECT    3    2    4   18
+CONECT    4    3    5    8
+CONECT    5    4    6   19
+CONECT    5   20
+CONECT    6    5    7   21
+CONECT    6   22
+CONECT    7    6   23   24
+CONECT    7   25
+CONECT    8    4    9   14
+CONECT    9    8   10   26
+CONECT   10    9   11   12
+CONECT   11   10   27
+CONECT   12   10   13   28
+CONECT   13   12   14   29
+CONECT   14    2    8   13
+CONECT   15    1
+CONECT   16    1
+CONECT   17    1
+CONECT   18    3
+CONECT   19    5
+CONECT   20    5
+CONECT   21    6
+CONECT   22    6
+CONECT   23    7
+CONECT   24    7
+CONECT   25    7
+CONECT   26    9
+CONECT   27   11
+CONECT   28   12
+CONECT   29   13
+ENDMDL
+END

@@ -1,48 +1,10 @@
-* Toppar stream file for cholesterol.  Stream following reading of
-* top_all36_lipid.rtf
-* par_all36_lipid.rtf
-* top_all36_cgenff.rtf
-* and par_all36_cgenff.prm
-*
-
-!topology and parameters are included for two cholesterol models. the
-!model may be selected by setting variable chol_model to 1 or 2, as 
-!specified below
-!
-
-set chol_model 1 !2 for original Suits et al. model
-
-!
-!1) Revised model of Lim et al.  This contains a number of NBFIXes that
-!makes it unsuitable for ANTON (set chol_model 1)
-!
-!2) Original model of Suits et al., which is used on ANTON as well as
+! Original model of Suits et al., which is used on ANTON as well as
 !being suitable for other systems (set chol_model 2 (or anything but 1....))
-!
-!references
-!
-!Lim, J.B., Rogaski, B. and Klauda, J.B.. "Update of the Cholesterol Force Field 
-!Parameters in CHARMM" 116: 203-210 (2012).
 !
 !Suits, F., Pitman, M., MacKerell, A.D., Jr., Feller, S.E. "Molecular Level 
 !Organization of Saturated and Polyunsaturated Fatty Acids in a 
 !Phosphatidylcholine Bilayer Containing Cholesterol" Biochemistry,
 !43(49):15318-28, 2004
-!
-
-!test "append"
-set nat ?NATC
-set app
-!We're exploiting what is arguably a bug in the parser. On the left hand side,
-!the quotes have priority, so NAT is correctly substituted. On the right hand
-!side, the ? has priority and NATC" (sic) is not a valid substitution...
-if "@NAT" ne "?NATC" if @nat ne 0 set app append
-
-if chol_model eq 1 then
-
-! reference
-! Lim, J.B., Rogaski, B. and Klauda, J.B.. "Update of the Cholesterol Force Field 
-! Parameters in CHARMM" 116: 203-210 (2012).
 !
 
 read rtf card @app

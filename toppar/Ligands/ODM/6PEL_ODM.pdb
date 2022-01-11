@@ -1,0 +1,14 @@
+MODEL        1
+HETATM    1  CAA ODM A 427       5.978  52.341  33.069  1.00  0.00      0    C  
+HETATM    2  CAB ODM A 427       6.742  51.026  33.019  1.00  0.00      0    C  
+HETATM    3  CAE ODM A 427       8.276  51.001  33.095  1.00  0.00      0    C  
+HETATM    4  CAC ODM A 427       6.042  49.879  32.996  1.00  0.00      0    C  
+HETATM    5  CAF ODM A 427       6.881  48.605  33.060  1.00  0.00      0    C  
+HETATM    6  CAG ODM A 427       6.017  47.471  33.621  1.00  0.00      0    C  
+HETATM    7  CAH ODM A 427       6.922  46.369  34.181  1.00  0.00      0    C  
+HETATM    8  CAD ODM A 427       6.326  45.797  35.464  1.00  0.00      0    C  
+HETATM    9  CAI ODM A 427       7.059  45.239  33.160  1.00  0.00      0    C  
+HETATM   10  CAJ ODM A 427       8.151  44.269  33.617  1.00  0.00      0    C  
+HETATM   11  OAK ODM A 427       8.371  43.294  32.603  1.00  0.00      0    O  
+ENDMDL
+END
