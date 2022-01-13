@@ -1793,7 +1793,7 @@ def get_caps(prot_segids, mol_solvated):
     and protein ligands)
     """
     caps_receptor = ['first ACE', 'last CT3']
-    caps_not_receptor = ['first none', 'last none']
+    caps_not_receptor = ['first NTER', 'last CTER']
     caps = dict()
     aa= ' LYR ALA ARG ASN ASP CYS GLU GLN GLY HIS ILE LEU LYS MET PHE PRO SER THR TRP TYR VAL ASH CYM CYX GLH HID HIE HIP HSD HSE HSP LYN TYM AR0'
     for segid in prot_segids:
@@ -2190,7 +2190,6 @@ def get_headers(s, subm_id):
     }
     return(sessionid, csrftoken, headers)
 
-
 def check_chains(pdbcode, mymol):
     """
     Check how many chains from the original PDB structure remain in mymol structure
@@ -2224,16 +2223,46 @@ def check_chains(pdbcode, mymol):
         chain_present[chain] = False
         # For each segment in our molecule
         for seg,myseq in mymol.sequence().items():
-            mylen = len(myseq)
             # Align our molecule segments to the pdb chains
             aligs = pairwise2.align.localms(seq, myseq, 5,-1, -1, 0)
             # Check if any of the alignments has more than 4 score by position
-            is_present = any([ (alig.score/mylen) > 4 for alig in aligs ]) 
+            is_present = any([ (alig.score/(alig.end-alig.start)) > 4 for alig in aligs ]) 
             if is_present:
                 chain_present[chain] = is_present
                 segtochain[seg] = chain
 
     return (chain_present, segtochain)
+
+def get_uniprot_alignment(mymol, uniprotkbac, isoform, entry_segs):
+    """
+    Find out the exact coordinates of each Uniprot segment in our protein
+    """
+
+    # Obtain sequence of uniprotkbac
+    uniprot_id = "%s-%s"%(uniprotkbac,isoform) if isoform else uniprotkbac 
+    response = requests.get("https://www.uniprot.org/uniprot/?query=accession:%s&sort=score&columns=sequence&format=tab"%uniprotkbac)
+    uniseq = response.text.split('\n')[1]
+    
+    # Match this uniprot to our protein segments, and save matches
+    for seg,myseq in mymol.sequence().items():
+        
+        # Align our molecule segments to the pdb chains
+        aligs = pairwise2.align.localms(myseq, uniseq, 5,-1, -1, 0)
+        # For every alignment
+        for alig in aligs:
+            start = alig.start
+            end = alig.end
+            # If the alignment has no significant amount of mismatches, keep it as segment
+            if (alig.score/(end-start)) > 4.5:
+                if uniprotkbac not in entry_segs:
+                    entry_segs[uniprotkbac] = []
+                entry_segs[uniprot_id].append({
+                            'chainid' : mymol.get('chain', 'segid '+seg)[0],
+                            'segid' : seg,
+                            'beg' : alig.start,
+                            'end' : alig.end})        
+    
+    return(entry_segs) 
 
 def get_pdb_info(pdbcode, mymol, ligandsdict):
     """
@@ -2254,7 +2283,8 @@ def get_pdb_info(pdbcode, mymol, ligandsdict):
     ligdict = dict()
     protdict = dict()
     datadict = dict()
-    
+    entry_segs = dict()
+
     # Get information from PDB api
     pdbdict = requests.get('https://data.rcsb.org/graphql?query={\
         entry(entry_id: "'+pdbcode+'") {\
@@ -2288,42 +2318,25 @@ def get_pdb_info(pdbcode, mymol, ligandsdict):
 
     # Extract protein chains information
     for poly in pdbdict['entry']['polymer_entities']:
-    
-        # Get alignment information in order to determine which uniprot segment we should take
-        prevallen = 0
-        uniprotkbac = ''
-        isoform = ''
-        for alreg in poly['rcsb_polymer_entity_align']:
-            allen =  sum([seg['length'] for seg in alreg['aligned_regions']])
-            unicode = alreg['reference_database_accession']
-            myisoform = alreg['reference_database_isoform']
-            if allen > prevallen:
-                uniprotkbac = unicode
-                isoform = myisoform
-            else:
-                uniprotkbac = uniprotkbac
-                isoform = isoform
-            prevallen = allen            
-            
-        uniname = poly['rcsb_polymer_entity']['pdbx_description'].lower()
-        chainIds = poly['entity_poly']['pdbx_strand_id'].split(',')
 
         # Determine if this polymer (chain) is a GPCR
+        uniname = poly['rcsb_polymer_entity']['pdbx_description'].lower()
+        chainIds = poly['entity_poly']['pdbx_strand_id'].split(',')
         isgpcr = (('receptor' in uniname) or ('rhodopsin' in uniname)) 
-
-        # If this chain is present in our mymol structure
-        for chainId in chainIds:
-            if chain_present[chainId]:
-                # Get which segment(s) this chain is assigned to. SKip if none
-                segs = [ seg for seg,chain in segtochain.items() if chain == chainId ]
-                if not segs:
-                    continue
-                # Order data for this chain
-                protdict[chainId] = {
-                    'uniprotkbac' : uniprotkbac,
+        
+        # Get uniprots present in the system, and their corresponbding segments
+        for alreg in poly['rcsb_polymer_entity_align']:
+            uniprotkbac = alreg['reference_database_accession']
+            isoform = alreg['reference_database_isoform']
+            uniprot_id = "%s-%s"%(uniprotkbac,isoform) if isoform else uniprotkbac 
+            entry_segs = get_uniprot_alignment(mymol, uniprotkbac, isoform, entry_segs)
+            
+            # If this uniprot is present in our system, assign its data to protdict
+            if uniprot_id in entry_segs:
+                protdict[uniprotkbac] = {
                     'isoform' : isoform if isoform else '1',
                     'isgpcr' : isgpcr,
-                    'segs' : segs,
+                    'segs' : entry_segs[uniprot_id],
                 }
 
     # Determine experimental method used, and use the corresponding id in GPCRmd database
@@ -2338,6 +2351,7 @@ def get_pdb_info(pdbcode, mymol, ligandsdict):
         method_id = 5 # Other method
             
     return (protdict,ligdict,segtochain,method_id)
+
 
 def login(s):
     # Login into GPCRmd 
@@ -2531,7 +2545,6 @@ def new_step2(s, subm_id, ligdict, apo):
         s.post(mainurl+'/dynadb/delete_submission/'+subm_id)
         raise Exception('Step 2 submitted returned %d'%rep.status_code)
 
-    
 def new_step3(s, subm_id, protdict):
     """
     Fullfil and sent the step3 (protein chains) of the new submission form
@@ -2541,12 +2554,11 @@ def new_step3(s, subm_id, protdict):
     # Get headers and stuff
     (sessionid, csrftoken, headers)=get_headers(s, subm_id)
 
-    # Retrieve segment information using GPCRmd submission form
+    # Retrieve segment pdbid and source id from web
     entrydict = s.get(mainurl+'/dynadb/find_prots/'+subm_id+'/',
         headers = headers).json()
-    
     segments = {seg['segid'] : seg for entry in entrydict for seg in entry['segments']}
-
+    
     # Start dict with the data to be send into GPCRmd
     # But thougth they paved the footways here with goldust, I still would chose... my Isle of Innesfree
     step3_data = {
@@ -2558,12 +2570,11 @@ def new_step3(s, subm_id, protdict):
     # Iterate over pdb chains. For each one we'll create an entry
     i=0
     entrynum = []
-    for chain,chain_data in protdict.items():
+    for uniprotkbac,entry_data in protdict.items():
         ii = str(i)
-        uniprotkbac = chain_data['uniprotkbac']
-        isgpcr = chain_data['isgpcr']
-        isoform = chain_data['isoform']
-        chainsegs = chain_data['segs']
+        isgpcr = entry_data['isgpcr']
+        isoform = entry_data['isoform']
+        segs = entry_data['segs']
 
         # Retrieve info using uniprot code
         unidict = s.get(mainurl+'/dynadb/prot_info/'+subm_id+'/',
@@ -2585,24 +2596,23 @@ def new_step3(s, subm_id, protdict):
         # Get segments for alignment data
         j = 0
         segnums = []
-        for seg in chainsegs:
-            seginfo = segments[seg]
+        for seg in segs:
             ss = str(j)
-            data_alig['chain'+ss]= seginfo['chain']
-            data_alig['segid'+ss]= seg
-            data_alig['from'+ss]= seginfo['resid_from']
-            data_alig['to'+ss]= seginfo['resid_to']
+            data_alig['chain'+ss]= seg['chainid']
+            data_alig['segid'+ss]= seg['segid']
+            data_alig['from'+ss]= seg['beg']
+            data_alig['to'+ss]= seg['end']
             segnums.append(ss)
 
             # Store segment information as well in the submit dict
             step3_segdata = {
                 ss+'seg'+ii: j,
-                ss+'pdbid'+ii: seginfo['pdbid'],
-                ss+'sourcetype'+ii: seginfo['source_type'],
-                ss+'chain'+ii: seginfo['chain'],
-                ss+'segid'+ii: seg,
-                ss+'from_resid'+ii: seginfo['resid_from'],
-                ss+'to_resid'+ii: seginfo['resid_to'],
+                ss+'pdbid'+ii: segments[seg['segid']]['pdbid'],
+                ss+'sourcetype'+ii: segments[seg['segid']]['source_type'],
+                ss+'chain'+ii: seg['chainid'],
+                ss+'segid'+ii: seg['segid'],
+                ss+'from_resid'+ii: seg['beg'],
+                ss+'to_resid'+ii: seg['end'],
             }
             step3_data.update(step3_segdata)
 
@@ -2673,9 +2683,8 @@ def new_step3(s, subm_id, protdict):
 
     # Raise exceptions if something failed
     if not rep.ok:
-        s.post(mainurl+'/dynadb/delete_submission/'+subm_id)
+        #s.post(mainurl+'/dynadb/delete_submission/'+subm_id)
         raise Exception('Step 3 submitted returned %d'%rep.status_code)
-
 
 def new_step4(s, subm_id, prodpath, repath):
     """
