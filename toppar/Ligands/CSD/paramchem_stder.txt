@@ -1,3 +1,0 @@
-Now processing molecule CSD ...
-attype warning: unknown sulfur type not supported;
-skipped molecule.

@@ -1,3 +1,0 @@
-Now processing molecule J40 ...
-attype warning: carbon radical, carbocation or carbanion not supported;
-skipped molecule.

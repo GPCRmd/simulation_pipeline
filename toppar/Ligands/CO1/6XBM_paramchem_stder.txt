@@ -1,4 +1,0 @@
-readmol2 warning: non-unique atoms were renamed.
-Now processing molecule CO1 ...
-attype warning: carbon radical, carbocation or carbanion not supported;
-skipped molecule.

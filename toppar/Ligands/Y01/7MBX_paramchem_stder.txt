@@ -1,3 +1,0 @@
-Now processing molecule Y01 ...
-attype warning: monovalent carbon not supported;
-skipped molecule.

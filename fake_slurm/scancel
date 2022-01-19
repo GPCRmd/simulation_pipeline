@@ -1,3 +1,0 @@
-#!/bin/bash
-ssh -p 5577 daranda@localhost "scancel $@" || ssh daranda@hydra "scancel $@"
-sleep 5

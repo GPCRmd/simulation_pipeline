@@ -1,3 +1,0 @@
-Now processing molecule APE ...
-attype warning: =[N+]= not supported;
-skipped molecule.

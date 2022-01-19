@@ -1,3 +1,0 @@
-#! /bin/bash
-ssh -p 5577 daranda@localhost "sinfo $@" || ssh daranda@hydra "sinfo $@"
-sleep 5
