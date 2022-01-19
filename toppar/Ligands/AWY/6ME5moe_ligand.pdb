@@ -1,0 +1,73 @@
+REMARK  99                                                                      
+REMARK  99 MOE v2019.01 (Chemical Computing Group ULC) Thu Apr  8 11:14:35 2021 
+HETATM    1  N1  AWY L   1      24.602 -20.525  47.283  1.00  0.00           N  
+HETATM    2  C4  AWY L   1      23.801 -22.770  46.659  1.00  0.00           C  
+HETATM    3  C5  AWY L   1      23.949 -24.012  47.311  1.00  0.00           C  
+HETATM    4  C6  AWY L   1      22.788 -24.744  47.624  1.00  0.00           C  
+HETATM    5  C7  AWY L   1      22.881 -25.975  48.280  1.00  0.00           C  
+HETATM    6  C8  AWY L   1      24.134 -26.489  48.629  1.00  0.00           C  
+HETATM    7  C10 AWY L   1      25.220 -24.549  47.638  1.00  0.00           C  
+HETATM    8  C13 AWY L   1      27.722 -25.642  48.355  1.00  0.00           C  
+HETATM    9  C15 AWY L   1      28.823 -22.339  47.193  1.00  0.00           C  
+HETATM   10  C1  AWY L   1      25.278 -18.305  46.623  1.00  0.00           C  
+HETATM   11  C2  AWY L   1      24.171 -19.271  47.039  1.00  0.00           C  
+HETATM   12  O1  AWY L   1      23.001 -18.883  47.116  1.00  0.00           O  
+HETATM   13  C3  AWY L   1      23.709 -21.623  47.684  1.00  0.00           C  
+HETATM   14  C9  AWY L   1      25.300 -25.789  48.308  1.00  0.00           C  
+HETATM   15  C11 AWY L   1      26.418 -23.878  47.334  1.00  0.00           C  
+HETATM   16  C12 AWY L   1      27.667 -24.401  47.711  1.00  0.00           C  
+HETATM   17  C14 AWY L   1      26.541 -26.312  48.685  1.00  0.00           C  
+HETATM   18  O2  AWY L   1      28.857 -23.766  47.402  1.00  0.00           O  
+HETATM   19  H1  AWY L   1      25.588 -20.720  47.186  1.00  0.00           H  
+HETATM   20  H41 AWY L   1      22.891 -22.787  46.059  1.00  0.00           H  
+HETATM   21  H42 AWY L   1      24.661 -22.602  46.010  1.00  0.00           H  
+HETATM   22  H6  AWY L   1      21.818 -24.352  47.355  1.00  0.00           H  
+HETATM   23  H7  AWY L   1      21.985 -26.529  48.517  1.00  0.00           H  
+HETATM   24  H8  AWY L   1      24.201 -27.433  49.150  1.00  0.00           H  
+HETATM   25  H13 AWY L   1      28.678 -26.082  48.597  1.00  0.00           H  
+HETATM   26 H151 AWY L   1      29.826 -21.982  46.959  1.00  0.00           H  
+HETATM   27 H152 AWY L   1      28.464 -21.848  48.097  1.00  0.00           H  
+HETATM   28 H153 AWY L   1      28.153 -22.109  46.364  1.00  0.00           H  
+HETATM   29  H11 AWY L   1      26.233 -18.830  46.614  1.00  0.00           H  
+HETATM   30  H12 AWY L   1      25.324 -17.478  47.332  1.00  0.00           H  
+HETATM   31  H13 AWY L   1      25.066 -17.917  45.626  1.00  0.00           H  
+HETATM   32  H31 AWY L   1      22.683 -21.258  47.727  1.00  0.00           H  
+HETATM   33  H32 AWY L   1      24.006 -21.991  48.666  1.00  0.00           H  
+HETATM   34  H11 AWY L   1      26.377 -22.941  46.799  1.00  0.00           H  
+HETATM   35  H14 AWY L   1      26.587 -27.240  49.235  1.00  0.00           H  
+CONECT    1   11   13   19
+CONECT    2    3   13   20   21
+CONECT    3    2    4    4    7
+CONECT    4    3    3    5   22
+CONECT    5    4    6    6   23
+CONECT    6    5    5   14   24
+CONECT    7    3   14   15   15
+CONECT    8   16   16   17   25
+CONECT    9   18   26   27   28
+CONECT   10   11   29   30   31
+CONECT   11    1   10   12   12
+CONECT   12   11   11
+CONECT   13    1    2   32   33
+CONECT   14    6    7   17   17
+CONECT   15    7    7   16   34
+CONECT   16    8    8   15   18
+CONECT   17    8   14   14   35
+CONECT   18    9   16
+CONECT   19    1
+CONECT   20    2
+CONECT   21    2
+CONECT   22    4
+CONECT   23    5
+CONECT   24    6
+CONECT   25    8
+CONECT   26    9
+CONECT   27    9
+CONECT   28    9
+CONECT   29   10
+CONECT   30   10
+CONECT   31   10
+CONECT   32   13
+CONECT   33   13
+CONECT   34   15
+CONECT   35   17
+END

@@ -1,0 +1,119 @@
+REMARK  99                                                                      
+REMARK  99 MOE v2019.01 (Chemical Computing Group ULC) Thu Apr  8 11:09:14 2021 
+HETATM    1  C13 GBQ P   1     -85.225  63.136 361.034  1.00  2.61           C  
+HETATM    2  C21 GBQ P   1     -85.652  63.265 369.421  1.00  2.61           C  
+HETATM    3  C22 GBQ P   1     -84.331  63.869 368.959  1.00  2.61           C  
+HETATM    4  C24 GBQ P   1     -87.722  62.200 368.921  1.00  2.61           C  
+HETATM    5  C01 GBQ P   1     -83.487  66.038 365.333  1.00  2.61           C  
+HETATM    6  C02 GBQ P   1     -83.476  64.513 365.390  1.00  2.61           C  
+HETATM    7  C03 GBQ P   1     -83.296  63.983 364.107  1.00  2.61           C  
+HETATM    8  C04 GBQ P   1     -84.362  63.813 363.208  1.00  2.61           C  
+HETATM    9  C05 GBQ P   1     -84.140  63.283 361.932  1.00  2.61           C  
+HETATM   10  C06 GBQ P   1     -82.818  62.964 361.553  1.00  2.61           C  
+HETATM   11  C07 GBQ P   1     -81.741  63.110 362.448  1.00  2.61           C  
+HETATM   12  C08 GBQ P   1     -82.000  63.636 363.718  1.00  2.61           C  
+HETATM   13  C09 GBQ P   1     -80.399  62.793 362.095  1.00  2.61           C  
+HETATM   14  C18 GBQ P   1     -84.536  62.784 366.762  1.00  2.61           C  
+HETATM   15  C19 GBQ P   1     -85.947  62.171 367.140  1.00  2.61           C  
+HETATM   16  C25 GBQ P   1     -88.768  63.283 369.146  1.00  2.61           C  
+HETATM   17  C27 GBQ P   1     -89.854  64.916 369.951  1.00  2.61           C  
+HETATM   18  C31 GBQ P   1     -86.771  62.104 365.967  1.00  2.61           C  
+HETATM   19  C32 GBQ P   1     -87.634  63.157 365.589  1.00  2.61           C  
+HETATM   20  C33 GBQ P   1     -88.434  63.065 364.452  1.00  2.61           C  
+HETATM   21  C34 GBQ P   1     -88.361  61.906 363.666  1.00  2.61           C  
+HETATM   22  C35 GBQ P   1     -87.499  60.849 364.008  1.00  2.61           C  
+HETATM   23  C36 GBQ P   1     -86.716  60.946 365.164  1.00  2.61           C  
+HETATM   24  F10 GBQ P   1     -79.691  63.976 361.914  1.00  2.61           F  
+HETATM   25  F11 GBQ P   1     -79.748  62.056 363.109  1.00  2.61           F  
+HETATM   26  F12 GBQ P   1     -80.351  62.043 360.939  1.00  2.61           F  
+HETATM   27  F14 GBQ P   1     -86.161  62.471 361.531  1.00  2.61           F  
+HETATM   28  F15 GBQ P   1     -84.828  62.503 359.921  1.00  2.61           F  
+HETATM   29  F16 GBQ P   1     -85.727  64.318 360.741  1.00  2.61           F  
+HETATM   30  F37 GBQ P   1     -89.152  61.814 362.525  1.00  2.61           F  
+HETATM   31  N20 GBQ P   1     -86.565  62.888 368.305  1.00  2.61           N  
+HETATM   32  N26 GBQ P   1     -88.878  64.052 370.234  1.00  2.61           N  
+HETATM   33  N29 GBQ P   1     -90.310  64.719 368.720  1.00  2.61           N  
+HETATM   34  N30 GBQ P   1     -89.597  63.701 368.196  1.00  2.61           N  
+HETATM   35  O17 GBQ P   1     -84.679  64.056 366.034  1.00  2.61           O  
+HETATM   36  O23 GBQ P   1     -83.726  62.968 367.979  1.00  2.61           O  
+HETATM   37  O28 GBQ P   1     -90.279  65.790 370.698  1.00  2.61           O  
+HETATM   38 H212 GBQ P   1     -85.462  62.440 369.953  1.00  2.61           H  
+HETATM   39 H213 GBQ P   1     -86.129  63.931 369.995  1.00  2.61           H  
+HETATM   40 H222 GBQ P   1     -84.484  64.759 368.530  1.00  2.61           H  
+HETATM   41 H223 GBQ P   1     -83.705  63.974 369.732  1.00  2.61           H  
+HETATM   42 H242 GBQ P   1     -87.448  61.782 369.787  1.00  2.61           H  
+HETATM   43 H243 GBQ P   1     -88.066  61.493 368.303  1.00  2.61           H  
+HETATM   44 H011 GBQ P   1     -83.615  66.430 366.244  1.00  2.61           H  
+HETATM   45 H012 GBQ P   1     -84.228  66.369 364.749  1.00  2.61           H  
+HETATM   46 H013 GBQ P   1     -82.626  66.389 364.966  1.00  2.61           H  
+HETATM   47  H02 GBQ P   1     -82.714  64.117 365.904  1.00  2.61           H  
+HETATM   48  H04 GBQ P   1     -85.287  64.073 363.483  1.00  2.61           H  
+HETATM   49  H06 GBQ P   1     -82.643  62.626 360.628  1.00  2.61           H  
+HETATM   50  H08 GBQ P   1     -81.243  63.766 364.359  1.00  2.61           H  
+HETATM   51  H18 GBQ P   1     -84.013  62.190 366.152  1.00  2.61           H  
+HETATM   52  H19 GBQ P   1     -85.923  61.215 367.431  1.00  2.61           H  
+HETATM   53  H32 GBQ P   1     -87.672  63.985 366.149  1.00  2.61           H  
+HETATM   54  H33 GBQ P   1     -89.050  63.812 364.201  1.00  2.61           H  
+HETATM   55  H35 GBQ P   1     -87.446  60.034 363.430  1.00  2.61           H  
+HETATM   56  H36 GBQ P   1     -86.114  60.190 365.422  1.00  2.61           H  
+HETATM   57  H26 GBQ P   1     -88.339  63.992 371.086  1.00  2.61           H  
+HETATM   58  H29 GBQ P   1     -91.050  65.233 368.263  1.00  2.61           H  
+CONECT    1    9   27   28   29
+CONECT    2   38   39    3   31
+CONECT    3    2   40   41   36
+CONECT    4   42   43   16   31
+CONECT    5   44   45   46    6
+CONECT    6    5   47    7   35
+CONECT    7    6    8   12   12
+CONECT    8    7   48    9    9
+CONECT    9    1    8    8   10
+CONECT   10    9   49   11   11
+CONECT   11   10   10   12   13
+CONECT   12    7    7   11   50
+CONECT   13   11   24   25   26
+CONECT   14   51   15   35   36
+CONECT   15   14   52   18   31
+CONECT   16    4   32   34   34
+CONECT   17   32   33   37   37
+CONECT   18   15   19   23   23
+CONECT   19   18   53   20   20
+CONECT   20   19   19   54   21
+CONECT   21   20   22   22   30
+CONECT   22   21   21   55   23
+CONECT   23   18   18   22   56
+CONECT   24   13
+CONECT   25   13
+CONECT   26   13
+CONECT   27    1
+CONECT   28    1
+CONECT   29    1
+CONECT   30   21
+CONECT   31    2    4   15
+CONECT   32   16   17   57
+CONECT   33   17   34   58
+CONECT   34   16   16   33
+CONECT   35    6   14
+CONECT   36    3   14
+CONECT   37   17   17
+CONECT   38    2
+CONECT   39    2
+CONECT   40    3
+CONECT   41    3
+CONECT   42    4
+CONECT   43    4
+CONECT   44    5
+CONECT   45    5
+CONECT   46    5
+CONECT   47    6
+CONECT   48    8
+CONECT   49   10
+CONECT   50   12
+CONECT   51   14
+CONECT   52   15
+CONECT   53   19
+CONECT   54   20
+CONECT   55   22
+CONECT   56   23
+CONECT   57   32
+CONECT   58   33
+END

@@ -1,0 +1,63 @@
+REMARK  99                                                                      
+REMARK  99 MOE v2019.01 (Chemical Computing Group ULC) Thu Apr  8 11:26:11 2021 
+HETATM    1  C1  D8B L   1     -24.830  -8.570  41.622  1.00  0.00           C  
+HETATM    2  N1  D8B L   1     -24.813  -6.720  40.057  1.00  0.00           N  
+HETATM    3  C11 D8B L   1     -22.036  -3.866  46.040  1.00  0.00           C  
+HETATM    4  C12 D8B L   1     -22.637  -2.593  46.069  1.00  0.00           C  
+HETATM    5  C13 D8B L   1     -23.647  -2.266  45.140  1.00  0.00           C  
+HETATM    6  C14 D8B L   1     -24.061  -3.206  44.178  1.00  0.00           C  
+HETATM    7  C15 D8B L   1     -24.309  -0.502  43.780  1.00  0.00           C  
+HETATM    8  C2  D8B L   1     -24.639  -7.212  41.301  1.00  0.00           C  
+HETATM    9  C3  D8B L   1     -25.187  -7.560  39.078  1.00  0.00           C  
+HETATM   10  C4  D8B L   1     -25.403  -8.933  39.298  1.00  0.00           C  
+HETATM   11  C5  D8B L   1     -25.220  -9.447  40.595  1.00  0.00           C  
+HETATM   12  C6  D8B L   1     -25.367  -6.948  37.707  1.00  0.00           C  
+HETATM   13  C7  D8B L   1     -24.236  -6.268  42.327  1.00  0.00           C  
+HETATM   14  C8  D8B L   1     -23.888  -5.453  43.163  1.00  0.00           C  
+HETATM   15  C9  D8B L   1     -23.463  -4.481  44.151  1.00  0.00           C  
+HETATM   16  C10 D8B L   1     -22.450  -4.809  45.078  1.00  0.00           C  
+HETATM   17  O1  D8B L   1     -24.220  -1.033  45.176  1.00  0.00           O  
+HETATM   18  H1  D8B L   1     -24.681  -8.928  42.630  1.00  0.00           H  
+HETATM   19  H11 D8B L   1     -21.263  -4.118  46.750  1.00  0.00           H  
+HETATM   20  H12 D8B L   1     -22.324  -1.866  46.804  1.00  0.00           H  
+HETATM   21  H14 D8B L   1     -24.832  -2.952  43.466  1.00  0.00           H  
+HETATM   22 H151 D8B L   1     -24.767   0.487  43.796  1.00  0.00           H  
+HETATM   23 H152 D8B L   1     -24.916  -1.174  43.174  1.00  0.00           H  
+HETATM   24 H153 D8B L   1     -23.308  -0.432  43.353  1.00  0.00           H  
+HETATM   25  H4  D8B L   1     -25.703  -9.580  38.487  1.00  0.00           H  
+HETATM   26  H5  D8B L   1     -25.376 -10.496  40.798  1.00  0.00           H  
+HETATM   27  H61 D8B L   1     -25.152  -5.881  37.755  1.00  0.00           H  
+HETATM   28  H62 D8B L   1     -26.394  -7.097  37.375  1.00  0.00           H  
+HETATM   29  H63 D8B L   1     -24.685  -7.425  37.004  1.00  0.00           H  
+HETATM   30  H10 D8B L   1     -21.991  -5.786  45.050  1.00  0.00           H  
+CONECT    1    8    8   11   18
+CONECT    2    8    9    9
+CONECT    3    4   16   16   19
+CONECT    4    3    5    5   20
+CONECT    5    4    4    6   17
+CONECT    6    5   15   15   21
+CONECT    7   17   22   23   24
+CONECT    8    1    1    2   13
+CONECT    9    2    2   10   12
+CONECT   10    9   11   11   25
+CONECT   11    1   10   10   26
+CONECT   12    9   27   28   29
+CONECT   13    8   14   14   14
+CONECT   14   13   13   13   15
+CONECT   15    6    6   14   16
+CONECT   16    3    3   15   30
+CONECT   17    5    7
+CONECT   18    1
+CONECT   19    3
+CONECT   20    4
+CONECT   21    6
+CONECT   22    7
+CONECT   23    7
+CONECT   24    7
+CONECT   25   10
+CONECT   26   11
+CONECT   27   12
+CONECT   28   12
+CONECT   29   12
+CONECT   30   16
+END

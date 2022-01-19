@@ -1,0 +1,49 @@
+REMARK  99                                                                      
+REMARK  99 MOE v2019.01 (Chemical Computing Group ULC) Thu Apr  8 11:34:37 2021 
+HETATM    1  N1  CFF L   1     -21.085   4.674  18.403  0.55  0.00           N1+
+HETATM    2  C2  CFF L   1     -19.998   5.581  18.516  0.55  0.00           C  
+HETATM    3  C10 CFF L   1     -20.999   3.383  19.000  0.55  0.00           C  
+HETATM    4  C6  CFF L   1     -22.240   5.048  17.705  0.55  0.00           C  
+HETATM    5  N3  CFF L   1     -20.083   6.883  17.917  0.55  0.00           N1+
+HETATM    6  O11 CFF L   1     -18.996   5.259  19.121  0.55  0.00           O  
+HETATM    7  C12 CFF L   1     -18.989   7.788  18.034  0.55  0.00           C  
+HETATM    8  C4  CFF L   1     -21.283   7.279  17.191  0.55  0.00           C  
+HETATM    9  C5  CFF L   1     -22.331   6.418  17.075  0.55  0.00           C  
+HETATM   10  N9  CFF L   1     -21.609   8.439  16.541  0.55  0.00           N  
+HETATM   11  O13 CFF L   1     -23.163   4.263  17.615  0.55  0.00           O  
+HETATM   12  N7  CFF L   1     -23.310   7.052  16.349  0.55  0.00           N1+
+HETATM   13  C8  CFF L   1     -22.857   8.294  16.027  0.55  0.00           C  
+HETATM   14  C14 CFF L   1     -24.583   6.526  15.984  0.55  0.00           C  
+HETATM   15 H101 CFF L   1     -21.825   2.692  18.914  1.00  0.00           H  
+HETATM   16 H102 CFF L   1     -20.108   3.095  19.538  1.00  0.00           H  
+HETATM   17 H121 CFF L   1     -18.189   7.319  18.606  1.00  0.00           H  
+HETATM   18 H122 CFF L   1     -19.319   8.693  18.545  1.00  0.00           H  
+HETATM   19 H123 CFF L   1     -18.622   8.045  17.040  1.00  0.00           H  
+HETATM   20  H5  CFF L   1     -21.904   6.022  16.153  1.00  0.00           H  
+HETATM   21  H8  CFF L   1     -23.398   9.037  15.460  1.00  0.00           H  
+HETATM   22 H141 CFF L   1     -25.271   7.127  15.408  1.00  0.00           H  
+HETATM   23 H142 CFF L   1     -24.860   5.526  16.284  1.00  0.00           H  
+CONECT    1    2    3    3    4
+CONECT    2    1    5    6    6
+CONECT    3    1    1   15   16
+CONECT    4    1    9   11   11
+CONECT    5    2    7    8    8
+CONECT    6    2    2
+CONECT    7    5   17   18   19
+CONECT    8    5    5    9   10
+CONECT    9    4    8   12   20
+CONECT   10    8   13   13
+CONECT   11    4    4
+CONECT   12    9   13   14   14
+CONECT   13   10   10   12   21
+CONECT   14   12   12   22   23
+CONECT   15    3
+CONECT   16    3
+CONECT   17    7
+CONECT   18    7
+CONECT   19    7
+CONECT   20    9
+CONECT   21   13
+CONECT   22   14
+CONECT   23   14
+END

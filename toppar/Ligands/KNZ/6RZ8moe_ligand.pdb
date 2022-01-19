@@ -1,0 +1,143 @@
+REMARK  99                                                                      
+REMARK  99 MOE v2019.01 (Chemical Computing Group ULC) Thu Apr  8 11:08:17 2021 
+HETATM    1  C4  KNZ L   1     114.194  62.656 -21.953  1.00 51.89           C  
+HETATM    2  C14 KNZ L   1     115.635  69.351 -16.910  1.00 51.89           C  
+HETATM    3  C5  KNZ L   1     114.490  61.525 -20.978  1.00 51.89           C  
+HETATM    4  C6  KNZ L   1     114.796  60.221 -21.696  1.00 51.89           C  
+HETATM    5  C11 KNZ L   1     116.995  66.347 -19.900  1.00 51.89           C  
+HETATM    6  C7  KNZ L   1     113.677  59.763 -22.613  1.00 51.89           C  
+HETATM    7  C8  KNZ L   1     114.935  64.752 -20.863  1.00 51.89           C  
+HETATM    8  C9  KNZ L   1     116.270  64.474 -21.176  1.00 51.89           C  
+HETATM    9  C10 KNZ L   1     117.282  65.273 -20.704  1.00 51.89           C  
+HETATM   10  C12 KNZ L   1     115.684  66.645 -19.569  1.00 51.89           C  
+HETATM   11  C13 KNZ L   1     116.239  68.509 -18.007  1.00 51.89           C  
+HETATM   12  N1  KNZ L   1     113.910  63.948 -21.303  1.00 51.89           N  
+HETATM   13  N2  KNZ L   1     115.379  67.752 -18.733  1.00 51.89           N  
+HETATM   14  C3  KNZ L   1     112.507  64.298 -21.065  1.00 51.89           C  
+HETATM   15  C1  KNZ L   1     112.365  65.759 -20.641  1.00 51.89           C  
+HETATM   16  C15 KNZ L   1     114.289  69.568 -16.689  1.00 51.89           C  
+HETATM   17  C16 KNZ L   1     113.807  70.348 -15.663  1.00 51.89           C  
+HETATM   18  C17 KNZ L   1     114.731  70.944 -14.808  1.00 51.89           C  
+HETATM   19  C18 KNZ L   1     112.974  71.820 -13.410  1.00 51.89           C  
+HETATM   20  C19 KNZ L   1     112.898  72.604 -12.127  1.00 51.89           C  
+HETATM   21  C2  KNZ L   1     110.965  66.038 -20.098  1.00 51.89           C  
+HETATM   22  C20 KNZ L   1     113.427  74.024 -12.230  1.00 51.89           C  
+HETATM   23  C21 KNZ L   1     113.591  74.705 -10.896  1.00 51.89           C  
+HETATM   24  C22 KNZ L   1     114.850  74.302  -8.856  1.00 51.89           C  
+HETATM   25  C23 KNZ L   1     115.109  73.236  -8.009  1.00 51.89           C  
+HETATM   26  C24 KNZ L   1     115.360  73.447  -6.666  1.00 51.89           C  
+HETATM   27  C25 KNZ L   1     115.386  74.718  -6.136  1.00 51.89           C  
+HETATM   28  C26 KNZ L   1     115.151  75.778  -6.973  1.00 51.89           C  
+HETATM   29  C27 KNZ L   1     114.891  75.586  -8.319  1.00 51.89           C  
+HETATM   30  C28 KNZ L   1     116.088  70.755 -14.996  1.00 51.89           C  
+HETATM   31  C29 KNZ L   1     116.529  69.966 -16.038  1.00 51.89           C  
+HETATM   32  C30 KNZ L   1     114.643  65.845 -20.045  1.00 51.89           C  
+HETATM   33  F1  KNZ L   1     115.169  77.043  -6.498  1.00 51.89           F  
+HETATM   34  F2  KNZ L   1     114.671  76.655  -9.105  1.00 51.89           F  
+HETATM   35  F3  KNZ L   1     113.397  68.989 -17.525  1.00 51.89           F  
+HETATM   36  O1  KNZ L   1     110.012  65.920 -20.833  1.00 51.89           O1-
+HETATM   37  O2  KNZ L   1     110.818  66.361 -18.945  1.00 51.89           O  
+HETATM   38  O3  KNZ L   1     113.901  59.720 -23.839  1.00 51.89           O1-
+HETATM   39  O4  KNZ L   1     112.584  59.455 -22.096  1.00 51.89           O  
+HETATM   40  O5  KNZ L   1     117.454  68.505 -18.158  1.00 51.89           O  
+HETATM   41  O6  KNZ L   1     114.360  71.735 -13.755  1.00 51.89           O  
+HETATM   42  O7  KNZ L   1     113.355  66.159 -19.696  1.00 51.89           O  
+HETATM   43  O8  KNZ L   1     114.619  74.010 -10.177  1.00 51.89           O  
+HETATM   44  H41 KNZ L   1     113.327  62.375 -22.551  1.00 51.89           H  
+HETATM   45  H42 KNZ L   1     115.059  62.783 -22.604  1.00 51.89           H  
+HETATM   46  H51 KNZ L   1     113.622  61.378 -20.335  1.00 51.89           H  
+HETATM   47  H52 KNZ L   1     115.350  61.802 -20.369  1.00 51.89           H  
+HETATM   48  H61 KNZ L   1     114.969  59.447 -20.948  1.00 51.89           H  
+HETATM   49  H62 KNZ L   1     115.698  60.358 -22.293  1.00 51.89           H  
+HETATM   50  H11 KNZ L   1     117.797  66.964 -19.523  1.00 51.89           H  
+HETATM   51  H9  KNZ L   1     116.507  63.622 -21.796  1.00 51.89           H  
+HETATM   52  H10 KNZ L   1     118.307  65.055 -20.966  1.00 51.89           H  
+HETATM   53  H2  KNZ L   1     114.403  68.006 -18.672  1.00 51.89           H  
+HETATM   54  H31 KNZ L   1     112.110  63.659 -20.276  1.00 51.89           H  
+HETATM   55  H32 KNZ L   1     111.940  64.137 -21.982  1.00 51.89           H  
+HETATM   56  H1  KNZ L   1     112.522  66.357 -21.539  1.00 51.89           H  
+HETATM   57  H16 KNZ L   1     112.746  70.493 -15.525  1.00 51.89           H  
+HETATM   58 H181 KNZ L   1     112.421  72.332 -14.197  1.00 51.89           H  
+HETATM   59 H182 KNZ L   1     112.560  70.822 -13.266  1.00 51.89           H  
+HETATM   60 H191 KNZ L   1     113.479  72.077 -11.370  1.00 51.89           H  
+HETATM   61 H192 KNZ L   1     111.854  72.650 -11.817  1.00 51.89           H  
+HETATM   62 H201 KNZ L   1     112.731  74.608 -12.832  1.00 51.89           H  
+HETATM   63 H202 KNZ L   1     114.398  73.995 -12.724  1.00 51.89           H  
+HETATM   64 H211 KNZ L   1     112.655  74.662 -10.340  1.00 51.89           H  
+HETATM   65 H212 KNZ L   1     113.879  75.746 -11.043  1.00 51.89           H  
+HETATM   66  H23 KNZ L   1     115.115  72.230  -8.402  1.00 51.89           H  
+HETATM   67  H24 KNZ L   1     115.539  72.600  -6.021  1.00 51.89           H  
+HETATM   68  H25 KNZ L   1     115.587  74.876  -5.087  1.00 51.89           H  
+HETATM   69  H28 KNZ L   1     116.799  71.223 -14.331  1.00 51.89           H  
+HETATM   70  H29 KNZ L   1     117.590  69.822 -16.180  1.00 51.89           H  
+CONECT    1    3   12   44   45
+CONECT    2   11   16   31   31
+CONECT    3    1    4   46   47
+CONECT    4    3    6   48   49
+CONECT    5    9    9   10   50
+CONECT    6    4   38   39   39
+CONECT    7    8    8   12   32
+CONECT    8    7    7    9   51
+CONECT    9    5    5    8   52
+CONECT   10    5   13   32   32
+CONECT   11    2   13   40   40
+CONECT   12    1    7   14
+CONECT   13   10   11   53
+CONECT   14   12   15   54   55
+CONECT   15   14   21   42   56
+CONECT   16    2   17   17   35
+CONECT   17   16   16   18   57
+CONECT   18   17   30   30   41
+CONECT   19   20   41   58   59
+CONECT   20   19   22   60   61
+CONECT   21   15   36   37   37
+CONECT   22   20   23   62   63
+CONECT   23   22   43   64   65
+CONECT   24   25   29   29   43
+CONECT   25   24   26   26   66
+CONECT   26   25   25   27   67
+CONECT   27   26   28   28   68
+CONECT   28   27   27   29   33
+CONECT   29   24   24   28   34
+CONECT   30   18   18   31   69
+CONECT   31    2    2   30   70
+CONECT   32    7   10   10   42
+CONECT   33   28
+CONECT   34   29
+CONECT   35   16
+CONECT   36   21
+CONECT   37   21   21
+CONECT   38    6
+CONECT   39    6    6
+CONECT   40   11   11
+CONECT   41   18   19
+CONECT   42   15   32
+CONECT   43   23   24
+CONECT   44    1
+CONECT   45    1
+CONECT   46    3
+CONECT   47    3
+CONECT   48    4
+CONECT   49    4
+CONECT   50    5
+CONECT   51    8
+CONECT   52    9
+CONECT   53   13
+CONECT   54   14
+CONECT   55   14
+CONECT   56   15
+CONECT   57   17
+CONECT   58   19
+CONECT   59   19
+CONECT   60   20
+CONECT   61   20
+CONECT   62   22
+CONECT   63   22
+CONECT   64   23
+CONECT   65   23
+CONECT   66   25
+CONECT   67   26
+CONECT   68   27
+CONECT   69   30
+CONECT   70   31
+END

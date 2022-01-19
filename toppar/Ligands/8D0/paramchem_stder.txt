@@ -1,0 +1,3 @@
+Now processing molecule 8D0 ...
+attype warning: improper dihedral in rule CG2__ not applied to atom C26
+because it has 2 substituents

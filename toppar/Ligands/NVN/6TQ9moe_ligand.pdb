@@ -1,0 +1,179 @@
+REMARK  99                                                                      
+REMARK  99 MOE v2019.01 (Chemical Computing Group ULC) Thu Apr  8 11:42:13 2021 
+HETATM    1  C1  NVN A 401       8.472 -16.950 -20.231  1.00 65.12           C  
+HETATM    2  C10 NVN A 401       7.682 -15.119 -18.688  1.00 72.55           C  
+HETATM    3  C11 NVN A 401       7.168 -12.296 -18.023  1.00 56.66           C  
+HETATM    4  C12 NVN A 401       6.963  -9.826 -18.099  1.00 58.38           C  
+HETATM    5  C13 NVN A 401       6.534  -8.669 -17.446  1.00 73.43           C  
+HETATM    6  C14 NVN A 401       6.637  -7.441 -18.065  1.00 83.48           C  
+HETATM    7  C15 NVN A 401       7.171  -7.320 -19.359  1.00 79.21           C  
+HETATM    8  C16 NVN A 401       7.598  -8.496 -20.000  1.00 76.11           C  
+HETATM    9  C17 NVN A 401       7.496  -9.725 -19.384  1.00 63.63           C  
+HETATM   10  C18 NVN A 401       7.788  -5.986 -21.321  1.00 69.94           C  
+HETATM   11  C19 NVN A 401       6.869  -4.887 -19.297  1.00 79.67           C  
+HETATM   12  C2  NVN A 401       7.926 -16.489 -18.913  1.00 72.80           C  
+HETATM   13  C3  NVN A 401       7.194 -17.040 -16.778  1.00 74.53           C  
+HETATM   14  C4  NVN A 401       6.949 -18.037 -15.810  1.00 72.35           C  
+HETATM   15  C5  NVN A 401       6.455 -17.689 -14.593  1.00 57.01           C  
+HETATM   16  C6  NVN A 401       6.192 -16.376 -14.303  1.00 51.30           C  
+HETATM   17  C7  NVN A 401       6.406 -15.375 -15.189  1.00 48.03           C  
+HETATM   18  C8  NVN A 401       6.920 -15.686 -16.467  1.00 63.50           C  
+HETATM   19  C9  NVN A 401       7.181 -14.701 -17.481  1.00 68.21           C  
+HETATM   20  F1  NVN A 401       5.697 -16.072 -13.072  1.00 62.60           F  
+HETATM   21  F2  NVN A 401       7.202 -19.332 -16.080  1.00 86.54           F  
+HETATM   22  N1  NVN A 401       7.694 -17.416 -17.998  1.00 80.54           N  
+HETATM   23  N2  NVN A 401       6.910 -13.340 -17.181  1.00 63.66           N  
+HETATM   24  N3  NVN A 401       6.860 -11.080 -17.471  1.00 56.82           N  
+HETATM   25  N4  NVN A 401       7.273  -6.101 -19.974  1.00 71.34           N  
+HETATM   26  O1  NVN A 401       7.626 -12.436 -19.151  1.00 49.13           O  
+HETATM   27  H3  NVN A 401       9.017 -17.742 -20.099  1.00 65.12           H  
+HETATM   28  H1  NVN A 401       9.016 -16.247 -20.623  1.00 65.12           H  
+HETATM   29  H2  NVN A 401       7.739 -17.161 -20.833  1.00 65.12           H  
+HETATM   30  H6  NVN A 401       7.860 -14.487 -19.366  1.00 72.55           H  
+HETATM   31  H9  NVN A 401       6.171  -8.729 -16.576  1.00 73.43           H  
+HETATM   32  H14 NVN A 401       6.343  -6.666 -17.612  1.00 83.48           H  
+HETATM   33  H16 NVN A 401       7.961  -8.441 -20.870  1.00 76.11           H  
+HETATM   34  H17 NVN A 401       7.789 -10.502 -19.832  1.00 63.63           H  
+HETATM   35  H13 NVN A 401       8.307  -6.777 -21.541  1.00 69.94           H  
+HETATM   36  H14 NVN A 401       8.356  -5.202 -21.388  1.00 69.94           H  
+HETATM   37  H15 NVN A 401       7.050  -5.902 -21.946  1.00 69.94           H  
+HETATM   38  H16 NVN A 401       6.024  -5.033 -18.843  1.00 79.67           H  
+HETATM   39  H17 NVN A 401       6.766  -4.172 -19.945  1.00 79.67           H  
+HETATM   40  H18 NVN A 401       7.545  -4.637 -18.646  1.00 79.67           H  
+HETATM   41  H5  NVN A 401       6.291 -18.356 -13.946  1.00 57.01           H  
+HETATM   42  H7  NVN A 401       6.216 -14.479 -14.963  1.00 48.03           H  
+HETATM   43  H2  NVN A 401       6.558 -13.157 -16.415  1.00 63.66           H  
+HETATM   44  H3  NVN A 401       6.568 -11.084 -16.642  1.00 56.82           H  
+HETATM   45  C1  NVN A 402      11.281 -16.880 -17.568  1.00 83.55           C  
+HETATM   46  C10 NVN A 402      10.818 -14.471 -16.985  1.00 89.77           C  
+HETATM   47  C11 NVN A 402      10.149 -10.974 -15.889  1.00 86.57           C  
+HETATM   48  C12 NVN A 402      10.149  -8.533 -16.601  1.00 78.52           C  
+HETATM   49  C13 NVN A 402       9.656  -7.869 -15.477  1.00 69.09           C  
+HETATM   50  C14 NVN A 402       9.555  -6.491 -15.473  1.00 71.34           C  
+HETATM   51  C15 NVN A 402       9.943  -5.714 -16.590  1.00 80.05           C  
+HETATM   52  C16 NVN A 402      10.443  -6.407 -17.706  1.00 81.60           C  
+HETATM   53  C17 NVN A 402      10.544  -7.781 -17.711  1.00 77.85           C  
+HETATM   54  C18 NVN A 402      10.161  -3.561 -17.765  1.00 80.63           C  
+HETATM   55  C19 NVN A 402       9.457  -3.627 -15.390  1.00 76.78           C  
+HETATM   56  C2  NVN A 402      10.802 -15.824 -16.618  1.00 87.41           C  
+HETATM   57  C3  NVN A 402       9.925 -15.308 -14.526  1.00 94.06           C  
+HETATM   58  C4  NVN A 402       9.477 -15.770 -13.274  1.00 98.25           C  
+HETATM   59  C5  NVN A 402       9.037 -14.887 -12.346  1.00 90.15           C  
+HETATM   60  C6  NVN A 402       9.016 -13.546 -12.623  1.00 75.40           C  
+HETATM   61  C7  NVN A 402       9.429 -13.034 -13.811  1.00 74.67           C  
+HETATM   62  C8  NVN A 402       9.901 -13.919 -14.810  1.00 83.67           C  
+HETATM   63  C9  NVN A 402      10.368 -13.517 -16.111  1.00 87.64           C  
+HETATM   64  F1  NVN A 402       8.559 -12.700 -11.660  1.00 77.18           F  
+HETATM   65  F2  NVN A 402       9.492 -17.080 -12.982  1.00 96.13           F  
+HETATM   66  N1  NVN A 402      10.375 -16.232 -15.437  1.00 89.64           N  
+HETATM   67  N2  NVN A 402      10.418 -12.160 -16.523  1.00 87.59           N  
+HETATM   68  N3  NVN A 402      10.319  -9.929 -16.762  1.00 88.84           N  
+HETATM   69  N4  NVN A 402       9.843  -4.344 -16.587  1.00 78.64           N  
+HETATM   70  O1  NVN A 402       9.658 -10.859 -14.770  1.00 84.14           O  
+HETATM   71  H3  NVN A 402      12.237 -17.016 -17.453  1.00 83.55           H  
+HETATM   72  H1  NVN A 402      11.105 -16.604 -18.482  1.00 83.55           H  
+HETATM   73  H2  NVN A 402      10.818 -17.716 -17.391  1.00 83.55           H  
+HETATM   74  H6  NVN A 402      11.136 -14.213 -17.835  1.00 89.77           H  
+HETATM   75  H9  NVN A 402       9.391  -8.362 -14.717  1.00 69.09           H  
+HETATM   76  H14 NVN A 402       9.217  -6.054 -14.708  1.00 71.34           H  
+HETATM   77  H16 NVN A 402      10.716  -5.917 -18.465  1.00 81.60           H  
+HETATM   78  H17 NVN A 402      10.882  -8.220 -18.475  1.00 77.85           H  
+HETATM   79  H13 NVN A 402       9.552  -3.793 -18.485  1.00 80.63           H  
+HETATM   80  H14 NVN A 402      11.071  -3.745 -18.045  1.00 80.63           H  
+HETATM   81  H15 NVN A 402      10.072  -2.614 -17.562  1.00 80.63           H  
+HETATM   82  H16 NVN A 402       9.347  -4.251 -14.656  1.00 76.78           H  
+HETATM   83  H17 NVN A 402       8.620  -3.162 -15.544  1.00 76.78           H  
+HETATM   84  H18 NVN A 402      10.147  -2.982 -15.160  1.00 76.78           H  
+HETATM   85  H5  NVN A 402       8.741 -15.199 -11.504  1.00 90.15           H  
+HETATM   86  H7  NVN A 402       9.404 -12.108 -13.977  1.00 74.67           H  
+HETATM   87  H2  NVN A 402      10.673 -12.056 -17.340  1.00 87.59           H  
+HETATM   88  H3  NVN A 402      10.581 -10.169 -17.566  1.00 88.84           H  
+CONECT    1   12   27   28   29
+CONECT    2   12   19   19   30
+CONECT    3   23   24   26   26
+CONECT    4    5    9    9   24
+CONECT    5    4    6    6   31
+CONECT    6    5    5    7   32
+CONECT    7    6    8    8   25
+CONECT    8    7    7    9   33
+CONECT    9    4    4    8   34
+CONECT   10   25   35   36   37
+CONECT   11   25   38   39   40
+CONECT   12    1    2   22   22
+CONECT   13   14   18   18   22
+CONECT   14   13   15   15   21
+CONECT   15   14   14   16   41
+CONECT   16   15   17   17   20
+CONECT   17   16   16   18   42
+CONECT   18   13   13   17   19
+CONECT   19    2    2   18   23
+CONECT   20   16
+CONECT   21   14
+CONECT   22   12   12   13
+CONECT   23    3   19   43
+CONECT   24    3    4   44
+CONECT   25    7   10   11
+CONECT   26    3    3
+CONECT   27    1
+CONECT   28    1
+CONECT   29    1
+CONECT   30    2
+CONECT   31    5
+CONECT   32    6
+CONECT   33    8
+CONECT   34    9
+CONECT   35   10
+CONECT   36   10
+CONECT   37   10
+CONECT   38   11
+CONECT   39   11
+CONECT   40   11
+CONECT   41   15
+CONECT   42   17
+CONECT   43   23
+CONECT   44   24
+CONECT   45   56   71   72   73
+CONECT   46   56   63   63   74
+CONECT   47   67   68   70   70
+CONECT   48   49   53   53   68
+CONECT   49   48   50   50   75
+CONECT   50   49   49   51   76
+CONECT   51   50   52   52   69
+CONECT   52   51   51   53   77
+CONECT   53   48   48   52   78
+CONECT   54   69   79   80   81
+CONECT   55   69   82   83   84
+CONECT   56   45   46   66   66
+CONECT   57   58   62   62   66
+CONECT   58   57   59   59   65
+CONECT   59   58   58   60   85
+CONECT   60   59   61   61   64
+CONECT   61   60   60   62   86
+CONECT   62   57   57   61   63
+CONECT   63   46   46   62   67
+CONECT   64   60
+CONECT   65   58
+CONECT   66   56   56   57
+CONECT   67   47   63   87
+CONECT   68   47   48   88
+CONECT   69   51   54   55
+CONECT   70   47   47
+CONECT   71   45
+CONECT   72   45
+CONECT   73   45
+CONECT   74   46
+CONECT   75   49
+CONECT   76   50
+CONECT   77   52
+CONECT   78   53
+CONECT   79   54
+CONECT   80   54
+CONECT   81   54
+CONECT   82   55
+CONECT   83   55
+CONECT   84   55
+CONECT   85   59
+CONECT   86   61
+CONECT   87   67
+CONECT   88   68
+END

@@ -1,0 +1,3 @@
+Now processing molecule IOD ...
+attype warning: iodine with valence other than 1 not supported;
+skipped molecule.

@@ -1,0 +1,105 @@
+REMARK  99                                                                      
+REMARK  99 MOE v2019.01 (Chemical Computing Group ULC) Thu Apr  8 11:38:21 2021 
+HETATM    1  C10 DNK L   1    -234.265  48.641  35.254  1.00  0.00           C  
+HETATM    2  C11 DNK L   1    -233.601  47.683  36.257  1.00  0.00           C  
+HETATM    3  C13 DNK L   1    -232.815  45.317  36.115  1.00  0.00           C  
+HETATM    4  C15 DNK L   1    -231.700  43.007  36.052  1.00  0.00           C  
+HETATM    5  C16 DNK L   1    -231.981  41.499  36.073  1.00  0.00           C  
+HETATM    6  C17 DNK L   1    -230.668  43.318  34.954  1.00  0.00           C  
+HETATM    7  C18 DNK L   1    -234.148  43.289  36.707  1.00  0.00           C  
+HETATM    8  C19 DNK L   1    -235.256  42.641  36.143  1.00  0.00           C  
+HETATM    9  C20 DNK L   1    -236.297  42.193  36.951  1.00  0.00           C  
+HETATM   10  C21 DNK L   1    -236.253  42.388  38.324  1.00  0.00           C  
+HETATM   11  C22 DNK L   1    -235.159  43.037  38.883  1.00  0.00           C  
+HETATM   12  C23 DNK L   1    -234.114  43.493  38.083  1.00  0.00           C  
+HETATM   13  C25 DNK L   1    -235.242  45.925  35.511  1.00  0.00           C  
+HETATM   14  C26 DNK L   1    -235.741  46.832  34.402  1.00  0.00           C  
+HETATM   15  C1  DNK L   1    -238.450  50.437  34.522  1.00  0.00           C  
+HETATM   16  C2  DNK L   1    -237.481  49.541  34.902  1.00  0.00           C  
+HETATM   17  C3  DNK L   1    -237.477  48.907  36.166  1.00  0.00           C  
+HETATM   18  C4  DNK L   1    -238.437  49.138  37.101  1.00  0.00           C  
+HETATM   19  C5  DNK L   1    -239.425  50.043  36.713  1.00  0.00           C  
+HETATM   20  C6  DNK L   1    -239.436  50.680  35.482  1.00  0.00           C  
+HETATM   21  O7  DNK L   1    -236.403  48.086  36.264  1.00  0.00           O  
+HETATM   22  C8  DNK L   1    -235.714  48.195  35.025  1.00  0.00           C  
+HETATM   23  O9  DNK L   1    -236.403  49.116  34.185  1.00  0.00           O  
+HETATM   24  N12 DNK L   1    -233.860  46.250  35.951  1.00  0.00           N  
+HETATM   25  C14 DNK L   1    -233.022  43.802  35.821  1.00  0.00           C  
+HETATM   26  O24 DNK L   1    -231.727  45.759  36.498  1.00  0.00           O  
+HETATM   27 H101 DNK L   1    -233.721  48.616  34.310  1.00  0.00           H  
+HETATM   28 H102 DNK L   1    -234.253  49.655  35.654  1.00  0.00           H  
+HETATM   29 H111 DNK L   1    -233.987  47.901  37.253  1.00  0.00           H  
+HETATM   30 H112 DNK L   1    -232.524  47.853  36.239  1.00  0.00           H  
+HETATM   31  H15 DNK L   1    -231.291  43.315  37.015  1.00  0.00           H  
+HETATM   32 H161 DNK L   1    -232.390  41.192  35.110  1.00  0.00           H  
+HETATM   33 H162 DNK L   1    -232.700  41.274  36.861  1.00  0.00           H  
+HETATM   34 H163 DNK L   1    -231.053  40.959  36.263  1.00  0.00           H  
+HETATM   35 H171 DNK L   1    -231.065  43.014  33.985  1.00  0.00           H  
+HETATM   36 H172 DNK L   1    -229.747  42.772  35.156  1.00  0.00           H  
+HETATM   37 H173 DNK L   1    -230.461  44.388  34.943  1.00  0.00           H  
+HETATM   38  H19 DNK L   1    -235.302  42.488  35.075  1.00  0.00           H  
+HETATM   39  H20 DNK L   1    -237.144  41.691  36.507  1.00  0.00           H  
+HETATM   40  H21 DNK L   1    -237.060  42.039  38.951  1.00  0.00           H  
+HETATM   41  H22 DNK L   1    -235.118  43.190  39.951  1.00  0.00           H  
+HETATM   42  H23 DNK L   1    -233.276  44.006  38.531  1.00  0.00           H  
+HETATM   43 H251 DNK L   1    -235.259  44.896  35.152  1.00  0.00           H  
+HETATM   44 H252 DNK L   1    -235.911  46.022  36.366  1.00  0.00           H  
+HETATM   45 H261 DNK L   1    -236.753  46.561  34.103  1.00  0.00           H  
+HETATM   46 H262 DNK L   1    -235.081  46.787  33.535  1.00  0.00           H  
+HETATM   47  H1  DNK L   1    -238.450  50.917  33.555  1.00  0.00           H  
+HETATM   48  H4  DNK L   1    -238.435  48.658  38.069  1.00  0.00           H  
+HETATM   49  H5  DNK L   1    -240.223  50.259  37.408  1.00  0.00           H  
+HETATM   50  H6  DNK L   1    -240.226  51.382  35.259  1.00  0.00           H  
+HETATM   51  H14 DNK L   1    -233.296  43.658  34.776  1.00  0.00           H  
+CONECT    1    2   22   27   28
+CONECT    2    1   24   29   30
+CONECT    3   24   25   26   26
+CONECT    4    5    6   25   31
+CONECT    5    4   32   33   34
+CONECT    6    4   35   36   37
+CONECT    7    8   12   12   25
+CONECT    8    7    9    9   38
+CONECT    9    8    8   10   39
+CONECT   10    9   11   11   40
+CONECT   11   10   10   12   41
+CONECT   12    7    7   11   42
+CONECT   13   14   24   43   44
+CONECT   14   13   22   45   46
+CONECT   15   16   20   20   47
+CONECT   16   15   17   17   23
+CONECT   17   16   16   18   21
+CONECT   18   17   19   19   48
+CONECT   19   18   18   20   49
+CONECT   20   15   15   19   50
+CONECT   21   17   22
+CONECT   22    1   14   21   23
+CONECT   23   16   22
+CONECT   24    2    3   13
+CONECT   25    3    4    7   51
+CONECT   26    3    3
+CONECT   27    1
+CONECT   28    1
+CONECT   29    2
+CONECT   30    2
+CONECT   31    4
+CONECT   32    5
+CONECT   33    5
+CONECT   34    5
+CONECT   35    6
+CONECT   36    6
+CONECT   37    6
+CONECT   38    8
+CONECT   39    9
+CONECT   40   10
+CONECT   41   11
+CONECT   42   12
+CONECT   43   13
+CONECT   44   13
+CONECT   45   14
+CONECT   46   14
+CONECT   47   15
+CONECT   48   18
+CONECT   49   19
+CONECT   50   20
+CONECT   51   25
+END

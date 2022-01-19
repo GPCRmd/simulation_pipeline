@@ -1,0 +1,83 @@
+REMARK  99                                                                      
+REMARK  99 MOE v2019.01 (Chemical Computing Group ULC) Thu Apr  8 10:58:33 2021 
+HETATM    1  C1  ZMA L   1     -19.301  12.839  15.528  1.00  0.00           C  
+HETATM    2  C2  ZMA L   1     -18.967  14.175  15.696  1.00  0.00           C  
+HETATM    3  C3  ZMA L   1     -19.830  15.190  15.222  1.00  0.00           C  
+HETATM    4  O4  ZMA L   1     -19.504  16.508  15.397  1.00  0.00           O  
+HETATM    5  C5  ZMA L   1     -21.039  14.876  14.586  1.00  0.00           C  
+HETATM    6  C6  ZMA L   1     -21.355  13.529  14.400  1.00  0.00           C  
+HETATM    7  C7  ZMA L   1     -20.483  12.519  14.845  1.00  0.00           C  
+HETATM    8  C8  ZMA L   1     -20.905  11.091  14.657  1.00  0.00           C  
+HETATM    9  C9  ZMA L   1     -21.996  10.924  15.724  1.00  0.00           C  
+HETATM   10  N10 ZMA L   1     -22.348   9.533  15.926  1.00  0.00           N  
+HETATM   11  C11 ZMA L   1     -21.525   8.673  16.581  1.00  0.00           C  
+HETATM   12  N12 ZMA L   1     -21.912   7.380  16.751  1.00  0.00           N  
+HETATM   13  N13 ZMA L   1     -20.307   9.088  17.053  1.00  0.00           N  
+HETATM   14  C14 ZMA L   1     -19.476   8.243  17.718  1.00  0.00           C  
+HETATM   15  N15 ZMA L   1     -18.265   8.678  18.145  1.00  0.00           N  
+HETATM   16  N16 ZMA L   1     -19.869   6.969  17.892  1.00  0.00           N  
+HETATM   17  N17 ZMA L   1     -19.151   5.972  18.535  1.00  0.00           N  
+HETATM   18  C18 ZMA L   1     -21.059   6.556  17.431  1.00  0.00           C  
+HETATM   19  N19 ZMA L   1     -21.223   5.243  17.745  1.00  0.00           N  
+HETATM   20  C20 ZMA L   1     -20.057   4.949  18.407  1.00  0.00           C  
+HETATM   21  C21 ZMA L   1     -19.738   3.611  18.928  1.00  0.00           C  
+HETATM   22  C22 ZMA L   1     -20.646   2.580  19.169  1.00  0.00           C  
+HETATM   23  C23 ZMA L   1     -19.807   1.559  19.643  1.00  0.00           C  
+HETATM   24  C24 ZMA L   1     -18.480   1.996  19.664  1.00  0.00           C  
+HETATM   25  O25 ZMA L   1     -18.436   3.314  19.228  1.00  0.00           O  
+HETATM   26  H1  ZMA L   1     -18.662  12.060  15.916  1.00  0.00           H  
+HETATM   27  H2  ZMA L   1     -18.044  14.441  16.191  1.00  0.00           H  
+HETATM   28  H4  ZMA L   1     -18.666  16.663  15.838  1.00  0.00           H  
+HETATM   29  H5  ZMA L   1     -21.707  15.655  14.249  1.00  0.00           H  
+HETATM   30  H6  ZMA L   1     -22.279  13.260  13.909  1.00  0.00           H  
+HETATM   31  H81 ZMA L   1     -20.074  10.408  14.833  1.00  0.00           H  
+HETATM   32  H82 ZMA L   1     -21.304  10.927  13.656  1.00  0.00           H  
+HETATM   33  H91 ZMA L   1     -22.885  11.470  15.407  1.00  0.00           H  
+HETATM   34  H92 ZMA L   1     -21.633  11.336  16.666  1.00  0.00           H  
+HETATM   35  H10 ZMA L   1     -23.230   9.193  15.570  1.00  0.00           H  
+HETATM   36 H151 ZMA L   1     -17.980   9.631  17.969  1.00  0.00           H  
+HETATM   37 H152 ZMA L   1     -17.648   8.049  18.639  1.00  0.00           H  
+HETATM   38  H22 ZMA L   1     -21.717   2.570  19.028  1.00  0.00           H  
+HETATM   39  H23 ZMA L   1     -20.139   0.578  19.947  1.00  0.00           H  
+HETATM   40  H24 ZMA L   1     -17.628   1.406  19.969  1.00  0.00           H  
+CONECT    1    2    7    7   26
+CONECT    2    1    3    3   27
+CONECT    3    2    2    4    5
+CONECT    4    3   28
+CONECT    5    3    6    6   29
+CONECT    6    5    5    7   30
+CONECT    7    1    1    6    8
+CONECT    8    7    9   31   32
+CONECT    9    8   10   33   34
+CONECT   10    9   11   35
+CONECT   11   10   12   12   13
+CONECT   12   11   11   18
+CONECT   13   11   14   14
+CONECT   14   13   13   15   16
+CONECT   15   14   36   37
+CONECT   16   14   17   18
+CONECT   17   16   20   20
+CONECT   18   12   16   19   19
+CONECT   19   18   18   20
+CONECT   20   17   17   19   21
+CONECT   21   20   22   22   25
+CONECT   22   21   21   23   38
+CONECT   23   22   24   24   39
+CONECT   24   23   23   25   40
+CONECT   25   21   24
+CONECT   26    1
+CONECT   27    2
+CONECT   28    4
+CONECT   29    5
+CONECT   30    6
+CONECT   31    8
+CONECT   32    8
+CONECT   33    9
+CONECT   34    9
+CONECT   35   10
+CONECT   36   15
+CONECT   37   15
+CONECT   38   22
+CONECT   39   23
+CONECT   40   24
+END

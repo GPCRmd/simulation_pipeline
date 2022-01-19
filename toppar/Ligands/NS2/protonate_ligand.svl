@@ -1,0 +1,24 @@
+
+#svl
+
+#set title 'Ligand protonater'
+#set class 'MOE:user'
+#set main Protonater
+
+function Protonate3D;
+
+// This function opens system, protonates ligand based on environment, deletes everything except ligand and saves ligand
+
+global function Protonater []
+	local ligres, nonligres, ligatoms;
+	Open '/gpcr/users/daranda/doctorat/GPCR_simulations/receptor2curate_output/6TP3/6TP3_complex_curated.pdb';
+	ligres = Residues[] | rName Residues[] == 'NS2';
+	nonligres = sdiff[Residues[], ligres];
+	rSetSelected [ligres, [1]];
+	ligatoms = rAtoms ligres;
+	Protonate3D[Atoms[], ligatoms(1), ligatoms(1), [], [], []];
+	oDestroy nonligres;
+	SaveAs '/gpcr/users/daranda/doctorat/GPCR_simulations/toppar/Ligands/NS2/6TP3moe_ligand.pdb';
+	quit[];
+endfunction
+	

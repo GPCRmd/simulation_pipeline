@@ -1,0 +1,167 @@
+REMARK  99                                                                      
+REMARK  99 MOE v2019.01 (Chemical Computing Group ULC) Thu Apr  8 11:03:57 2021 
+HETATM    1  N   8VS L 351       2.595  10.036  21.369  0.82  5.33           N  
+HETATM    2  CA  8VS L 351       2.839  10.230  19.965  0.82  5.33           C  
+HETATM    3  C   8VS L 351       1.536  10.431  19.215  0.82  5.33           C  
+HETATM    4  O   8VS L 351       0.468  10.243  19.780  0.82  5.33           O  
+HETATM    5  CB  8VS L 351       3.584   9.029  19.401  0.82  5.33           C  
+HETATM    6  CG  8VS L 351       5.056   9.016  19.901  0.82  5.33           C  
+HETATM    7  CD1 8VS L 351       6.096   9.482  19.067  0.82  5.33           C  
+HETATM    8  CD2 8VS L 351       5.356   8.541  21.182  0.82  5.33           C  
+HETATM    9  CE1 8VS L 351       7.438   9.467  19.526  0.82  5.33           C  
+HETATM   10  CE2 8VS L 351       6.698   8.529  21.638  0.82  5.33           C  
+HETATM   11  CZ  8VS L 351       7.732   8.993  20.809  0.82  5.33           C  
+HETATM   12  CAA 8VS L 351       6.486   9.405  24.839  0.82  5.33           C  
+HETATM   13  CAB 8VS L 351       6.215   8.166  25.391  0.82  5.33           C  
+HETATM   14  CAC 8VS L 351       4.882   7.699  25.453  0.82  5.33           C  
+HETATM   15  CAD 8VS L 351       3.838   8.479  24.958  0.82  5.33           C  
+HETATM   16  CAE 8VS L 351       4.097   9.719  24.419  0.82  5.33           C  
+HETATM   17  CAF 8VS L 351       5.446  10.179  24.336  0.82  5.33           C  
+HETATM   18  CAG 8VS L 351       2.915  10.542  23.862  0.82  5.33           C  
+HETATM   19  CAH 8VS L 351       2.422  11.715  24.735  0.82  5.33           C  
+HETATM   20  CAI 8VS L 351       3.248  10.879  22.408  0.82  5.33           C  
+HETATM   21  CAJ 8VS L 351       3.463  12.353  25.635  0.82  5.33           C  
+HETATM   22  CAK 8VS L 351       2.758  13.249  26.672  0.82  5.33           C  
+HETATM   23  CAL 8VS L 351       1.806  14.241  26.075  0.82  5.33           C  
+HETATM   24  CAM 8VS L 351       1.013  13.739  24.864  0.82  5.33           C  
+HETATM   25  CAN 8VS L 351       1.825  12.828  23.920  0.82  5.33           C  
+HETATM   26  CBB 8VS L 351       9.198   8.978  21.317  0.82  5.33           C  
+HETATM   27  CBE 8VS L 351       0.303  11.031  17.107  0.82  5.33           C  
+HETATM   28  CBF 8VS L 351      -0.160   9.677  16.655  0.82  5.33           C  
+HETATM   29  CBH 8VS L 351      -1.964   8.170  15.764  0.82  5.33           C  
+HETATM   30  CBJ 8VS L 351       0.460  11.911  15.858  0.82  5.33           C  
+HETATM   31  CBK 8VS L 351       1.172  13.242  16.101  0.82  5.33           C  
+HETATM   32  CBL 8VS L 351       2.433  13.448  15.567  0.82  5.33           C  
+HETATM   33  CBM 8VS L 351       3.088  14.662  15.767  0.82  5.33           C  
+HETATM   34  CBN 8VS L 351       2.478  15.670  16.496  0.82  5.33           C  
+HETATM   35  CBO 8VS L 351       1.205  15.472  17.027  0.82  5.33           C  
+HETATM   36  CBP 8VS L 351       0.555  14.268  16.829  0.82  5.33           C  
+HETATM   37  NAS 8VS L 351       1.558  10.853  17.814  0.82  5.33           N  
+HETATM   38  NBC 8VS L 351      10.289   9.063  20.375  0.82  5.33           N  
+HETATM   39  NBG 8VS L 351      -1.520   9.488  16.206  0.82  5.33           N  
+HETATM   40  OAQ 8VS L 351       4.018  11.749  22.104  0.82  5.33           O  
+HETATM   41  OBD 8VS L 351       9.429   8.894  22.518  0.82  5.33           O  
+HETATM   42  OBI 8VS L 351       0.606   8.743  16.658  0.82  5.33           O  
+HETATM   43 BR1  8VS L 351       0.355  16.863  18.029  0.82  5.33          BR  
+HETATM   44  H   8VS L 351       1.961   9.305  21.659  1.00  5.33           H  
+HETATM   45  HA  8VS L 351       3.448  11.125  19.839  1.00  5.33           H  
+HETATM   46  HB1 8VS L 351       3.087   8.114  19.725  1.00  5.33           H  
+HETATM   47  HB2 8VS L 351       3.576   9.081  18.312  1.00  5.33           H  
+HETATM   48  HD1 8VS L 351       5.869   9.851  18.078  1.00  5.33           H  
+HETATM   49  HD2 8VS L 351       4.565   8.183  21.824  1.00  5.33           H  
+HETATM   50  HE1 8VS L 351       8.232   9.821  18.886  1.00  5.33           H  
+HETATM   51  HE2 8VS L 351       6.926   8.161  22.627  1.00  5.33           H  
+HETATM   52  HAA 8VS L 351       7.502   9.770  24.799  1.00  5.33           H  
+HETATM   53  HAB 8VS L 351       7.020   7.556  25.774  1.00  5.33           H  
+HETATM   54  HAC 8VS L 351       4.671   6.732  25.886  1.00  5.33           H  
+HETATM   55  HAD 8VS L 351       2.824   8.110  24.997  1.00  5.33           H  
+HETATM   56  HAF 8VS L 351       5.660  11.134  23.880  1.00  5.33           H  
+HETATM   57  HAG 8VS L 351       2.012   9.933  23.895  1.00  5.33           H  
+HETATM   58  HAH 8VS L 351       1.678  11.225  25.364  1.00  5.33           H  
+HETATM   59 HAJ1 8VS L 351       4.026  11.574  26.149  1.00  5.33           H  
+HETATM   60 HAJ2 8VS L 351       4.143  12.957  25.034  1.00  5.33           H  
+HETATM   61 HAK1 8VS L 351       2.201  12.609  27.356  1.00  5.33           H  
+HETATM   62 HAK2 8VS L 351       3.520  13.796  27.226  1.00  5.33           H  
+HETATM   63 HAL1 8VS L 351       2.380  15.114  25.764  1.00  5.33           H  
+HETATM   64 HAL2 8VS L 351       1.094  14.531  26.847  1.00  5.33           H  
+HETATM   65 HAM1 8VS L 351       0.670  14.604  24.296  1.00  5.33           H  
+HETATM   66 HAM2 8VS L 351       0.152  13.178  25.226  1.00  5.33           H  
+HETATM   67 HAN1 8VS L 351       2.619  13.404  23.445  1.00  5.33           H  
+HETATM   68 HAN2 8VS L 351       1.169  12.413  23.154  1.00  5.33           H  
+HETATM   69  HBE 8VS L 351      -0.404  11.516  17.780  1.00  5.33           H  
+HETATM   70 HBH1 8VS L 351      -3.011   8.221  15.465  1.00  5.33           H  
+HETATM   71 HBH2 8VS L 351      -1.854   7.457  16.581  1.00  5.33           H  
+HETATM   72 HBH3 8VS L 351      -1.359   7.848  14.916  1.00  5.33           H  
+HETATM   73 HBJ1 8VS L 351       1.031  11.351  15.117  1.00  5.33           H  
+HETATM   74 HBJ2 8VS L 351      -0.534  12.124  15.466  1.00  5.33           H  
+HETATM   75  HBL 8VS L 351       2.910  12.666  14.994  1.00  5.33           H  
+HETATM   76  HBM 8VS L 351       4.073  14.817  15.353  1.00  5.33           H  
+HETATM   77  HBN 8VS L 351       2.989  16.609  16.653  1.00  5.33           H  
+HETATM   78  HBP 8VS L 351      -0.433  14.117  17.238  1.00  5.33           H  
+HETATM   79  HAS 8VS L 351       2.437  11.019  17.344  1.00  5.33           H  
+HETATM   80 HBC1 8VS L 351      11.243   9.053  20.705  1.00  5.33           H  
+HETATM   81 HBC2 8VS L 351      10.098   9.132  19.386  1.00  5.33           H  
+HETATM   82  HBG 8VS L 351      -2.163  10.267  16.198  1.00  5.33           H  
+CONECT    1    2   20   44
+CONECT    2    1    3    5   45
+CONECT    3    2    4    4   37
+CONECT    4    3    3
+CONECT    5    2    6   46   47
+CONECT    6    5    7    7    8
+CONECT    7    6    6    9   48
+CONECT    8    6   10   10   49
+CONECT    9    7   11   11   50
+CONECT   10    8    8   11   51
+CONECT   11    9    9   10   26
+CONECT   12   13   17   17   52
+CONECT   13   12   14   14   53
+CONECT   14   13   13   15   54
+CONECT   15   14   16   16   55
+CONECT   16   15   15   17   18
+CONECT   17   12   12   16   56
+CONECT   18   16   19   20   57
+CONECT   19   18   21   25   58
+CONECT   20    1   18   40   40
+CONECT   21   19   22   59   60
+CONECT   22   21   23   61   62
+CONECT   23   22   24   63   64
+CONECT   24   23   25   65   66
+CONECT   25   19   24   67   68
+CONECT   26   11   38   41   41
+CONECT   27   28   30   37   69
+CONECT   28   27   39   42   42
+CONECT   29   39   70   71   72
+CONECT   30   27   31   73   74
+CONECT   31   30   32   36   36
+CONECT   32   31   33   33   75
+CONECT   33   32   32   34   76
+CONECT   34   33   35   35   77
+CONECT   35   34   34   36   43
+CONECT   36   31   31   35   78
+CONECT   37    3   27   79
+CONECT   38   26   80   81
+CONECT   39   28   29   82
+CONECT   40   20   20
+CONECT   41   26   26
+CONECT   42   28   28
+CONECT   43   35
+CONECT   44    1
+CONECT   45    2
+CONECT   46    5
+CONECT   47    5
+CONECT   48    7
+CONECT   49    8
+CONECT   50    9
+CONECT   51   10
+CONECT   52   12
+CONECT   53   13
+CONECT   54   14
+CONECT   55   15
+CONECT   56   17
+CONECT   57   18
+CONECT   58   19
+CONECT   59   21
+CONECT   60   21
+CONECT   61   22
+CONECT   62   22
+CONECT   63   23
+CONECT   64   23
+CONECT   65   24
+CONECT   66   24
+CONECT   67   25
+CONECT   68   25
+CONECT   69   27
+CONECT   70   29
+CONECT   71   29
+CONECT   72   29
+CONECT   73   30
+CONECT   74   30
+CONECT   75   32
+CONECT   76   33
+CONECT   77   34
+CONECT   78   36
+CONECT   79   37
+CONECT   80   38
+CONECT   81   38
+CONECT   82   39
+END

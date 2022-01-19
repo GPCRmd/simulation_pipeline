@@ -1,0 +1,151 @@
+REMARK  99                                                                      
+REMARK  99 MOE v2019.01 (Chemical Computing Group ULC) Thu Apr  8 11:03:07 2021 
+HETATM    1  CAK 9ER L   2      29.137  -3.382   9.551  1.00  0.00           C  
+HETATM    2  CAJ 9ER L   2      29.930  -4.672   9.842  1.00  0.00           C  
+HETATM    3  CAL 9ER L   2      30.747  -4.715  11.145  1.00  0.00           C  
+HETATM    4  CAH 9ER L   2      30.474  -5.334   8.722  1.00  0.00           C  
+HETATM    5  CAI 9ER L   2      29.784  -6.500   8.431  1.00  0.00           C  
+HETATM    6  CAD 9ER L   2      30.105  -7.331   7.366  1.00  0.00           C  
+HETATM    7  CAB 9ER L   2      29.328  -8.497   7.241  1.00  0.00           C  
+HETATM    8  CAA 9ER L   2      27.939  -8.199   6.692  1.00  0.00           C  
+HETATM    9  CAC 9ER L   2      30.006  -9.671   6.530  1.00  0.00           C  
+HETATM   10  CAE 9ER L   2      31.200  -6.974   6.557  1.00  0.00           C  
+HETATM   11  CAF 9ER L   2      31.948  -5.792   6.809  1.00  0.00           C  
+HETATM   12  CBE 9ER L   2      33.030  -5.437   5.959  1.00  0.00           C  
+HETATM   13  CBF 9ER L   2      34.186  -6.433   5.981  1.00  0.00           C  
+HETATM   14  CBG 9ER L   2      32.564  -5.165   4.539  1.00  0.00           C  
+HETATM   15  CAG 9ER L   2      31.556  -4.934   7.883  1.00  0.00           C  
+HETATM   16  CAM 9ER L   2      32.283  -3.832   8.176  1.00  0.00           C  
+HETATM   17  NAQ 9ER L   2      33.360  -3.928   8.977  1.00  0.00           N  
+HETATM   18  CAN 9ER L   2      31.981  -2.587   7.766  1.00  0.00           C  
+HETATM   19  SAO 9ER L   2      33.123  -1.589   8.438  1.00  0.00           S  
+HETATM   20  CAP 9ER L   2      33.964  -2.767   9.211  1.00  0.00           C  
+HETATM   21  NAR 9ER L   2      35.023  -2.633  10.020  1.00  0.00           N  
+HETATM   22  CAS 9ER L   2      35.582  -3.838  10.697  1.00  0.00           C  
+HETATM   23  CAT 9ER L   2      34.956  -3.968  12.096  1.00  0.00           C  
+HETATM   24  NAU 9ER L   2      35.121  -5.302  12.682  1.00  0.00           N1+
+HETATM   25  CAV 9ER L   2      33.814  -5.702  13.230  1.00  0.00           C  
+HETATM   26  CAW 9ER L   2      36.097  -5.245  13.782  1.00  0.00           C  
+HETATM   27  CAX 9ER L   2      35.607  -1.288  10.378  1.00  0.00           C  
+HETATM   28  CAY 9ER L   2      36.972  -1.251  10.103  1.00  0.00           C  
+HETATM   29  CBD 9ER L   2      37.412  -1.056   8.789  1.00  0.00           C  
+HETATM   30  CBC 9ER L   2      38.776  -1.125   8.486  1.00  0.00           C  
+HETATM   31  CBB 9ER L   2      39.713  -1.384   9.492  1.00  0.00           C  
+HETATM   32  NBA 9ER L   2      39.267  -1.572  10.813  1.00  0.00           N  
+HETATM   33  CAZ 9ER L   2      37.895  -1.494  11.123  1.00  0.00           C  
+HETATM   34 HAK1 9ER L   2      28.768  -2.963  10.487  1.00  0.00           H  
+HETATM   35 HAK2 9ER L   2      28.294  -3.613   8.899  1.00  0.00           H  
+HETATM   36 HAK3 9ER L   2      29.788  -2.658   9.061  1.00  0.00           H  
+HETATM   37  HAJ 9ER L   2      29.123  -5.352  10.115  1.00  0.00           H  
+HETATM   38 HAL1 9ER L   2      30.216  -4.169  11.925  1.00  0.00           H  
+HETATM   39 HAL2 9ER L   2      31.721  -4.255  10.978  1.00  0.00           H  
+HETATM   40 HAL3 9ER L   2      30.882  -5.751  11.455  1.00  0.00           H  
+HETATM   41  HAI 9ER L   2      28.954  -6.776   9.065  1.00  0.00           H  
+HETATM   42  HAB 9ER L   2      29.212  -8.855   8.264  1.00  0.00           H  
+HETATM   43 HAA1 9ER L   2      27.507  -7.358   7.234  1.00  0.00           H  
+HETATM   44 HAA2 9ER L   2      27.303  -9.076   6.816  1.00  0.00           H  
+HETATM   45 HAA3 9ER L   2      28.012  -7.950   5.633  1.00  0.00           H  
+HETATM   46 HAC1 9ER L   2      30.992  -9.837   6.963  1.00  0.00           H  
+HETATM   47 HAC2 9ER L   2      30.109  -9.443   5.469  1.00  0.00           H  
+HETATM   48 HAC3 9ER L   2      29.400 -10.569   6.652  1.00  0.00           H  
+HETATM   49  HAE 9ER L   2      31.477  -7.610   5.729  1.00  0.00           H  
+HETATM   50  HBE 9ER L   2      33.428  -4.510   6.372  1.00  0.00           H  
+HETATM   51 HBF1 9ER L   2      34.497  -6.607   7.011  1.00  0.00           H  
+HETATM   52 HBF2 9ER L   2      35.024  -6.030   5.412  1.00  0.00           H  
+HETATM   53 HBF3 9ER L   2      33.863  -7.374   5.535  1.00  0.00           H  
+HETATM   54 HBG1 9ER L   2      31.740  -4.452   4.557  1.00  0.00           H  
+HETATM   55 HBG2 9ER L   2      32.229  -6.096   4.082  1.00  0.00           H  
+HETATM   56 HBG3 9ER L   2      33.389  -4.752   3.959  1.00  0.00           H  
+HETATM   57  HAN 9ER L   2      31.160  -2.296   7.128  1.00  0.00           H  
+HETATM   58 HAS1 9ER L   2      35.350  -4.727  10.110  1.00  0.00           H  
+HETATM   59 HAS2 9ER L   2      36.663  -3.736  10.789  1.00  0.00           H  
+HETATM   60 HAT1 9ER L   2      33.890  -3.753  12.020  1.00  0.00           H  
+HETATM   61 HAT2 9ER L   2      35.428  -3.239  12.755  1.00  0.00           H  
+HETATM   62  HAU 9ER L   2      35.447  -5.957  11.985  1.00  0.00           H  
+HETATM   63 HAV1 9ER L   2      33.495  -4.974  13.976  1.00  0.00           H  
+HETATM   64 HAV2 9ER L   2      33.900  -6.685  13.694  1.00  0.00           H  
+HETATM   65 HAV3 9ER L   2      33.080  -5.743  12.425  1.00  0.00           H  
+HETATM   66 HAW1 9ER L   2      35.752  -4.540  14.538  1.00  0.00           H  
+HETATM   67 HAW2 9ER L   2      37.062  -4.919  13.395  1.00  0.00           H  
+HETATM   68 HAW3 9ER L   2      36.200  -6.234  14.228  1.00  0.00           H  
+HETATM   69 HAX1 9ER L   2      35.105  -0.514   9.797  1.00  0.00           H  
+HETATM   70 HAX2 9ER L   2      35.452  -1.103  11.441  1.00  0.00           H  
+HETATM   71  HBD 9ER L   2      36.696  -0.852   8.006  1.00  0.00           H  
+HETATM   72  HBC 9ER L   2      39.108  -0.977   7.469  1.00  0.00           H  
+HETATM   73  HBB 9ER L   2      40.766  -1.439   9.257  1.00  0.00           H  
+HETATM   74  HAZ 9ER L   2      37.559  -1.621  12.142  1.00  0.00           H  
+CONECT    1    2   34   35   36
+CONECT    2    1    3    4   37
+CONECT    3    2   38   39   40
+CONECT    4    2    5   15   15
+CONECT    5    4    6    6   41
+CONECT    6    5    5    7   10
+CONECT    7    6    8    9   42
+CONECT    8    7   43   44   45
+CONECT    9    7   46   47   48
+CONECT   10    6   11   11   49
+CONECT   11   10   10   12   15
+CONECT   12   11   13   14   50
+CONECT   13   12   51   52   53
+CONECT   14   12   54   55   56
+CONECT   15    4    4   11   16
+CONECT   16   15   17   18   18
+CONECT   17   16   20   20
+CONECT   18   16   16   19   57
+CONECT   19   18   20
+CONECT   20   17   17   19   21
+CONECT   21   20   22   27
+CONECT   22   21   23   58   59
+CONECT   23   22   24   60   61
+CONECT   24   23   25   26   62
+CONECT   25   24   63   64   65
+CONECT   26   24   66   67   68
+CONECT   27   21   28   69   70
+CONECT   28   27   29   33   33
+CONECT   29   28   30   30   71
+CONECT   30   29   29   31   72
+CONECT   31   30   32   32   73
+CONECT   32   31   31   33
+CONECT   33   28   28   32   74
+CONECT   34    1
+CONECT   35    1
+CONECT   36    1
+CONECT   37    2
+CONECT   38    3
+CONECT   39    3
+CONECT   40    3
+CONECT   41    5
+CONECT   42    7
+CONECT   43    8
+CONECT   44    8
+CONECT   45    8
+CONECT   46    9
+CONECT   47    9
+CONECT   48    9
+CONECT   49   10
+CONECT   50   12
+CONECT   51   13
+CONECT   52   13
+CONECT   53   13
+CONECT   54   14
+CONECT   55   14
+CONECT   56   14
+CONECT   57   18
+CONECT   58   22
+CONECT   59   22
+CONECT   60   23
+CONECT   61   23
+CONECT   62   24
+CONECT   63   25
+CONECT   64   25
+CONECT   65   25
+CONECT   66   26
+CONECT   67   26
+CONECT   68   26
+CONECT   69   27
+CONECT   70   27
+CONECT   71   29
+CONECT   72   30
+CONECT   73   31
+CONECT   74   33
+END

@@ -1,0 +1,3 @@
+Now processing molecule DU1 ...
+attype warning: S-halogen bond not explicitly supported
+attype warning: fluorine bound to an element other than C not explicitly supported
