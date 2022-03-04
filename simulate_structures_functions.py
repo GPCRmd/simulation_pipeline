@@ -78,7 +78,8 @@ detergent_blacklist = {'OLA','OLB','PEG','GOL','BOG','OLC','P6G','P33','UNL','UN
                        '12P','LPP','PEF','2CV','SOG','TWT','PGE','SO4','STE','LMT','ACT','ACE',
                       'MHA','CIT','1PE','MPG','EPE','PG4','DGA','PO4','DMS','TAR','1WV','EDO',
                       'BU1','ACM','PG6','TLA','SCN','TCE','MES','EDT','POV','MLI','SIN','PGO',
-                      'FLC','HTO','PGW','NO3', 'PE5', 'NH2', 'NME','NH4','IOD','ZN','BR','HG','PC1','LDA','C8E'}
+                      'FLC','HTO','PGW','NO3', 'PE5', 'NH2', 'NME','NH4','IOD','ZN','BR','HG',
+                      'PC1','LDA','C8E','J40','BNG'}
 glucids_blacklist = {'MAN','NAG','BGC','TRE','9NS','BMA','FUC','A2G'}
 blacklist = detergent_blacklist.union(glucids_blacklist)
 
@@ -249,6 +250,7 @@ def auld_download_GPCRdb_structures(pdb_set, strucpath):
                 zippy = zipfile.ZipFile(io.BytesIO(response.content))
                 zippy.extractall(mystrucpath)
 
+
 def download_GPCRdb_structures(pdb_set, strucpath):
     """
     Download (if they exist) the refined GPCRdb structures for the pdb codes in the pdb_set.
@@ -266,7 +268,8 @@ def download_GPCRdb_structures(pdb_set, strucpath):
         try:
             print('Downloading %s structure (%d/%d)' % (pdbcode, i, set_length))
             # If files for this simulation already exists
-            if glob(mystrucpath+'*pdb'):
+            outpdb = mystrucpath+pdbcode+'_refined.pdb'
+            if os.path.exists(outpdb):
                 print('Structure for %s already present. Skipping...' % pdbcode)
             else:
                 # Accede to GPCRdb main page of this refined structure
@@ -277,7 +280,7 @@ def download_GPCRdb_structures(pdb_set, strucpath):
                     link = soup.find('a',attrs={'id':'download_btn'}).get('href')
                     response = requests.get(refined_baselink+link)
                     pdbdata = response.content
-                    with open(mystrucpath+pdbcode+'_refined.pdb','wb') as out:
+                    with open(outpdb,'wb') as out:
                         out.write(pdbdata)
                     if response.ok:
                         #Extract pdb file from download zip and save it into a separate file
@@ -286,15 +289,17 @@ def download_GPCRdb_structures(pdb_set, strucpath):
                             if zippedfile.endswith('.pdb'):
                                 pdbfile = zippy.open(zippedfile)
                                 content = pdbfile.read()
-                                with open(mystrucpath+pdbcode+'_refined.pdb','wb') as out:
+                                with open(outpdb,'wb') as out:
                                     out.write(content)
                     else:
                         print('could not find link to %s refined structure. Skipping...' % (pdbcode))
                 else:
                     print('could not download %s refined structure. Skipping...' % (pdbcode))
-        
+            
         except Exception as E:
-                print("something failed in downloading refined structure of %s: %s"%(pdbcode,E))
+            print("something failed in downloading refined structure of %s: %s"%(pdbcode,E))
+
+
 
 def create_files(mymol, smalmol, name, smalmol_folder):
 
@@ -463,6 +468,24 @@ rc("open %s")
 rc("setattr m name '%s'") 
 writeMol2(openModels.list(modelTypes=[Molecule]), "%s") 
 """ % (infile, resname, mol2file))
+
+    # Execute script in chimera 
+    os.system('chimera --nogui %s'%pyfile)
+
+def chimera_addH_pdb(infile, pyfile, outfile):
+    """
+    Add Hydrogens to PDB, and save again as PDB
+    """
+    with open(pyfile,'w') as f:
+        f.write("""
+import os 
+from chimera import runCommand as rc 
+from chimera import replyobj,openModels,Molecule 
+os.chdir(".") 
+rc("open %s") 
+rc("addh")
+rc("write 0 %s")
+""" % (infile, outfile))
 
     # Execute script in chimera 
     os.system('chimera --nogui %s'%pyfile)
@@ -995,6 +1018,24 @@ def add_peplig(filename, pdbcode, gpcrdb_dict):
     
     # Re-write result
     mymol.write(filename)
+
+def needs_sodium(gpcrdb_dict, pdbcode):
+    """
+    Determine (based on information in GPCRdb) if structures require 2x50 sodium or not
+    """
+    agoset = {'Agonist', 'Agonist (partial)','Ago-PAM', 'AgonistNAM', 'AgonistPAM', 'Allosteric agonist', 'PAM', 'NAM', 'unknown'}
+    ligands = gpcrdb_dict[pdbcode]['ligands']
+    family = gpcrdb_dict[pdbcode]['family'] 
+    # Gess if this structure needs or not a sodium
+    sod=True
+    if not (family.startswith('001')) or (family == '001_002_023') : # If not a class-A gpcr OR is a orexin
+        sod = False
+    elif len(ligands) == 0: # If apoform, do not add the ion (we want to see how it enters)
+        sod = False
+    elif (ligands[0]['function']  in agoset): # If agonist-bound complex
+        sod = False
+
+    return sod
 
 def internal_waters(mystrucpath, pdbcode, gpcrdb_dict, apo=False, pdbpath=False,sod="autoselect"):
     """
@@ -1621,6 +1662,26 @@ def force_protonation_state(resid, target_resnames, to_resname, prep_table, mol_
         d.loc[(d.resid == int(resid)) & (d.resname == prev_resname), 'forced_protonation'] = to_resname
     return prep_table
 
+def find_gennum(pdbcode, genumdict):
+    """
+    Use GPCRdb to find ResID of selected generic numbering positions in GPCRdb
+    """
+    # Download GPCRdb structure's website, and extract residue table from it
+    structure_data = requests.get('https://gpcrdb.org/structure/refined/'+pdbcode).content
+    soup = BeautifulSoup(structure_data, 'html.parser')
+    table = soup.find('table', attrs={'id':'rotamers'})
+    table_body = table.find('tbody')
+    rows = table_body.find_all('tr')
+
+    # ANalyze online table with generic numbering
+    for row in rows:
+        cols = row.find_all('td')
+        cols = [ele.text.strip() for ele in cols]
+        if any([cols[3].startswith(genum) for genum in genumdict]):
+            genumdict[genum] = cols[1]
+
+    return genumdict
+
 def prepare_system(mol_aligned, pdbcode, thickness = None, sod2x50 = False, aminergic = False, adenosine = False):
     """
     Assign protonation states using "proteinPrepare" function from HTMD, and 
@@ -2188,7 +2249,7 @@ def get_headers(s, subm_id):
         'X-CSRFToken' : csrftoken,
     }
     return(sessionid, csrftoken, headers)
-
+    
 def check_chains(pdbcode, mymol):
     """
     Check how many chains from the original PDB structure remain in mymol structure
@@ -2223,9 +2284,9 @@ def check_chains(pdbcode, mymol):
         # For each segment in our molecule
         for seg,myseq in mymol.sequence().items():
             # Align our molecule segments to the pdb chains
-            aligs = pairwise2.align.localms(seq, myseq, 5,-1, -1, 0)
+            aligs = pairwise2.align.localms(seq, myseq, 5,-1, -1, -0.5)
             # Check if any of the alignments has more than 4 score by position
-            is_present = any([ (alig.score/(alig.end-alig.start)) > 4 for alig in aligs ]) 
+            is_present = any([ (alig.score/(alig.end-alig.start)) > 3.5 for alig in aligs ]) 
             if is_present:
                 chain_present[chain] = is_present
                 segtochain[seg] = chain
@@ -2246,17 +2307,17 @@ def get_uniprot_alignment(mymol, segpos, uniprotkbac, isoform, entry_segs):
     for seg,myseq in mymol.sequence().items():
         
         # Align our molecule segments to the pdb chains
-        aligs = pairwise2.align.localms(myseq, uniseq, 5,-1, -1, 0)
+        aligs = pairwise2.align.localms(myseq, uniseq, 5,-1, -1, -0.5)
         # For every alignment
         for alig in aligs:
             start = alig.start
             end = alig.end
             # If the alignment has no significant amount of mismatches, keep it as segment
-            if (alig.score/(end-start)) > 4.5:
+            if (alig.score/(end-start)) > 3.5:
                 
                 # Find coordinates of this segment
                 alig_myseq = alig[0]
-
+                
                 # Find start of uniprot sequence in alginment
                 if alig_myseq.startswith('-'):
                     starting = 0
@@ -2266,16 +2327,22 @@ def get_uniprot_alignment(mymol, segpos, uniprotkbac, isoform, entry_segs):
                 if alig_myseq.endswith('-'):            
                     ending = len(myseq) - 1
                 else:
-                    ending = end - 1
+                    ending = end - 1 - alig.seqA.count('-')
                 
                 if uniprotkbac not in entry_segs:
                     entry_segs[uniprotkbac] = []
-                entry_segs[uniprot_id].append({
-                            'chainid' : mymol.get('chain', 'segid '+seg)[0],
-                            'segid' : seg,
-                            'beg' : segpos[seg][starting],
-                            'end' : segpos[seg][ending]})
-    
+                    
+                # Do not add repeated alignments                
+                beg = segpos[seg][starting]
+                end = segpos[seg][ending]
+                repeated_seg = any([ ((seg['beg']==beg) and (seg['end']==end)) for seg in entry_segs[uniprot_id]])
+                if not len(entry_segs[uniprot_id]) or not repeated_seg:
+                    entry_segs[uniprot_id].append({
+                                'chainid' : mymol.get('chain', 'segid '+seg)[0],
+                                'segid' : seg,
+                                'beg' : segpos[seg][starting],
+                                'end' : segpos[seg][ending]})
+
     return(entry_segs) 
 
 def get_pdb_info(pdbcode, mymol, ligandsdict):
@@ -2290,8 +2357,8 @@ def get_pdb_info(pdbcode, mymol, ligandsdict):
     #Check which chains from the original PDB structure are preserved in mymol structure
     (chain_present, segtochain) = check_chains(pdbcode, mymol)
     
-    # Get ligand molecules present in our system (basically anything that is not a protein)
-    ligset = set(mymol.get('resname', sel='not protein'))
+    # Get residue names in our system
+    allresnames = set(mymol.resname)
     
     # Extract information from pdb webpage using api
     ligdict = dict()
@@ -2347,9 +2414,17 @@ def get_pdb_info(pdbcode, mymol, ligandsdict):
             ligandName = lig['chem_comp']['name']
     
             # Exclude ligands not present in our simulated system
-            if ligandResname in ligset:
+            if ligandResname in allresnames:
                 ligdict[ligandResname] = (ligandName,ligandInchi)
 
+            # Beware of covalent-bound retinols
+            if (ligandResname=='RET') and ("LYR" in allresnames):
+                ligdict["LYR"] = ("Lysine-Retinol","FSIGCSBKSBDRLV-GGOCYBHBSA-N")
+                
+            # Beware of other covalent-bound ligands
+            if ("COV" in allresnames) and (ligandsdict[pdbcode][ligandResname][1]):
+                ligdict["COV"] = (ligandName,ligandInchi)
+                
     # Extract protein chains information
     for poly in pdbdict['entry']['polymer_entities']:
 
@@ -2396,6 +2471,232 @@ def login(s):
                headers=headers)
     return s
 
+
+def get_uniprot_sequence(uniprotkbac, isoform):
+    """
+    Find uniprot sequence from uniprot ID
+    """
+    # Obtain sequence of uniprotkbac
+    uniprot_id = "%s-%s"%(uniprotkbac,isoform) if isoform else uniprotkbac 
+    response = requests.get("https://www.uniprot.org/uniprot/?query=accession:%s&sort=score&columns=sequence&format=tab"%uniprotkbac)
+    uniseq = response.text.split('\n')[1]
+    
+    return (uniseq)
+
+def get_refseq_alignment(mymol, segpos, refseq, poly_id, entry_segs):
+    """
+    Find out the exact coordinates of each Uniprot segment in our protein
+    """
+
+    # Match this uniprot to our protein segments, and save matches
+    for seg,myseq in mymol.sequence().items():
+        
+        # Align our molecule segments to the pdb chains
+        aligs = pairwise2.align.localms(myseq, refseq, 5,-1, -1, -0.5)
+        # For every alignment
+        for alig in aligs:
+            start = alig.start
+            end = alig.end
+            # If the alignment has no significant amount of mismatches, keep it as segment
+            if (alig.score/(end-start)) > 3.5:
+                # Find coordinates of this segment
+                alig_myseq = alig[0]
+                
+                # Find start of uniprot sequence in alginment
+                if alig_myseq.startswith('-'):
+                    starting = 0
+                else:
+                    starting = start - 1 
+                # Find ending of uniprot sequence in alginment            
+                if alig_myseq.endswith('-'):            
+                    ending = len(myseq) - 1
+                else:
+                    ending = end - 1 - alig.seqA.count('-')
+                
+                if poly_id not in entry_segs:
+                    entry_segs[poly_id] = []
+                    
+                # Do not add repeated alignments                
+                beg = segpos[seg][starting]
+                end = segpos[seg][ending]
+                repeated_seg = any([ ((seg['beg']==beg) and (seg['end']==end)) for seg in entry_segs[poly_id]])
+                if not len(entry_segs[poly_id]) or not repeated_seg:
+                    entry_segs[poly_id].append({
+                                'chainid' : mymol.get('chain', 'segid '+seg)[0],
+                                'segid' : seg,
+                                'beg' : segpos[seg][starting],
+                                'end' : segpos[seg][ending]})
+
+    return(entry_segs) 
+
+def get_pdbstruc_info(pdbcode, mymol, ligandsdict, blacklist, apo=False):
+    """
+    Get informarion of the system specified in the pdbcode from the RCSB-PDB webpage.
+    Mainly uniprot sequences, chainIDs and uniprot codes for the chains
+    In this case no ligand information is taken
+    """
+    
+    # Make string for selecting lignads in rcsb's api
+    gpcr_names = ['ceptor','rhodopsin','smoothened']
+    
+    #Check which chains from the original PDB structure are preserved in mymol structure
+    (chain_present, segtochain) = check_chains(pdbcode, mymol)
+    
+    # Get residue names in our system
+    allresnames = set(mymol.resname)
+    
+    # Extract information from pdb webpage using api
+    ligdict = dict()
+    protdict = dict()
+    datadict = dict()
+    entry_segs = dict()
+    segpos = dict()
+
+    # Obtain dictionary of sorted protein resids in each segment
+    for seg in set(mymol.get('segid', 'protein')):
+        segpos[seg] = list(dict.fromkeys(mymol.get('resid', 'segid '+seg)))
+    
+    # Get information from PDB api
+    pdbdict = requests.get('https://data.rcsb.org/graphql?query={\
+        entry(entry_id: "'+pdbcode+'") {\
+            exptl {method}\
+            polymer_entities {\
+                entity_poly{pdbx_strand_id,rcsb_sample_sequence_length,pdbx_seq_one_letter_code}\
+                rcsb_polymer_entity{pdbx_description}\
+                rcsb_polymer_entity_align{\
+                    aligned_regions {length}\
+                    reference_database_accession \
+                    reference_database_isoform \
+                }\
+            }\
+        }\
+       }').json()['data']
+        
+    # Determine experimental method used, and use the corresponding id in GPCRmd database
+    method = pdbdict['entry']['exptl'][0]['method'].lower()
+    if 'x-ray' in method: 
+        method_id = 0
+        method_segs = 0
+    elif 'nmr' in method:
+        method_id = 1
+        method_segs = 1
+    elif 'electron microscopy' == method:
+        method_id = 4
+        method_segs = 7
+    else:
+        method_id = 5 # Other method
+        method_segs = 6
+            
+    # Get ligand information and classify it (in case the system actually has ligands)
+    for ligdata in ligandsdict:
+        ligandInchi = ligdata['inchikey']
+        ligandResname = ligdata['resname']
+        ligandName = ligdata['name']
+
+        # Exclude ligands not present in our simulated system
+        if ligandResname in allresnames:
+            ligdict[ligandResname] = (ligandName,ligandInchi)
+
+        # Beware of covalent-bound retinols
+        if (ligandResname=='RET') and ("LYR" in allresnames):
+            ligdict["LYR"] = ("Lysine-Retinol","FSIGCSBKSBDRLV-GGOCYBHBSA-N")
+
+        # Beware of other covalent-bound ligands
+        if ("COV" in allresnames) and (ligandsdict[pdbcode][ligandResname][1]):
+            ligdict["COV"] = (ligandName,ligandInchi)
+                
+    # Extract protein chains information
+    recname = ""
+    peplig = ("",100000000000000000)
+    i = 0
+    for poly in pdbdict['entry']['polymer_entities']:
+
+        # Determine if this polymer (chain) is a GPCR
+        uniname = poly['rcsb_polymer_entity']['pdbx_description'].lower()
+        seqlen = poly['entity_poly']['rcsb_sample_sequence_length']
+        pdbseq = poly['entity_poly']['pdbx_seq_one_letter_code']
+        chainIds = poly['entity_poly']['pdbx_strand_id'].split(',')
+        isgpcr = any([(name in uniname) for name in gpcr_names]) 
+        
+        # Extract name of the system from pdb info
+        if isgpcr:
+            uninames = uniname.split(',')
+            for unis in uninames:
+                if any([(name in unis) for name in gpcr_names]):
+                    recname = unis
+        else: 
+            # Select shortest non-receptor sequence as potential peptide ligand
+            if seqlen < peplig[1]:
+                peplig = (uniname.split(',')[0],seqlen)
+                    
+        # Get uniprots present in the system, and their corresponbding segments
+        if poly['rcsb_polymer_entity_align']:
+            for alreg in poly['rcsb_polymer_entity_align']:
+                uniprotkbac = alreg['reference_database_accession']
+                isoform = alreg['reference_database_isoform']
+                uniprot_id = "%s-%s"%(uniprotkbac,isoform) if isoform else uniprotkbac 
+                uniseq = get_uniprot_sequence(uniprotkbac, isoform)
+                entry_segs = get_refseq_alignment(mymol, segpos, uniseq, uniprotkbac, entry_segs)
+
+                # If this uniprot is present in our system, assign its data to protdict
+                if uniprot_id in entry_segs:
+                    protdict[uniprotkbac] = {
+                        'isoform' : isoform if isoform else '1',
+                        'isgpcr' : isgpcr,
+                        'segs' : entry_segs[uniprot_id],
+                        'method' : method_id,
+                        'method_segs' : method_segs
+                    }
+        else:
+            # Get matching segments with PDB sequence, instead of Uniprot one, if
+            # this polymer entry do not match with any uniprot in PDB 
+            poly_id = 'nouniprot'+str(i)
+            entry_segs = get_refseq_alignment(mymol, segpos, pdbseq, poly_id, entry_segs)
+
+            # If this uniprot is present in our system, assign its data to protdict
+            if poly_id in entry_segs:
+                protdict[poly_id] = {
+                    'isoform' : '1',
+                    'isgpcr' : False, # If no uniprot, no GPCR most probably
+                    'organism' : organism,
+                    'name' : uniname,
+                    'segs' : entry_segs[poly_id],
+                    'method' : method_id,
+                    'method_segs' : method_segs
+                }
+            i+=1            
+    
+    # Filter ligdict of blacklisted molecules and ions
+    for lig in ligdict:
+        if (lig in blacklist) or (len(lig) == 2):
+            ligdict.pop(lig)
+
+    ligname = ""
+    # Find the ligand molecule, if not apo
+    if not apo:
+        for lig in ligdict:
+            molname = ligdict[lig][0]
+            inchikey = ligdict[lig][1]
+            if lig != 'CLR': # Take any non-cholesterol, non blacklisted molecule as ligand
+                # some molecule names are excessivelly large. Take inchikey instead
+                ligname = molname if len(molname) < 51 else inchikey 
+            # If there is not any other molecule in the system, nor a potential peptide ligand, take cholesterol
+            elif (len(ligdict.keys()) == 1) and not peplig[0]: 
+                ligname = ligdict[lig][0]
+        
+        # If still we have no ligand name, must be peptide
+        if not ligname:
+            ligname = peplig[0]
+
+    # Make system name
+    sysname = recname+" in complex with "+ligname if not apo else recname+" (apoform)"
+    
+    # Raise exception if non-uniprot segment in our structure (not implemented yet in step3)
+    if any([ name.startswith("nouniprot") for name in protdict.keys() ]):
+        raise NameError("step3 automatization does not handle yet uniprot-less proteins")
+    
+    return (protdict,ligdict,segtochain,method_id,sysname)
+
 def new_submission(s, mainurl):
     """
     Create a new submission entry in GPCRmd
@@ -2434,7 +2735,7 @@ def new_step1(s, subm_id, pdbcode, trajperiod, timestep, prodpath, modelfile, me
         'id_dynamics_membrane_types': 2, # Homogeneus membrane,
         'id_dynamics_solvent_types': 2, # TIP3P solvent,
         'timestep': timestep,
-        'delta': (trajperiod*timestep)/10e6, # time/frames
+        'delta': (trajperiod*timestep)/1e6, # time/frames
         'add_info': ' Classical unbiased (NVT ensemble) complex flexibility assay.', 
     }
     files_submit = {
@@ -2451,7 +2752,7 @@ def new_step1(s, subm_id, pdbcode, trajperiod, timestep, prodpath, modelfile, me
 
     # Raise exceptions if something failed
     if not rep.ok:
-        #s.post(mainurl+'/dynadb/delete_submission/'+subm_id)
+        s.post(mainurl+'/dynadb/delete_submission/'+subm_id)
         raise Exception('Step 1 submitted returned %d'%rep.status_code)
 
 
@@ -2566,7 +2867,7 @@ def new_step2(s, subm_id, ligdict, apo):
 
     # Raise exceptions if something failed
     if not rep.ok:
-        #s.post(mainurl+'/dynadb/delete_submission/'+subm_id)
+        s.post(mainurl+'/dynadb/delete_submission/'+subm_id)
         raise Exception('Step 2 submitted returned %d'%rep.status_code)
 
 def new_step3(s, subm_id, pdbcode, protdict):
@@ -2703,8 +3004,31 @@ def new_step3(s, subm_id, pdbcode, protdict):
 
     # Raise exceptions if something failed
     if not rep.ok:
-        #s.post(mainurl+'/dynadb/delete_submission/'+subm_id)
+        s.post(mainurl+'/dynadb/delete_submission/'+subm_id)
         raise Exception('Step 3 submitted returned %d'%rep.status_code)
+
+def other_files_zip(prodpath):
+    """
+    Compress protocol files in the path submitted 
+    """
+    outfolder = prodpath+'other_files'
+    outfile = outfolder+'.tar.gz'
+    if not os.path.exists(outfile):
+        os.makedirs(outfolder)
+        # For each replicate, create a folder with symbolic links of the to-compress files
+        for rep in [1,2,3]:
+            repath = '%srep_%d/' % (prodpath,rep)
+            outrep = '%s/rep_%d/' % (outfolder,rep)
+            os.makedirs(outrep)
+            list_files = ['input', 'input.coor', 'input.vel','input.xsc','log.txt']
+            for file in list_files:
+                shutil.copyfile(repath+file, outrep+file)
+
+        # Compress file
+        shutil.make_archive(outfolder, 'gztar', outfolder)
+        shutil.rmtree(outfolder)
+
+    return(outfile)
 
 def new_step4(s, subm_id, prodpath, repath):
     """
@@ -2730,7 +3054,11 @@ def new_step4(s, subm_id, prodpath, repath):
     step4_files.append(
         ('prm', ('parameters.prm', open(repath+'parameters','rb')))
     )
-                    
+    other_files = other_files_zip(prodpath)
+    step4_files.append(
+        ('oth', ('other_files.tar.gz', open(other_files,'rb')))
+    )
+    
     # Encode data
     m=MultipartEncoder(fields=step4_files)
     headers['Content-Type'] = m.content_type
@@ -2744,13 +3072,12 @@ def new_step4(s, subm_id, prodpath, repath):
 
     # Raise exceptions if something failed
     if not rep.ok:
-        #s.post(mainurl+'/dynadb/delete_submission/'+subm_id)
+        s.post(mainurl+'/dynadb/delete_submission/'+subm_id)
         raise Exception('Step 4 submitted returned %d'%rep.status_code)
     # If everything went ok so far, write a "submitted" file to know this system has already been submitted
     else:
         with open(prodpath+'submitted.txt','w') as out:
             out.write(subm_id)
-
 def check_completeness(prodpath):
     """
     Check if we actually have the three necessary replicates for submission
