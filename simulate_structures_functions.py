@@ -56,14 +56,18 @@ dowserpath = "/usr/local/dowser/bin/dowser"
 
 # Usernames and passwords for Paramchem
 #username = 'euglenoid'
-username = 'stendoroid'
+#username = 'stendoroid'
 #username = 'paramoid'
-#username = 'ameboid'
+username = 'ameboid'
 #password = 'euglenoid-123'
-password = 'stendoroid-123'
+#password = 'stendoroid-123'
 #password = 'paramoid-123'
-#password = 'ameboid-123'
+password = 'ameboid-123'
 
+
+# Lists of GPCR pdbs
+first_round = {'1u19', '2rh1', '2y00', '2y02', '2y03', '2y04', '2ycw', '3d4s', '3dqb', '3ny8', '3ny9', '3nya', '3odu', '3oe0', '3pbl', '3pds', '3pqr', '3rze', '3uon', '3v2y', '3vw7', '3zpq', '3zpr', '4ami', '4amj', '4bvn', '4djh', '4dkl', '4ea3', '4grv', '4iaq', '4iar', '4ib4', '4k5y', '4l6r', '4lde', '4ldl', '4ldo', '4mbs', '4mqs', '4mqt', '4n6h', '4oo9', '4or2', '4phu', '4pxz', '4py0', '4qkx', '4rwd', '4rws', '4s0v', '4u15', '4u16', '4xee', '4xnv', '4xnw', '4xt1', '4yay', '4z34', '4z35', '4z36', '4zj8', '4zjc', '4zud', '5a8e', '5c1m', '5cgc', '5cgd', '5cxv', '5dhg', '5dhh', '5dsg', '5glh', '5jqh', '5l7d', '5l7i', '5tgz', '5u09', '5uen'}
+second_round = {"3C9L","3C9M","6ZDR","6ZDV",'6RZ8', '6FFI', '6KJV', '6TQ6', '6DRY', '5WIV', '5V57', '6LI2', '6MH8', '5MZJ', '5KW2', '5X33', '5ZHP', '6PS6', '6FJ3', '6D35', '4NTJ', '6A94', '6AK3', '5UVI', '6FFH', '5WIU', '6KQI', '5XR8', '6RZ9', '5VEX', '6LW5', '6FKA', '6PS7', '6M9T', '6KNM', '6ME6', '6GPX', '5XSZ', '5K2A', '5YQZ', '6PS0', '5K2C', '6ME7', '2Z73', '6D32', '6RZ4', '5YC8', '5T1A', '6AKY', '4N4W', '5WS3', '6LRY', '6J21', '5TE5', '4O9R', '6FK6', '1GZM', '6DRX', '6TQ7', '5NDZ', '6IGL', '5VRA', '5ZBQ', '6TPN', '6DS0', '5NLX', '5X93', '6HLP', '5OLG', '5OM4', '5O9H', '5XPR', '6A93', '5GLI', '6OBA', '6D27', '6HLO', '6RZ5', '5TE3', '6IIV', '6KP6', '6TQ4', '6TPJ', '5V56', '5UNG', '6FK9', '6PS8', '2YCZ', '6JZH', '5XRA', '5ZKB', '4JKV', '5MZP', '5K2D', '5OLV', '5X7D', '5T04', '5OLO', '5DYS', '6FK7', '6J20', '6K1Q', '5EE7', '6D26', '6PS1', '6DRZ', '4GBR', '6FKC', '6TP6', '6LUQ', '5ZKQ', '5UNH', '6PRZ', '5UNF', '5NX2', '6LI0', '5NM2', '5D6L', '6AQF', '6KK1', '6C1Q', '4Z9G', '6LI1', '5WF5', '6FKB',  '5OLH', '4XT3', '5ZK3', '5VEW', '4XES', '6HLL', '6TOT', '5N2R', '5WF6', '5K2B', '6TPG', '6PS4', '5F8U', '6ME4', '6GT3', '6RZ6', '6ME8', '6ME2', '5VBL', '5N2S', '5ZBH', '6PS3', '6IIU', '4NC3', '5JTB', '5ZKP', '6TQ9', '6GPS', '6TP3', '6RZ7', '6ME3', '5ZK8', '6C1R', '5V54', '5UIG', '5TVN', '5OM1', '6AKX', '5ZKC', '5NM4', '5TZY', '6TOD', '4GPO', '6TO7', '6CM4', '6TOS', '6PS5', '6ME9', '5NDD', '6KPC', '6KK7', '4BUO', '6OL9', '6PS2', '6FK8', '6ME5', '6TP4', '4QIM', '6IGK', '5WQC', '5UIW', '5TZR', '5OLZ', '4EJ4', '6E59'}
 
 # Parameters
 new_pdb_chain = 'P'
@@ -82,6 +86,11 @@ detergent_blacklist = {'OLA','OLB','PEG','GOL','BOG','OLC','P6G','P33','UNL','UN
                       'PC1','LDA','C8E','J40','BNG'}
 glucids_blacklist = {'MAN','NAG','BGC','TRE','9NS','BMA','FUC','A2G'}
 blacklist = detergent_blacklist.union(glucids_blacklist)
+
+# Ligands for which parameters are not required (already exist in main CGenff)
+AA={"LYR","ALA","ARG","ASN","ASP","CYS","GLU","GLN","GLY","HIS","ILE","LEU","LYS","MET","PHE","PRO","SER","THR","TRP","TYR","VAL"}
+nucl = {"AMP","ADP","ATP","GMP","GDP","GTP","TMP","TDP","TTP","CMP","CDP","CTP"}
+noparams_ligs = {'RET', 'CLR'}.union(AA).union(nucl)
 
 # Simulation parameters
 timestep = 4 # Simulation timestep (femtoseconds)
@@ -106,6 +115,7 @@ toposfilenames = ['General_top_params/topologies/top_all36_prot.rtf',
                   'Specific_top_params/topologies/toppar_all36_prot_retinol.rtf',
                   'Specific_top_params/topologies/toppar_all36_lipid_ether.rtf',
                   'Specific_top_params/topologies/toppar_water_ions.rtf',
+                  'Specific_top_params/topologies/toppar_all36_na_nad_ppi.rtf'
                  ]
 
 # Parameters filenames and paths
@@ -118,6 +128,7 @@ paramsfilenames = [
                    'Specific_top_params/parameters/toppar_all36_prot_retinol.prm',
                    'Specific_top_params/parameters/toppar_all36_lipid_ether.prm',
                    'Specific_top_params/parameters/toppar_water_ions.prm',
+                   'Specific_top_params/parameters/toppar_all36_na_nad_ppi.prm',
                    'David_top_params/parameters/fake_dihedrals.prm',
                    'David_top_params/parameters/modres_params.prm',
                    'David_top_params/parameters/modres_crossterm.prm',
@@ -129,6 +140,11 @@ streamsfilenames = []
 # Url for submissions
 # mainurl = 'http://localhost:8000' 
 mainurl = 'https://submission.gpcrmd.org'
+
+# Threshold activation distances (obtained from analyzing all GPCRdb refined structures)
+#with open('./threshold_dists.pickle', 'rb') as handle:
+#    activation_threholds = pickle.load(handle)
+
 
 ####################
 ## David's functions
@@ -299,9 +315,18 @@ def download_GPCRdb_structures(pdb_set, strucpath):
         except Exception as E:
             print("something failed in downloading refined structure of %s: %s"%(pdbcode,E))
 
+def get_GPCRnames(pdbset):
+    """
+    Get receptor name from pdbcode via GPCRdb
+    """
+    GPCRdata = []
+    for pdbcode in gprot_yes_nanobody_set:
+        pdbdict = requests.get("https://gpcrdb.org/services/structure/"+pdbcode).json()
+        GPCRdata.append("%s,%s,%s"%(pdbcode,pdbdict['protein'], pdbdict['signalling_protein']['data']['entity1']['entry_name']))
 
+    return GPCRdata
 
-def create_files(mymol, smalmol, name, smalmol_folder):
+def create_files(mymol, smalmol, name, smalmol_folder, hydrogenate_ligand=True):
 
     #filenames
     smalmol_pdb = "%s%s_%s.pdb"%(smalmol_folder,name,smalmol) 
@@ -310,15 +335,21 @@ def create_files(mymol, smalmol, name, smalmol_folder):
     
     # Skip if mol2file already exists
     if os.path.exists(smalmol_mol2):
+        #os.remove(smalmol_mol2)
         return
-    
+        pass
+
     # Write PDB file of smalmol 
     os.makedirs(smalmol_folder, exist_ok=True)
     mymol.write(smalmol_pdb, 'resname '+smalmol)
-    # Convert it to mol2file
-    chimera_conversion(smalmol_pdb, smalmol_mol2, smalmol_script, smalmol)
+    # Convert it to mol2file, and add Hydrogens to molecule (using chimera)
+    if hydrogenate_ligand:
+        chimera_addH(smalmol_pdb, smalmol_mol2, smalmol_script, smalmol)
+    else:
+        chimera_conversion(smalmol_pdb, smalmol_mol2, smalmol_script, smalmol)
 
-def ligand_dictionary(pdb_set, ligandsdict_path, modres_path, basepath, blacklist = {}):
+
+def ligand_dictionary(struc_dict, ligandsdict_path, modres_path, basepath, blacklist = {}, hydrogenate_ligands=True):
     """
     Create dictionary with ligand names and ligand ResNames of each of the structures we need to simulate,
     and store the resutls in a json file
@@ -336,7 +367,7 @@ def ligand_dictionary(pdb_set, ligandsdict_path, modres_path, basepath, blacklis
         modresdict = {}
         
     # Iterate over non-yet-simulated structures, and get their ligand information from rcsb (PDB's web api)    
-    for pdb_code in pdb_set:
+    for (pdb_code,pdbfile) in struc_dict.items():
         #Do not repeat simulations
         if pdb_code in ligandsdict:
             continue
@@ -395,13 +426,19 @@ def ligand_dictionary(pdb_set, ligandsdict_path, modres_path, basepath, blacklis
     # Create ligand and modified residues pdb files
     for pdbcode in ligandsdict:
         try:
-            pdbfile = "%s/data_structures/%s/%s_refined.pdb"%(basepath,pdbcode,pdbcode)
-            mymol = Molecule(pdbfile) # PROVISIONAL: CHANGE BY CURATED
+
+            # Load curated structure of full system
+            pdbfile = struc_dict[pdbcode]
+            mymol = Molecule(pdbfile) 
+
+            # For each ligand or modres, create a mol2 file
             for lig in ligandsdict[pdbcode]:
-                create_files(mymol, lig, pdbcode, '%stoppar/Ligands/%s/'%(basepath,lig))
-            if pdbfile in modresdict:
+                if lig not in noparams_ligs: # There are standard parameters for these two
+                    create_files(mymol, lig, pdbcode, '%stoppar/Ligands/%s/'%(basepath,lig), hydrogenate_ligands)
+            if pdbcode in modresdict:
                 for modres in modresdict[pdbcode]:
-                    create_files(mymol, modres, pdbcode, '%stoppar/mod_residues/%s/'%(basepath,modres))
+                    create_files(mymol, modres, pdbcode, '%stoppar/mod_residues/%s/'%(basepath,modres), hydrogenate_ligands)
+
         except FileNotFoundError as e:
             print("Error: %s"%e)
 
@@ -453,6 +490,25 @@ def run_propka(infile, outname, strucpath):
 
     return Molecule(pdbfile)
 
+def chimera_addH_pdb(infile, outfile, pyfile, resname="COV"):
+    """
+    Add Hydrogens to PDB, and save again as PDB
+    """
+    with open(pyfile,'w') as f:
+        f.write("""
+import os 
+from chimera import runCommand as rc 
+from chimera import replyobj,openModels,Molecule 
+os.chdir(".") 
+rc("open %s") 
+rc("addh")
+rc("write 0 %s")
+""" % (infile, outfile))
+
+    # Execute script in chimera 
+    os.system('chimera --nogui %s'%pyfile)
+
+
 def chimera_conversion(infile, mol2file, pyfile, resname="COV"):
     """
     Write a python scripts with instructions for chimera to read a pdb and save a mol2file, without further changes
@@ -471,25 +527,6 @@ writeMol2(openModels.list(modelTypes=[Molecule]), "%s")
 
     # Execute script in chimera 
     os.system('chimera --nogui %s'%pyfile)
-
-def chimera_addH_pdb(infile, pyfile, outfile):
-    """
-    Add Hydrogens to PDB, and save again as PDB
-    """
-    with open(pyfile,'w') as f:
-        f.write("""
-import os 
-from chimera import runCommand as rc 
-from chimera import replyobj,openModels,Molecule 
-os.chdir(".") 
-rc("open %s") 
-rc("addh")
-rc("write 0 %s")
-""" % (infile, outfile))
-
-    # Execute script in chimera 
-    os.system('chimera --nogui %s'%pyfile)
-
 
 def chimera_addH(infile, mol2file, pyfile, resname="COV"):
     """
@@ -514,7 +551,7 @@ writeMol2(openModels.list(modelTypes=[Molecule]), "%s")
     # Execute script in chimera 
     os.system('chimera --nogui %s'%pyfile)
 
-def save_smalmol_mol2(input_dict, basepath):
+def save_smalmol_mol2(input_dict, basepath, hydrogenate_ligands=True):
     """
     From the submitted PDB files, extract PDB of small molecule and convert it into mol2
     """
@@ -527,10 +564,10 @@ def save_smalmol_mol2(input_dict, basepath):
         # For every small molecule in this system
         for smalmol in entry['ligands']:
             ligandsdict[entry['name']][smalmol['resname']] = [smalmol['name'],smalmol['covalently_bound']]
-            create_files(mymol,smalmol['resname'],entry['name'], '%stoppar/Ligands/%s/'%(basepath,smalmol['resname']))
+            create_files(mymol,smalmol['resname'],entry['name'], '%stoppar/Ligands/%s/'%(basepath,smalmol['resname']), hydrogenate_ligands)
         # For every modified residue in this system
         for smalmol in entry['modres']:
-            create_files(mymol,smalmol,entry['name'], '%stoppar/mod_residues/%s/'%(basepath,modres))
+            create_files(mymol,smalmol,entry['name'], '%stoppar/mod_residues/%s/'%(basepath,modres), hydrogenate_ligands)
 
     modresdict= { a['name'] : a['modres'] for a in input_dict}
     pdbfilesdict= { a['name'] : a['pdbfile'] for a in input_dict}
@@ -550,7 +587,7 @@ def download_ligands(ligandsset, basepath, modres = False):
         pyfile = ligpath+ligcode+".py"
         
         #Skip Retinol, cholesterol, blacklisted molecules and ions
-        if (ligcode in blacklist.union({'RET','CLR'})) or (len(ligcode)<3):
+        if (ligcode in blacklist.union(noparams_ligs)) or (len(ligcode)<3):
             continue
         
         #Skip if ligand has already been download
@@ -693,8 +730,8 @@ def get_lig_toppar(ligandsdict, basepath, username, password, pdbfiles = {}):
     for pdbcode in ligandsdict:
         for ligcode in ligandsdict[pdbcode]:
             
-            # Skip Retinol and cholesterol (we already have parameters for these ones)
-            if ligcode in ['RET','CLR']:
+            # Skip Retinol and cholesterol (we already have parameters for these ones) or ions (unprocessable for paramchem) or blacklisted molecules
+            if (ligcode in noparams_ligs) or (len(ligcode)<3) or (ligcode in detergent_blacklist.union(glucids_blacklist)):
                 continue
             
             # Stablish folder for ligand parameters (dpending on covalent-bound ligand or not)
@@ -702,8 +739,8 @@ def get_lig_toppar(ligandsdict, basepath, username, password, pdbfiles = {}):
             ligpath = basepath+"toppar/Ligands/"+ligcode+'/'
 
             # Skip already-parameterized ligands
-            if os.path.exists("%s%s_toppar.str"%(ligpath,pdbcode)):
-                continue
+            if os.path.exists("%s%s_toppar.str"%(ligpath,pdbcode)) or os.path.exists("%stoppar.str"%(ligpath)):
+                #continue
                 pass
             
             print('Getting toppar file for ligand %s ' % (ligcode))
@@ -801,7 +838,7 @@ def modres_covlig_toppar(pdbcode, modres, modrespath, covlig = False, pdbfiles =
 
     # FIlenames and directories
     mol2chim = modrespath+modres+'_chim.mol2'
-    mol2file = modrespath+modres+'.mol2'
+    mol2file = modrespath+pdbcode+'_'+modres+'.mol2'
     pdbfile = modrespath+modres+'.pdb'
     pyfile = modrespath+modres+'.py'
     os.makedirs(modrespath, exist_ok = True)
@@ -1037,51 +1074,108 @@ def needs_sodium(gpcrdb_dict, pdbcode):
 
     return sod
 
-def internal_waters(mystrucpath, pdbcode, gpcrdb_dict, apo=False, pdbpath=False,sod="autoselect"):
+
+
+
+def find_state_struct(pdbfile, gclass, activation_thresholds):
+    """
+    Find conformational state (active/inactive/intermediate) of this structure according to the 
+    our personalized criteria
+    """
+
+    # Generic numbering postiions using to determine active/inactive by GPCR class
+    resdict = {
+        'A' : ("2.46", "6.37"),
+        'B1' : ("2.53", "6.42"),
+        'C' : ("2.43", "6.39"),
+        'F' : ("2.43", "6.30")
+    }
+
+    # Get info from file if exists
+    outfile = outfolder+'mystate.txt'
+    if not os.path.exists(outfile):
+
+        u = mda.Universe(pdbfile)
+
+        g1 = u.select_atoms("chainID P and resid %s and name CA"%(resid1))
+        g2 = u.select_atoms("chainID P and resid %s and name CA"%(resid2))
+        mydist = distances.dist(mda.AtomGroup(g1), mda.AtomGroup(g2))[2][0]
+        inact_thres = activation_thresholds[gclass]['max_inact']
+        state = ""
+        if 'max_int' in activation_thresholds[gclass]:
+            inter_thres = activation_thresholds[gclass]['max_int']
+            if mydist > inter_thres:
+                state = 'Active'
+            elif mydist > inact_thres:
+                state = 'Intermediate'
+            else:
+                state = 'Inactive'
+        else: 
+            if mydist > inact_thres:
+                state = 'Active'
+            else:
+                state = 'Inactive'
+
+        # Save state
+        with open(outfile, 'w') as handle:
+            handle.write(state)
+
+    # Else read state from file
+    else:
+        with open(outfile, 'r') as handle:
+            state = handle.read()
+        print(state)
+    return(state)
+
+def internal_waters(mystrucfolder, pdbcode, gpcrdb_dict, apo=False, pdbpath=False,sod="autoselect",chain=False):
     """
     Place internal waters and E2x50 sodium in GPCR structure using homolwat online tool
     """
 
-    agoset = {'Agonist', 'Agonist (partial)'}
-    ligands = gpcrdb_dict[pdbcode]['ligands']
-    family = gpcrdb_dict[pdbcode]['family'] 
-    # Gess if this structure needs or not a sodium
-    if sod=="autoselect":
-        if not (family.startswith('001')) or (family == '001_002_023') : # If not a class-A gpcr OR is a orexin
-            sod = "sod_no"
-        elif (len(ligands) == 0) or (apo): # If apoform, do not add the ion (we want to see how it enters)
-            sod = "sod_no"
-        elif (ligands[0]['function'] in agoset): # If agonist-bound complex
-            sod = "sod_no"
-        else:
-            sod = "sod_yes"
-    
+    sod = needs_sodium(gpcrdb_dict, pdbcode)
+
     # Check if there is already a watered structure here
-    watered_filename = (glob(mystrucpath+'*_apoHW.pdb') if apo else glob(mystrucpath+'*_HW.pdb'))
+    watered_filename = (glob(mystrucfolder+'*_apoHW.pdb') if apo else glob(mystrucfolder+'*_HW.pdb'))
     if len(watered_filename) > 0:
         print("Structure %s already has a watered version. Skipping..." % pdbcode)
-        return ( sod == 'sod_yes', watered_filename[0])
+        #return ( sod, watered_filename[0])
     else:
         print("Adding internal waters to structure")
-        
+
     #Load pdb file
     if not pdbpath:
-        pdbpath = glob(mystrucpath+'*GPCRdb.pdb')[0]
+        pdbpath = glob(mystrucfolder+'*GPCRdb.pdb')[0]
     name = os.path.basename(os.path.splitext(pdbpath)[0])
     pdbfiles = {"file" : hetatm_nucleotides(pdbpath, name)} 
-    
+
     # Open web session
     with requests.Session() as s:
         # Load our desired structure into homolwat, as a PDB file
         response_loadfile = s.post("https://alf06.uab.es/homolwat/run_HW",
                                    files = pdbfiles
         )
-
+        # Check if we are in the multiple-chain menu
+        soup = BeautifulSoup(response_loadfile.text,'html')
+        form_action = soup.find('form').get('action')
+        
+        if form_action=="run_hw_multi":
+            # Select GPCR chain (first one, if none has been specified)
+            first_chain = soup.find('option').get('value')
+            chainid = chain if chain else first_chain
+            filename = soup.find('input', attrs={'name':'filename'}).get('value')
+            response_loadfile = s.post(
+                "https://alf06.uab.es/homolwat/run_hw_multi",
+                  data= {
+                    'filename' : filename,
+                    'option_gpcr' : chainid
+                  }
+            )
+            
         # Get name and number of our query. Required for following steps
         soup = BeautifulSoup(response_loadfile.text,'html')
         query_num = soup.find('input',attrs={'name' : 'query_num'}).get('value')
         query_name = soup.find('input',attrs={'name' : 'query_name'}).get('value')
-        
+
         # Analyze structure and place internal waters
         response_solvate = s.post("https://alf06.uab.es/homolwat/solvate",
                   data = {
@@ -1089,30 +1183,33 @@ def internal_waters(mystrucpath, pdbcode, gpcrdb_dict, apo=False, pdbpath=False,
                     "query_num": query_num,
                     "ch_rest": '[]',
                     "option_state": "inac",
-                    "option_sodium": sod,
+                    "option_sodium": "sod_yes" if sod else "sod_no",
                     "option_dowser": "dow_no",
                     "p_ident": ""
                   }
         )
-        
+
         # Determine name for output file
         query_num_noapo = query_num.split("'")[1]
-        query_name_nofilext = query_name.split(".")[0]
         if apo:
             apofix = '_apo'
         else:
             apofix = '_'
 
-            # Download results in zip            
+
+
+        # Download results in zip            
+        query_name_nofilext = os.path.splitext(query_name)[0]
         response_download = s.post("https://alf06.uab.es/homolwat/download_file/",
               data = {
                     "query_num": query_num_noapo,
                     "query_name": query_name_nofilext
               })
-        
+
         # Unzip and extract watered strucutre file
         req = response_download.request
-        watered_filename = mystrucpath + query_name_nofilext+apofix+"HW.pdb"
+        water_lines = []
+        watered_filename = mystrucfolder + query_name_nofilext+apofix+"HW.pdb"
         if response_download.ok:
             zippy = zipfile.ZipFile(io.BytesIO(response_download.content))
             zippy.extract(query_name_nofilext+"_HW.pdb", path='./')
@@ -1125,15 +1222,29 @@ def internal_waters(mystrucpath, pdbcode, gpcrdb_dict, apo=False, pdbpath=False,
                     linelist = list(line)
                     linelist[79] = " "
                     line = "".join(linelist)
-                out_hw.write(line)
+
+                # Save water and sodium lines added by Homolwat
+                if (len(line)>81) and (line[17:20] in ['HOH',' NA']):
+                    water_lines.append(line)
+
+            # Merge homolwat lines to main refined input structure
+            with open(pdbpath, 'r') as ref:
+                for line in ref:
+                    if not line.startswith('END'): 
+                        out_hw.write(line)
+                for line in water_lines:
+                    out_hw.write(line)
+                out_hw.write('END')
+
             os.remove('./' + query_name_nofilext+"_HW.pdb")
             in_hw.close()
             out_hw.close()
+
         else:
             print("could not add internal waters to %s. Skipping..." % (pdbpath))
             
 
-    return (sod == 'sod_yes', watered_filename)
+    return (sod, watered_filename)
 
 def dowser_waters(pdbpath, dowserbin, outpath):
     """
@@ -1905,7 +2016,7 @@ def extra_parameters(pdbcode, ligandsdict, modresdict, blacklist, covligs, basep
             topparname = 'legacy_toppar.str' if has_halo else 'toppar.str'
         #Skip blacklisted molecules and retinols or cholesterols 
         #(retinols and cholesterols already have their own parameters)
-        if (ligcode not in blacklist) and not (ligcode in ['RET','CLR']):
+        if (ligcode not in blacklist) and not (ligcode in noparams_ligs):
             if ligcode in covligs:
                 ligstreams.append('%stoppar/Ligands/%s/%s'%(basepath,ligcode,topparname))                        
             else:
@@ -2709,7 +2820,7 @@ def new_submission(s, mainurl):
     print('new submission %s created'%subm_id)
     return subm_id
 
-def new_step1(s, subm_id, pdbcode, trajperiod, timestep, prodpath, modelfile, method_id, apo):
+def new_step1(s, subm_id, pdbcode, trajperiod, timestep, prodpath, modelfile, method_id, sysname, apo):
     """
     Fullfill and send the step 1 of the new submissionform
     # Looone liiie the fieeeelds of Athenryyyyy...
@@ -2719,7 +2830,6 @@ def new_step1(s, subm_id, pdbcode, trajperiod, timestep, prodpath, modelfile, me
     (sessionid, csrftoken, headers)=get_headers(s, subm_id)
     
     # All the stuff we need to send 
-    sysname = pdbcode+' apoform' if apo else pdbcode+' complex'
     data_submit = {
         'name' : sysname,
         'type' : 0 if apo else 1, # 0 for apo, 1 for complex
@@ -2945,7 +3055,7 @@ def new_step3(s, subm_id, pdbcode, protdict):
         alignment = s.post(mainurl+'/dynadb/get_alignment/',
                       data = data_alig,
                       headers = headers
-                     ).text
+                     ).json()['alig_fa']
 
         # Get mutations
         mutations_dict = s.post(mainurl+'/dynadb/protein/get_mutations/',
@@ -3004,7 +3114,7 @@ def new_step3(s, subm_id, pdbcode, protdict):
 
     # Raise exceptions if something failed
     if not rep.ok:
-        s.post(mainurl+'/dynadb/delete_submission/'+subm_id)
+        #s.post(mainurl+'/dynadb/delete_submission/'+subm_id)
         raise Exception('Step 3 submitted returned %d'%rep.status_code)
 
 def other_files_zip(prodpath):
