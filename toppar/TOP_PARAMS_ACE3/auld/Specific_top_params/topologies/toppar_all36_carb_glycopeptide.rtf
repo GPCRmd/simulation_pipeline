@@ -1,0 +1,248 @@
+read rtf card append
+* Topology for glycopeptide linkages
+* 
+32 1
+
+!     |                         |            * change charges
+!  HN-N                      HN-N
+!     |   HB1                   |   HB1
+!     |   |                     |   | *   *
+!  HA-CA--CB--OG        ==>  HA-CA--CB--OG    
+!     |   |     \               |   |     \  * 
+!     |   HB2    HG1            |   HB2    C1(sugar)
+!   O=C                       O=C
+!     |                         |
+
+PRES SGPA           -0.07 ! for connecting SER at the alpha position
+dele atom 1HG1
+dele atom 2O1  
+dele atom 2HO1  
+
+GROUP
+
+ATOM 1CB   CT2      0.00     !Charge assigned by adding
+ATOM 1OG   OC301    -0.36  ! Charge from OMEA
+
+GROUP
+
+ATOM 2C1   CC3162    0.29  ! Charge from OMEA
+
+BOND 1OG 2C1    
+
+!    I    J    K    L      R(IK)   T(IKJ)    PHI   T(JKL)   R(KL)
+
+!IC   1CA  1CB  1OG  2C1    0.0000  0.0000  167.06  0.0000   0.0000
+!IC   1CB  1OG  2C1  2O5    0.0000  0.0000   71.26  0.0000   0.0000
+!IC   1CB  1OG  2C1  2H1    0.0000  0.0000  -50.07  0.0000   0.0000
+!IC   1OG  2C1  2O5  2C5    0.0000  0.0000   70.42  0.0000   0.0000  
+
+!Thermalized IC
+IC   1CA  1CB  1OG  2C1     1.5246  112.48 -174.87  115.72   1.4191 
+IC   1CB  1OG  2C1  2O5     1.4218  115.72   45.37  110.03   1.4241 
+IC   1CB  1OG  2C1  2H1     1.4218  115.72  -71.61  112.01   1.1125 
+IC   1OG  2C1  2O5  2C5     1.4191  110.03   63.29  109.91   1.4591 
+
+!     |                          |              
+!  HN-N                       HN-N
+!     |     OG1--HG1             |     OG1--C1(sugar)
+!     |    /                     |    /
+!  HA-CA--CB-HB          ==>  HA-CA--CB-HB   
+!     |    \                     |    \
+!     |     CG2--HG21            |     CG2--HG21
+!   O=C    / \                 O=C    / \
+!     | HG21 HG22                | HG21 HG22
+
+PRES TGPA            0.02 ! for connecting THR at the alpha position
+dele atom 1HG1
+dele atom 2O1
+dele atom 2HO1
+
+GROUP
+
+ATOM 1CB   CT1      0.09     !Charge assigned by adding
+ATOM 1OG1  OC301    -0.36  ! Charge from OMEA
+
+GROUP
+
+ATOM 2C1   CC3162    0.29  ! Charge from OMEA
+
+BOND 1OG1 2C1
+
+!    I    J    K    L      R(IK)   T(IKJ)    PHI   T(JKL)   R(KL)
+
+!IC   1CA  1CB  1OG1 2C1    0.0000  0.0000  167.06  0.0000   0.0000
+!IC   1CB  1OG1 2C1  2O5    0.0000  0.0000   71.26  0.0000   0.0000
+!IC   1CB  1OG1 2C1  2H1    0.0000  0.0000  -50.07  0.0000   0.0000
+!IC   1OG1 2C1  2O5  2C5    0.0000  0.0000   70.42  0.0000   0.0000
+
+!Thermalized IC
+IC    1CA  1CB  1OG1 2C1    1.5900  102.09  161.11  116.78   1.4047 
+IC    1CB  1OG1 2C1  2O5    1.5040  116.78   69.90  114.66   1.4346 
+IC    1CB  1OG1 2C1  2H1    1.5040  116.78  -51.01  110.33   1.1436 
+IC    1OG1 2C1  2O5  2C5    1.4047  114.66   71.63  114.71   1.4751 
+
+!     |                         |            * change charges
+!  HN-N                      HN-N
+!     |   HB1                   |   HB1
+!     |   |                     |   | *   *
+!  HA-CA--CB--OG        ==>  HA-CA--CB--OG
+!     |   |     \               |   |     \  *
+!     |   HB2    HG1            |   HB2    C1(sugar)
+!   O=C                       O=C
+!     |                         |
+
+PRES SGPB           -0.07 ! for connecting SER at the beta position
+dele atom 1HG1
+dele atom 2O1
+dele atom 2HO1
+
+GROUP
+
+ATOM 1CB   CT2      0.00     !Charge assigned by adding
+ATOM 1OG   OC301    -0.36  ! Charge from OMEA
+
+GROUP
+
+ATOM 2C1   CC3162    0.29  ! Charge from OMEA
+
+BOND 1OG 2C1
+
+!    I    J    K    L      R(IK)   T(IKJ)    PHI   T(JKL)   R(KL)
+
+!IC   1CA  1CB  1OG  2C1    0.0000  0.0000  167.06  0.0000   0.0000
+!IC   1CB  1OG  2C1  2O5    0.0000  0.0000   41.65  0.0000   0.0000
+!IC   1CB  1OG  2C1  2H1    0.0000  0.0000  164.59  0.0000   0.0000
+!IC   1OG  2C1  2O5  2C5    0.0000  0.0000  177.84  0.0000   0.0000
+
+!Thermalized IC
+IC   1CA  1CB  1OG  2C1     1.5288  114.42  160.15  116.19   1.4222 
+IC   1CB  1OG  2C1  2O5     1.5026  116.19   19.87  107.74   1.4694 
+IC   1CB  1OG  2C1  2H1     1.5026  116.19  149.79  108.46   1.1232 
+IC   1OG  2C1  2O5  2C5     1.4222  107.74  173.59  112.12   1.4637 
+
+!     |                          |
+!  HN-N                       HN-N
+!     |     OG1--HG1             |     OG1--C1(sugar)
+!     |    /                     |    /
+!  HA-CA--CB-HB          ==>  HA-CA--CB-HB
+!     |    \                     |    \
+!     |     CG2--HG21            |     CG2--HG21
+!   O=C    / \                 O=C    / \
+!     | HG21 HG22                | HG21 HG22
+
+PRES TGPB            0.02 ! for connecting THR at the beta position
+dele atom 1HG1
+dele atom 2O1
+dele atom 2HO1
+
+GROUP
+
+ATOM 1CB   CT1      0.09     !Charge assigned by adding
+ATOM 1OG1  OC301    -0.36  ! Charge from OMEA
+
+GROUP
+
+ATOM 2C1   CC3162    0.29  ! Charge from OMEA
+
+BOND 1OG1 2C1
+
+!    I    J    K    L      R(IK)   T(IKJ)    PHI   T(JKL)   R(KL)
+
+!IC   1CA  1CB  1OG1 2C1    0.0000  0.0000  167.06  0.0000   0.0000
+!IC   1CB  1OG1 2C1  2O5    0.0000  0.0000   41.65  0.0000   0.0000
+!IC   1CB  1OG1 2C1  2H1    0.0000  0.0000  164.59  0.0000   0.0000
+!IC   1OG1 2C1  2O5  2C5    0.0000  0.0000  177.84  0.0000   0.0000
+
+!Thermalized IC
+IC    1CA  1CB  1OG1 2C1    1.5466  109.42   84.79  119.34   1.4626 
+IC    1CB  1OG1 2C1  2O5    1.4452  119.34   33.16  108.68   1.4170 
+IC    1CB  1OG1 2C1  2H1    1.4452  119.34  142.21  103.58   1.0859 
+IC    1OG1 2C1  2O5  2C5    1.4626  108.68  167.53  109.99   1.4643 
+
+PRES NGLB          0.00 ! og make model compound 3 by adding equat
+dele atom 1HD21           !
+dele atom 2O1             !  O-methyl to C1; apply to THP2
+dele atom 2HO1            !  O-methyl to C1; apply to THP2
+
+GROUP                   
+ATOM 2C1   CC3162    0.27   !       |
+ATOM 2H1   HCA1      0.09   !    HN-N  
+ATOM 1ND2  NC2D1    -0.47   !       |   HB1 OD1    HD21 (cis to OD1)
+ATOM 1HD22 HCP1      0.31   !       |   |   ||    /
+ATOM 2C5   CC3163    0.11   !    HA-CA--CB--CG--ND2
+ATOM 2H5   HCA1      0.09   !       |   |         \
+ATOM 2O5   OC3C61   -0.40   !       |   HB2        HD22 (trans to OD1) 
+GROUP                       !     O=C  
+ATOM 1CG   CC2O1     0.510  !       |
+ATOM 1OD1  OC2D1    -0.510  !   
+GROUP                       !                          |              Sugar
+ATOM 1CB   CC321    -0.180  !                       HN-N              |  
+ATOM 1HB1  HCA2      0.090  !                          |   HB1 OD1    C1   (cis to OD1)
+ATOM 1HB2  HCA2      0.090  !                          |   |   ||    /
+                            !                       HA-CA--CB--CG--ND2
+                            !                          |   |         \
+                            !                          |   HB2        HD22 (trans to OD1) 
+                            !                        O=C  
+                            !                          |
+BOND 2C1  1ND2              !
+IMPR 1ND2  1CG  2C1  1HD22  !
+
+
+!    I     J    K    L      R(IK)   T(IKJ)    PHI   T(JKL)   R(KL)
+!IC   1CB   1CG  1ND2  2C1     1.4000  120.00  180.00  120.00   1.4000  
+!IC   1CG   1ND2 2C1   2O5     1.4000  120.00 -120.00  120.00   1.4000  
+!IC   1HD22 1ND2 2C1   2O5     1.4000  120.00    0.00  120.00   1.4000
+!IC   2C5   2O5  2C1   2H1     1.4773  111.49   60.14  108.74   1.0555
+!IC   1ND2  2C1  2O5   2C5     1.4000  120.00  180.00  120.00   1.4000  
+
+!Thermalized
+IC   1CB   1CG  1ND2  2C1         1.5479  118.86 -175.68  128.70   1.3783
+IC   1CG   1ND2 2C1   2O5         1.3126  128.70  -70.91  104.39   1.4413
+IC   1HD22 1ND2 2C1   2O5         1.0117  111.10  108.04  104.39   1.4413
+IC   2C5   2O5  2C1   2H1         1.4242  116.13   41.53  110.40   1.1136
+IC   1ND2  2C1  2O5   2C5         1.3783  104.39  165.66  116.13   1.4242
+
+PRES NGLA          0.00 ! og make model compound 3 by adding equat
+dele atom 1HD21           !
+dele atom 2O1             !  O-methyl to C1; apply to THP2
+dele atom 2HO1            !  O-methyl to C1; apply to THP2
+
+GROUP
+ATOM 2C1   CC3162    0.27   !       |
+ATOM 2H1   HCA1      0.09   !    HN-N
+ATOM 1ND2  NC2D1    -0.47   !       |   HB1 OD1    HD21 (cis to OD1)
+ATOM 1HD22 HCP1      0.31   !       |   |   ||    /
+ATOM 2C5   CC3163    0.11   !    HA-CA--CB--CG--ND2
+ATOM 2H5   HCA1      0.09   !       |   |         \
+ATOM 2O5   OC3C61   -0.40   !       |   HB2        HD22 (trans to OD1)
+GROUP                       !     O=C
+ATOM 1CG   CC2O1     0.510  !       |
+ATOM 1OD1  OC2D1    -0.510  !
+GROUP                       !                          |              Sugar
+ATOM 1CB   CC321    -0.180  !                       HN-N              |
+ATOM 1HB1  HCA2      0.090  !                          |   HB1 OD1    C1   (cis to OD1)
+ATOM 1HB2  HCA2      0.090  !                          |   |   ||    /
+                            !                       HA-CA--CB--CG--ND2
+                            !                          |   |         \
+                            !                          |   HB2        HD22 (trans to OD1)
+                            !                        O=C
+                            !                          |
+BOND 2C1  1ND2              !
+IMPR 1ND2  1CG  2C1  1HD22  !
+
+
+!    I     J    K    L      R(IK)   T(IKJ)    PHI   T(JKL)   R(KL)
+!IC   1CB   1CG  1ND2  2C1     1.4000  120.00  180.00  120.00   1.4000
+!IC   1CG   1ND2 2C1   2O5     1.4000  120.00 -180.00  120.00   1.4000
+!IC   1HD22 1ND2 2C1   2O5     1.4000  120.00    0.00  120.00   1.4000
+!IC   2C5   2O5  2C1   2H1     1.4773  111.49 -180.14  108.74   1.0555
+!IC   1ND2  2C1  2O5   2C5     1.4000  120.00   60.00  120.00   1.4000
+
+!Thermalized
+IC    1CB   1CG  1ND2  2C1         1.5278  116.61  179.92  128.01   1.4551
+IC    1CG   1ND2 2C1   2O5         1.3341  128.01  168.99  103.48   1.4210
+IC    1HD22 1ND2 2C1   2O5         0.9855  112.93  -12.55  103.48   1.4210
+IC    2C5   2O5  2C1   2H1         1.4292  117.47 -174.95  108.88   1.0797
+IC    1ND2  2C1  2O5   2C5         1.4551  103.48   75.29  117.47   1.4292
+
+END

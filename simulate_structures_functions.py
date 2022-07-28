@@ -55,14 +55,7 @@ acemd_license = "SG_LICENSE_FILE=28000@tolkien.prib.upf.edu"
 dowserpath = "/usr/local/dowser/bin/dowser"
 
 # Usernames and passwords for Paramchem
-#username = 'euglenoid'
-#username = 'stendoroid'
-#username = 'paramoid'
-username = 'ameboid'
-#password = 'euglenoid-123'
-#password = 'stendoroid-123'
-#password = 'paramoid-123'
-password = 'ameboid-123'
+
 
 
 # Lists of GPCR pdbs
@@ -90,7 +83,12 @@ blacklist = detergent_blacklist.union(glucids_blacklist)
 # Ligands for which parameters are not required (already exist in main CGenff)
 AA={"LYR","ALA","ARG","ASN","ASP","CYS","GLU","GLN","GLY","HIS","ILE","LEU","LYS","MET","PHE","PRO","SER","THR","TRP","TYR","VAL"}
 nucl = {"AMP","ADP","ATP","GMP","GDP","GTP","TMP","TDP","TTP","CMP","CDP","CTP"}
-noparams_ligs = {'RET', 'CLR'}.union(AA).union(nucl)
+std_modres = {"SEP",'TPO'}
+noparams_ligs = {'RET', 'CLR'}.union(AA).union(nucl).union(std_modres)
+
+# Proteins containing this words in their name can be assumed to be GPCRs
+gpcr_names = ['ceptor','rhodopsin','smoothened']
+gpcr_uniprots = ['G1SGD4']
 
 # Simulation parameters
 timestep = 4 # Simulation timestep (femtoseconds)
@@ -110,12 +108,13 @@ toposfilenames = ['General_top_params/topologies/top_all36_prot.rtf',
                   'General_top_params/topologies/top_all36_na.rtf',
                   'General_top_params/topologies/top_all36_lipid.rtf',
                   'General_top_params/topologies/top_all36_carb.rtf',
-                  'David_top_params/topologies/toppar_all36_lipid_cholesterol_CLR.rtf',
-                  'David_top_params/topologies/my_patches.rtf',
-                  'Specific_top_params/topologies/toppar_all36_prot_retinol.rtf',
                   'Specific_top_params/topologies/toppar_all36_lipid_ether.rtf',
                   'Specific_top_params/topologies/toppar_water_ions.rtf',
-                  'Specific_top_params/topologies/toppar_all36_na_nad_ppi.rtf'
+                  'Specific_top_params/topologies/toppar_all36_na_nad_ppi.rtf',
+                  'Specific_top_params/topologies/toppar_all36_prot_na_combined.rtf',
+                  'David_top_params/topologies/my_patches.rtf',
+                  'David_top_params/topologies/toppar_all36_lipid_cholesterol_CLR.rtf',
+                  'David_top_params/topologies/toppar_all36_prot_retinol.rtf',
                  ]
 
 # Parameters filenames and paths
@@ -125,17 +124,19 @@ paramsfilenames = [
                    'General_top_params/parameters/par_all36_lipid.prm',
                    'General_top_params/parameters/par_all36_carb.prm',
                    'Specific_top_params/parameters/toppar_all36_lipid_cholesterol.prm',
-                   'Specific_top_params/parameters/toppar_all36_prot_retinol.prm',
                    'Specific_top_params/parameters/toppar_all36_lipid_ether.prm',
                    'Specific_top_params/parameters/toppar_water_ions.prm',
                    'Specific_top_params/parameters/toppar_all36_na_nad_ppi.prm',
+                   'Specific_top_params/parameters/toppar_all36_prot_na_combined.prm',
+                   'Specific_top_params/parameters/toppar_all36_prot_retinol.prm',
                    'David_top_params/parameters/fake_dihedrals.prm',
                    'David_top_params/parameters/modres_params.prm',
                    'David_top_params/parameters/modres_crossterm.prm',
                   ]
 
 # Stream files (topology+parameters)
-streamsfilenames = []
+streamsfilenames = [
+                ]
 
 # Url for submissions
 # mainurl = 'http://localhost:8000' 
@@ -326,7 +327,7 @@ def get_GPCRnames(pdbset):
 
     return GPCRdata
 
-def create_files(mymol, smalmol, name, smalmol_folder, hydrogenate_ligand=True):
+def create_files(pdbfile, smalmol, name, smalmol_folder, hydrogenate_ligand=True):
 
     #filenames
     smalmol_pdb = "%s%s_%s.pdb"%(smalmol_folder,name,smalmol) 
@@ -335,13 +336,20 @@ def create_files(mymol, smalmol, name, smalmol_folder, hydrogenate_ligand=True):
     
     # Skip if mol2file already exists
     if os.path.exists(smalmol_mol2):
-        #os.remove(smalmol_mol2)
         return
         pass
 
+    # Load full structure of system
+    mymol = Molecule(pdbfile)
+
+
+    # Get resid of first instance of smalmol (we only need one molecule of smaloml, regardless of how many there are in the system)
+    resid = mymol.get('resid', 'resname '+smalmol)[0]
+
     # Write PDB file of smalmol 
     os.makedirs(smalmol_folder, exist_ok=True)
-    mymol.write(smalmol_pdb, 'resname '+smalmol)
+    mymol.write(smalmol_pdb, 'resname %s and resid %s'%(smalmol,str(resid)))
+
     # Convert it to mol2file, and add Hydrogens to molecule (using chimera)
     if hydrogenate_ligand:
         chimera_addH(smalmol_pdb, smalmol_mol2, smalmol_script, smalmol)
@@ -429,15 +437,18 @@ def ligand_dictionary(struc_dict, ligandsdict_path, modres_path, basepath, black
 
             # Load curated structure of full system
             pdbfile = struc_dict[pdbcode]
-            mymol = Molecule(pdbfile) 
+            if not os.path.exists(pdbfile):
+                print("Curated file for %s not avaliable. Ligands could not be obtained"%pdbcode)
+                continue
 
             # For each ligand or modres, create a mol2 file
             for lig in ligandsdict[pdbcode]:
+                print(lig, pdbcode)
                 if lig not in noparams_ligs: # There are standard parameters for these two
-                    create_files(mymol, lig, pdbcode, '%stoppar/Ligands/%s/'%(basepath,lig), hydrogenate_ligands)
+                    create_files(pdbfile, lig, pdbcode, '%stoppar/Ligands/%s/'%(basepath,lig), hydrogenate_ligands)
             if pdbcode in modresdict:
                 for modres in modresdict[pdbcode]:
-                    create_files(mymol, modres, pdbcode, '%stoppar/mod_residues/%s/'%(basepath,modres), hydrogenate_ligands)
+                    create_files(pdbfile, modres, pdbcode, '%stoppar/mod_residues/%s/'%(basepath,modres), hydrogenate_ligands)
 
         except FileNotFoundError as e:
             print("Error: %s"%e)
@@ -559,15 +570,15 @@ def save_smalmol_mol2(input_dict, basepath, hydrogenate_ligands=True):
     # For everyone of the files we want to simulate
     ligandsdict = {}
     for entry in input_dict:
-        mymol = Molecule(basepath+entry['pdbfile'])
+        pdbfile = basepath+entry['pdbfile']
         ligandsdict[entry['name']] = {}
         # For every small molecule in this system
         for smalmol in entry['ligands']:
             ligandsdict[entry['name']][smalmol['resname']] = [smalmol['name'],smalmol['covalently_bound']]
-            create_files(mymol,smalmol['resname'],entry['name'], '%stoppar/Ligands/%s/'%(basepath,smalmol['resname']), hydrogenate_ligands)
+            create_files(pdbfile,smalmol['resname'],entry['name'], '%stoppar/Ligands/%s/'%(basepath,smalmol['resname']), hydrogenate_ligands)
         # For every modified residue in this system
         for smalmol in entry['modres']:
-            create_files(mymol,smalmol,entry['name'], '%stoppar/mod_residues/%s/'%(basepath,modres), hydrogenate_ligands)
+            create_files(pdbfile,smalmol,entry['name'], '%stoppar/mod_residues/%s/'%(basepath,modres), hydrogenate_ligands)
 
     modresdict= { a['name'] : a['modres'] for a in input_dict}
     pdbfilesdict= { a['name'] : a['pdbfile'] for a in input_dict}
@@ -844,7 +855,9 @@ def modres_covlig_toppar(pdbcode, modres, modrespath, covlig = False, pdbfiles =
     os.makedirs(modrespath, exist_ok = True)
 
     # Skip existing ones
+    print(modrespath+pdbcode+'_toppar.str')
     if os.path.exists(modrespath+pdbcode+'_toppar.str'):
+        print("toppar file for %s in %s already exists. Skipping"%(modres, pdbcode))
         return
         pass
 
@@ -857,6 +870,10 @@ def modres_covlig_toppar(pdbcode, modres, modrespath, covlig = False, pdbfiles =
     # Find out if this structure has hallogens
     has_halo = bool(len(main_pdb.get('name', 'element Cl Br I and not ion')))
     
+    # To avoid parametrization problems, rename repeated molecules of our modres (aka: only one modres molecule per system)
+    modres_resid = main_pdb.get('resid', 'resname '+modres)[0]
+    main_pdb.set('resname', 'XYX', 'resname %s and not resid %d'%(modres, modres_resid))
+
     # If covalent ligand, change resname of ligand+boundresidue to COV
     if covlig:
         main_pdb = renumber_covlig(main_pdb, modres)
@@ -1329,6 +1346,14 @@ def get_opm(pdbcode):
                        .replace('true', 'True')\
                        .replace('false','False')\
                        .replace('null','None'))
+    # If the PDBcode has no avaliable OPM structure, use a random pdbcode as reference (4EJ4 in this case)
+    if not len(response_dict['objects']):
+        searchlink = 'https://lomize-group-opm.herokuapp.com//primary_structures?search=4EJ4&sort=&pageSize=100'
+        response_dict=eval(requests.get(searchlink).content.decode('UTF-8')\
+                           .replace('true', 'True')\
+                           .replace('false','False')\
+                           .replace('null','None'))
+    
     thickness = response_dict['objects'][0]['thickness']
     opm_id = response_dict['objects'][0]['id']
 
@@ -1408,7 +1433,7 @@ def renumber_resid_vmd(mol,sel,by=3,start=1):
         resnames = set(mol.get('resname',sel=sel))
         for resname in resnames:
             lsel = '(%s) and (resname %s)' % (sel,resname)
-            viewer = renumber_resid_by_resid_vmd(lsel,mol,viewer,start=start)       
+            viewer = renumber_resid_by_resid_vmd(lsel,mol,viewer,start=start)
     viewer.send('animate write pdb {%s} waitfor all top;exit' % tmpout.name)
     newmol = Molecule(tmpout.name)
     tmpout.close()
@@ -1631,7 +1656,7 @@ def covalent_ligands(mol, pdbcode, ligandsdict):
             mol.set('chain', protres_chain, 'resname COV')
             mol.set('segid', 'COV', 'resname COV')
             mol.remove('resname COV and element H')
-                
+
     return (mol, covligs)
 
 def fix_and_prepare_input(inputmol,pdbcode,modresdict,first='NTER',last='CTER'):
@@ -1666,6 +1691,9 @@ def fix_and_prepare_input(inputmol,pdbcode,modresdict,first='NTER',last='CTER'):
     mol.set('name','HG1',sel='resname CYS and name HG')
     mol.set('name','HN',sel='resname HIS and name H')
     
+    # Remove H from Retinols and Cholesterols (they will be added later during hte building process)
+    mol.remove("element H and resname CLR RET")
+
     # Assign 'Cl' to element for Cl atoms (some chlorine atoms have 'C' as element for some reason)
     mol.set('element', 'CL', 'name CL CL1')
 
@@ -1706,6 +1734,9 @@ def fix_and_prepare_input(inputmol,pdbcode,modresdict,first='NTER',last='CTER'):
     # Replace possible CYM residues (we dont want ionized cysteins)
     mol.set('resname', 'CYS', 'resname CYM')
 
+    # Remove RET hydrogens if any found
+    mol.remove('resname RET and element H')
+
     # Find modres pdbcodes in this system
     if pdbcode in modresdict:
         modres_string = ' '.join(modresdict[pdbcode])
@@ -1715,7 +1746,6 @@ def fix_and_prepare_input(inputmol,pdbcode,modresdict,first='NTER',last='CTER'):
     prot_sel = '(protein or resname '+aa+modres_string+')'
     peplig_sel = '(segid PEP L L0 L1 L2)'
     mol.set('segid', 'PX', sel=prot_sel+' and not '+peplig_sel)
-    mol.set('chain','P',sel='segid PX')
     mol = autoSegment(mol,sel='segid PX', basename = 'P')
     # Establish segids for ligands (LIG for small mol and LX for peptidic)
     mol.set('segid','LIG',sel='not (water or ions or '+prot_sel+')')
@@ -1729,6 +1759,11 @@ def fix_and_prepare_input(inputmol,pdbcode,modresdict,first='NTER',last='CTER'):
     mol = renumber_resid(mol,'water',by=1)
     mol = renumber_resid(mol,'ions',by=1)
     mol = renumber_resid(mol,'segid LIG',by=2)
+
+    # Set 'R' as the chain id for the GPCR
+    recsegs = get_receptorsegs_frompdb(pdbcode, mol)
+    mol.set('chain','T','chain R') # Ensure nothing else has a R chain
+    mol.set('chain','R','segid '+recsegs)
 
     # Delete waters within 1A of Ligand
     mol.remove('same residue as (water and within 1 of (segid LIG))')
@@ -1748,6 +1783,14 @@ def fix_and_prepare_input(inputmol,pdbcode,modresdict,first='NTER',last='CTER'):
     protsegids = set(mol.get('segid',sel='protein'))
     return (mol,protsegids)
 
+def make_apo(mol,recChain):
+    """
+    Remove all ligands or complementary proteins from system
+    """
+    mol.remove('not (protein or water or ion) or element Na')
+    mol.remove('protein and not (chain '+recChain+')')
+    prot_segids = set(mol.get('segid','protein'))
+    return(mol, prot_segids)
 
 def segchain_json(sys_mol_fixed, sysname, mystrucpath, receptor_segids_sys):
     """
@@ -1965,6 +2008,7 @@ def get_caps(prot_segids, mol_solvated):
     """
     caps_receptor = ['first ACE', 'last CT3']
     caps_not_receptor = ['first NTER', 'last CTER']
+    nocaps = ['first none', 'last none']
     caps = dict()
     aa= ' LYR ALA ARG ASN ASP CYS GLU GLN GLY HIS ILE LEU LYS MET PHE PRO SER THR TRP TYR VAL ASH CYM CYX GLH HID HIE HIP HSD HSE HSP LYN TYM AR0'
     for segid in prot_segids:
@@ -1973,18 +2017,31 @@ def get_caps(prot_segids, mol_solvated):
         min_res = str(min(resids))
         max_res = str(max(resids))
         # If first residue is a regular residue, cap it
-        if len(mol_solvated.get('name', 'resname %s and segid %s and resid %s and protein'%(aa,segid,min_res)))>1:
+        resname_min = mol_solvated.get('resname', 'segid %s and resid %s and protein'%(segid,min_res))[0] 
+        resname_max = mol_solvated.get('resname', 'segid %s and resid %s and protein'%(segid,max_res))[0]
+        if resname_min in aa:
             if segid.startswith('P'):
                 caps[segid].append(caps_receptor[0])
             elif segid.startswith('L'):
-                caps[segid].append(caps_not_receptor[0])                
+                caps[segid].append(caps_not_receptor[0])
+        else: 
+            caps[segid].append(nocaps[1])
         # If last residue is a regular residue, cap it
-        if len(mol_solvated.get('name', 'resname %s and segid %s and resid %s and protein'%(aa,segid,max_res)))>1:
+        if resname_max in aa:
             if segid.startswith('P'):
                 caps[segid].append(caps_receptor[1])
             elif segid.startswith('L'):
                 caps[segid].append(caps_not_receptor[1])
+        else: 
+            caps[segid].append(nocaps[1])
+
+    # Explicitly specify that vmd DOES NOT HAVE to cap non-protein ligands...
+    ligsegids = mol_solvated.get('segid','not (protein or lipid or water or ion)')
+    for segid in ligsegids:
+        caps[segid] = nocaps
+
     return caps
+
 
 def cgenff_params(mol, topparpath):
     """
@@ -2027,7 +2084,7 @@ def extra_parameters(pdbcode, ligandsdict, modresdict, blacklist, covligs, basep
     if pdbcode in modresdict:
         topparname = 'legacy_toppar.str' if has_halo else 'toppar.str'
         for modres in modresdict[pdbcode]:
-            ligstreams.append('%stoppar/mod_residues/%s/%s'%(basepath,modres,topparname))                        
+            ligstreams.append('%stoppar/mod_residues/%s/%s_%s'%(basepath,modres,pdbcode,topparname))                        
 
     return modresstreams+ligstreams
 
@@ -2168,11 +2225,12 @@ def mutate(mol, pdbcode, equildir, mutdir, mutations, basepath, topparpath):
                                caps=caps,
                                saltconc=0.15)
 
-def define_equilibration(const_sels, simtime = 40, minimize = 5000):
-    restrs = []
-    for const_sel in const_sels:
-        restr = AtomRestraint(const_sel, 2, [(1,"0"),(1,"%dns" % int(simtime*0.5)),(0,"%dns" % int(simtime*0.75))], "xyz")
-        restrs.append(restr) 
+def define_equilibration(const_sel = 'protein and name C CA N O or not (protein or lipid or water or ions ) and noh or segid ION WAT and noh', simtime = 40, minimize = 5000):
+    """
+    Default restraint selection includes main-chain atoms, crystal waters/ions and ligand molecules
+    """
+
+    restrs = [AtomRestraint(const_sel, 2, [(1,"0"),(1,"%dns" % int(simtime*0.5)),(0,"%dns" % int(simtime*0.75))], "xyz")]
     md = Equilibration()
     md.restraints = restrs
     md.runtime = simtime
@@ -2183,7 +2241,6 @@ def define_equilibration(const_sels, simtime = 40, minimize = 5000):
     md.acemd.minimize = minimize
     md.acemd.restart = 'off'
     md.acemd.timestep = 2
-    md.restraints = restr
     md._version = 3
     return md
 
@@ -2411,9 +2468,8 @@ def get_uniprot_alignment(mymol, segpos, uniprotkbac, isoform, entry_segs):
 
     # Obtain sequence of uniprotkbac
     uniprot_id = "%s-%s"%(uniprotkbac,isoform) if isoform else uniprotkbac 
-    response = requests.get("https://www.uniprot.org/uniprot/?query=accession:%s&sort=score&columns=sequence&format=tab"%uniprotkbac)
-    uniseq = response.text.split('\n')[1]
-    
+    response = requests.get("https://rest.uniprot.org/uniprotkb/"+uniprotkbac+".fasta")
+    uniseq = ''.join(response.text.split('\n')[1:-1])
     # Match this uniprot to our protein segments, and save matches
     for seg,myseq in mymol.sequence().items():
         
@@ -2455,6 +2511,74 @@ def get_uniprot_alignment(mymol, segpos, uniprotkbac, isoform, entry_segs):
                                 'end' : segpos[seg][ending]})
 
     return(entry_segs) 
+
+def get_receptorsegs_frompdb(pdbcode, mymol):
+    """
+    Get informarion of the system specified in the pdbcode from the RCSB-PDB webpage.
+    In this one only protein information, nothing about ligands
+    """
+
+    #Check which chains from the original PDB structure are preserved in mymol structure
+    (chain_present, segtochain) = check_chains(pdbcode, mymol)
+    
+    # Get residue names in our system
+    allresnames = set(mymol.resname)
+    
+    # Extract information from pdb webpage using api
+    ligdict = dict()
+    protdict = dict()
+    datadict = dict()
+    entry_segs = dict()
+    segpos = dict()
+
+    # Obtain dictionary of sorted protein resids in each segment
+    for seg in set(mymol.get('segid', 'protein')):
+        segpos[seg] = list(dict.fromkeys(mymol.get('resid', 'segid '+seg)))
+    
+    # Get information from PDB api
+    pdbdict = requests.get('https://data.rcsb.org/graphql?query={\
+        entry(entry_id: "'+pdbcode+'") {\
+            polymer_entities {\
+                entity_poly{pdbx_strand_id}\
+                rcsb_polymer_entity{pdbx_description}\
+                rcsb_polymer_entity_align{\
+                    aligned_regions {length}\
+                    reference_database_accession \
+                    reference_database_isoform \
+                }\
+            }\
+        }\
+    }').json()['data']
+                    
+    # Extract protein chains information
+    receptor_segs=""
+    for poly in pdbdict['entry']['polymer_entities']:
+
+        # Determine if this polymer (chain) is a GPCR
+        uniname = poly['rcsb_polymer_entity']['pdbx_description'].lower()
+        chainIds = poly['entity_poly']['pdbx_strand_id'].split(',')
+        isgpcr = any([(name in uniname) for name in gpcr_names])
+        # Check list of uniprots that are GPCR but have no "gpcr-name" (e.g.: uncharacterized protein)
+        if poly['rcsb_polymer_entity_align']:
+            for alreg in poly['rcsb_polymer_entity_align']:
+                uniprotkbac = alreg['reference_database_accession']
+                if any([(name == uniprotkbac) for name in gpcr_uniprots]):
+                    isgpcr = True
+        
+        # Find segments of Receptor protein
+        if isgpcr:
+            # Get uniprots present in the system, and their corresponbding segments
+            for alreg in poly['rcsb_polymer_entity_align']:
+                uniprotkbac = alreg['reference_database_accession']
+                isoform = alreg['reference_database_isoform']
+                uniprot_id = "%s-%s"%(uniprotkbac,isoform) if isoform else uniprotkbac 
+                entry_segs = get_uniprot_alignment(mymol, segpos, uniprotkbac, isoform, entry_segs)
+                # If there was an alignment match
+                if uniprotkbac in entry_segs:
+                    for segchain in entry_segs[uniprotkbac]:
+                        receptor_segs += segchain['segid']+' '
+
+    return(receptor_segs)
 
 def get_pdb_info(pdbcode, mymol, ligandsdict):
     """
@@ -2542,8 +2666,16 @@ def get_pdb_info(pdbcode, mymol, ligandsdict):
         # Determine if this polymer (chain) is a GPCR
         uniname = poly['rcsb_polymer_entity']['pdbx_description'].lower()
         chainIds = poly['entity_poly']['pdbx_strand_id'].split(',')
-        isgpcr = (('receptor' in uniname) or ('rhodopsin' in uniname)) 
+        isgpcr = any([(name in uniname) for name in gpcr_names]) 
         
+        # Check list of uniprots that are GPCR but have no "gpcr-name" (e.g.: uncharacterized protein)
+        if poly['rcsb_polymer_entity_align']:
+            for alreg in poly['rcsb_polymer_entity_align']:
+                uniprotkbac = alreg['reference_database_accession']
+                if any([(name == uniprotkbac) for name in gpcr_uniprots]):
+                    isgpcr = True
+
+
         # Get uniprots present in the system, and their corresponbding segments
         for alreg in poly['rcsb_polymer_entity_align']:
             uniprotkbac = alreg['reference_database_accession']
@@ -2563,7 +2695,11 @@ def get_pdb_info(pdbcode, mymol, ligandsdict):
                 
     return (protdict,ligdict,segtochain,method_id)
 
-def login(s):
+def login(s, username='XXXXXXXXXXXX', password="XXXXXXXXXXXX"):
+
+    if (username=='XXXXXXXXXXXX') or (password=="XXXXXXXXXXXX"):
+        raise Exception("please define arguments 'username' and 'password' for loging into GPCRmd")
+
     # Login into GPCRmd 
     # Will you go, lassie, go? And we'll all gooo toghetheeeer
     headers = {
@@ -2571,8 +2707,8 @@ def login(s):
         'Referer': mainurl+'/accounts/login/',
     }
     datalogin = {
-        'username': 'david',
-        'password': 'Ameboid',
+        'username': username,
+        'password': password,
         'next' : '/accounts/memberpage/',
         'csrfmiddlewaretoken' : 'ZYa0n3mNBjwBMlpDh4lnbBJQdi7GdlP4'
     }
@@ -2646,9 +2782,6 @@ def get_pdbstruc_info(pdbcode, mymol, ligandsdict, blacklist, apo=False):
     Mainly uniprot sequences, chainIDs and uniprot codes for the chains
     In this case no ligand information is taken
     """
-    
-    # Make string for selecting lignads in rcsb's api
-    gpcr_names = ['ceptor','rhodopsin','smoothened']
     
     #Check which chains from the original PDB structure are preserved in mymol structure
     (chain_present, segtochain) = check_chains(pdbcode, mymol)
@@ -2728,7 +2861,14 @@ def get_pdbstruc_info(pdbcode, mymol, ligandsdict, blacklist, apo=False):
         pdbseq = poly['entity_poly']['pdbx_seq_one_letter_code']
         chainIds = poly['entity_poly']['pdbx_strand_id'].split(',')
         isgpcr = any([(name in uniname) for name in gpcr_names]) 
-        
+
+        # Check list of uniprots that are GPCR but have no "gpcr-name" (e.g.: uncharacterized protein)
+        if poly['rcsb_polymer_entity_align']:
+            for alreg in poly['rcsb_polymer_entity_align']:
+                uniprotkbac = alreg['reference_database_accession']
+                if any([(name == uniprotkbac) for name in gpcr_uniprots]):
+                    isgpcr = True
+
         # Extract name of the system from pdb info
         if isgpcr:
             uninames = uniname.split(',')

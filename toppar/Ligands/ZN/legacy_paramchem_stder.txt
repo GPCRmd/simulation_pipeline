@@ -1,3 +1,0 @@
-Now processing molecule ZN ...
-attype warning: element not supported;
-skipped molecule.

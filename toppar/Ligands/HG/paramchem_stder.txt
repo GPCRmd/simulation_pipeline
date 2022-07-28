@@ -1,3 +1,0 @@
-readmol2 warning: unrecognized element "Hg"
-Now processing molecule HG ...
-attype warning: dummy atom not explicitly supported

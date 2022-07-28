@@ -1,1 +1,0 @@
-readmol2 warning: atom or bond number too high; skipped molecule GLU .

@@ -1,3 +1,0 @@
-Now processing molecule NA ...
-attype warning: element not supported;
-skipped molecule.

@@ -1,1 +1,0 @@
-readmol2 warning: skipped empty mol2 file.
