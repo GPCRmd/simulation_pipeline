@@ -23,6 +23,7 @@ from MDAnalysis.analysis import rms
 #import pymol
 
 #HTMD things
+os.environ["HTMD_NONINTERACTIVE"] = "1"
 import htmd
 from htmd.ui import *
 from moleculekit.tools.sequencestructuralalignment import sequenceStructureAlignment
@@ -49,8 +50,8 @@ gpcrdb_dict = { entry['pdb_code'] : entry for entry in gpcrdb_data }
 
 #Path to ACEMD in computation node and ACEMD license
 acemd_path = "/opt/acellera/miniconda3/bin/acemd3"
-acemd_license = "SG_LICENSE_FILE=28000@tolkien.prib.upf.edu"
-
+# acemd_license = "SG_LICENSE_FILE=28000@tolkien.prib.upf.edu"
+acemd_license = "ACELLERA_LICENSE_SERVER=28000@tolkien.prib.upf.edu"
 # Path to dowser
 dowserpath = "/usr/local/dowser/bin/dowser"
 
@@ -71,6 +72,8 @@ water_thickness = 20 # Size in Z-axis of the solvation water layers
 membrane_distance = 20 # Distance between the pbc box and the rest of the system atoms, to be filled with membrane
 water_margin = 4 # Distance in the Z-axis to be penetrated by the solvation box 
                  # to avoid the formation of a V O I D between the system and the solvation boxes
+lipidlike_blacklist = {'OLA','OLB','BOG','OLC','PLM','HTG','LPP','PEF','2CV','SOG','TWT','STE','LMT',
+                       'MPG','DGA','1WV','POV','FLC','PGW', 'PC1','LDA','J40','BNG'}
 detergent_blacklist = {'OLA','OLB','PEG','GOL','BOG','OLC','P6G','P33','UNL','UNX','PLM','HTG',
                        '12P','LPP','PEF','2CV','SOG','TWT','PGE','SO4','STE','LMT','ACT','ACE',
                       'MHA','CIT','1PE','MPG','EPE','PG4','DGA','PO4','DMS','TAR','1WV','EDO',
@@ -267,7 +270,6 @@ def auld_download_GPCRdb_structures(pdb_set, strucpath):
                 zippy = zipfile.ZipFile(io.BytesIO(response.content))
                 zippy.extractall(mystrucpath)
 
-
 def download_GPCRdb_structures(pdb_set, strucpath):
     """
     Download (if they exist) the refined GPCRdb structures for the pdb codes in the pdb_set.
@@ -443,7 +445,6 @@ def ligand_dictionary(struc_dict, ligandsdict_path, modres_path, basepath, black
 
             # For each ligand or modres, create a mol2 file
             for lig in ligandsdict[pdbcode]:
-                print(lig, pdbcode)
                 if lig not in noparams_ligs: # There are standard parameters for these two
                     create_files(pdbfile, lig, pdbcode, '%stoppar/Ligands/%s/'%(basepath,lig), hydrogenate_ligands)
             if pdbcode in modresdict:
@@ -758,7 +759,7 @@ def get_lig_toppar(ligandsdict, basepath, username, password, pdbfiles = {}):
                                 
             # IF is a covalent-bound ligand
             if ligcov:
-                modres_covlig_toppar(pdbcode, ligcode, ligpath, covlig = True, pdbfiles = pdbfiles)
+                modres_covlig_toppar(pdbcode, ligcode, ligpath, username, password, covlig = True, pdbfiles = pdbfiles)
             else:
                 paramchem(username,password,ligpath,ligcode,pdbcode)
 
@@ -825,7 +826,7 @@ def get_modres_toppar(modresdict, basepath, username, password, pdbfiles={}):
         # For each PDB structure, iterate on its modified residues
         for modres in modresdict[pdbcode]:
             modrespath = basepath+'toppar/mod_residues/'+modres+'/'
-            modres_covlig_toppar(pdbcode, modres, modrespath, pdbfiles)
+            modres_covlig_toppar(pdbcode, modres, modrespath, username, password, pdbfiles)
 
 
 def renumber_covlig(mol, lig):
@@ -842,7 +843,7 @@ def renumber_covlig(mol, lig):
     return(mol)
 
 
-def modres_covlig_toppar(pdbcode, modres, modrespath, covlig = False, pdbfiles = {}):
+def modres_covlig_toppar(pdbcode, modres, modrespath, username, password, covlig = False, pdbfiles = {}):
     """
     Prepare residue to be parameterized, send it to paramchem, and adjust its topology
     """
@@ -1082,7 +1083,7 @@ def needs_sodium(gpcrdb_dict, pdbcode):
     family = gpcrdb_dict[pdbcode]['family'] 
     # Gess if this structure needs or not a sodium
     sod=True
-    if not (family.startswith('001')) or (family == '001_002_023') : # If not a class-A gpcr OR is a orexin
+    if not (family.startswith('001')) or (family.startswith('001_002_023')) : # If not a class-A gpcr OR is a orexin
         sod = False
     elif len(ligands) == 0: # If apoform, do not add the ion (we want to see how it enters)
         sod = False
@@ -1141,28 +1142,27 @@ def find_state_struct(pdbfile, gclass, activation_thresholds):
     else:
         with open(outfile, 'r') as handle:
             state = handle.read()
-        print(state)
     return(state)
 
-def internal_waters(mystrucfolder, pdbcode, gpcrdb_dict, apo=False, pdbpath=False,sod="autoselect",chain=False):
+def internal_waters(pdbpath, pdbcode, gpcrdb_dict, apo=False, sod="autoselect",chain=False):
     """
     Place internal waters and E2x50 sodium in GPCR structure using homolwat online tool
     """
 
     sod = needs_sodium(gpcrdb_dict, pdbcode)
 
+    # Set names 
+    name = os.path.splitext(pdbpath)[0]
+
     # Check if there is already a watered structure here
-    watered_filename = (glob(mystrucfolder+'*_apoHW.pdb') if apo else glob(mystrucfolder+'*_HW.pdb'))
-    if len(watered_filename) > 0:
+    watered_filename = name+'_apoHW.pdb' if apo else name+'_HW.pdb'
+    if os.path.exists(watered_filename) > 0:
         print("Structure %s already has a watered version. Skipping..." % pdbcode)
-        #return ( sod, watered_filename[0])
+        return ( sod, watered_filename[0])
     else:
         print("Adding internal waters to structure")
 
     #Load pdb file
-    if not pdbpath:
-        pdbpath = glob(mystrucfolder+'*GPCRdb.pdb')[0]
-    name = os.path.basename(os.path.splitext(pdbpath)[0])
     pdbfiles = {"file" : hetatm_nucleotides(pdbpath, name)} 
 
     # Open web session
@@ -1226,7 +1226,6 @@ def internal_waters(mystrucfolder, pdbcode, gpcrdb_dict, apo=False, pdbpath=Fals
         # Unzip and extract watered strucutre file
         req = response_download.request
         water_lines = []
-        watered_filename = mystrucfolder + query_name_nofilext+apofix+"HW.pdb"
         if response_download.ok:
             zippy = zipfile.ZipFile(io.BytesIO(response_download.content))
             zippy.extract(query_name_nofilext+"_HW.pdb", path='./')
@@ -1342,28 +1341,19 @@ def get_opm(pdbcode):
     
     # Search pdb code in OPM database, and take thickness and opm_id
     searchlink = 'https://lomize-group-opm.herokuapp.com//primary_structures?search='+pdbcode+'&sort=&pageSize=100'
-    response_dict=eval(requests.get(searchlink).content.decode('UTF-8')\
-                       .replace('true', 'True')\
-                       .replace('false','False')\
-                       .replace('null','None'))
+    response_dict=requests.get(searchlink).json()
+
     # If the PDBcode has no avaliable OPM structure, use a random pdbcode as reference (4EJ4 in this case)
     if not len(response_dict['objects']):
         searchlink = 'https://lomize-group-opm.herokuapp.com//primary_structures?search=4EJ4&sort=&pageSize=100'
-        response_dict=eval(requests.get(searchlink).content.decode('UTF-8')\
-                           .replace('true', 'True')\
-                           .replace('false','False')\
-                           .replace('null','None'))
+        response_dict=requests.get(searchlink).json()
     
     thickness = response_dict['objects'][0]['thickness']
     opm_id = response_dict['objects'][0]['id']
 
     # Throught opm id, get PDB id of the reference structure in OPM for this pdbcode
-    
     opmlink = 'https://lomize-group-opm.herokuapp.com//primary_structures/'+str(opm_id)
-    response_dict=eval(requests.get(opmlink).content.decode('UTF-8')\
-                       .replace('true', 'True')\
-                       .replace('false','False')\
-                       .replace('null','None'))
+    response_dict=requests.get(opmlink).json()
     new_pdbcode = response_dict['pdbid'].lower()
     
     # Download OPM pdb file, and save all lines not involving a DUM residue in a temp file 
@@ -1666,28 +1656,29 @@ def fix_and_prepare_input(inputmol,pdbcode,modresdict,first='NTER',last='CTER'):
     """
     
     mol = inputmol.copy()
-    aa= ' LYR ALA ARG ASN ASP CYS GLU GLN GLY HIS ILE LEU LYS MET PHE PRO SER THR TRP TYR VAL '
+    aa= ' LYR LYN ALA ARG AR0 ASN ASP ASH CYS CYM GLU GLH GLN GLY HIS HID HIE HIP ILE LEU LYS MET PHE PRO SER THR TRP TYR TYM VAL HSE HSD HSP '
     mol.set('resname','TIP3',sel='water')
     mol.set('chain','X',sel='resname TIP3')
     mol.set('segid','WAT',sel='water')    
     mol.set('name','OH2',sel='resname TIP3 and name OW')
     mol.set('name','H1',sel='resname TIP3 and name HW1')
     mol.set('name','H2',sel='resname TIP3 and name HW2')
-    mol.remove('(protein or resname '+aa+') and name O1 O2')
+    # Remove terminal Os from peptide (they give problems on capping)
+    mol.remove('(resname '+aa+') and name O1 O2')
     if first == 'NTER':
-        mol.set('name','HT1',sel='(protein or resname '+aa+')and name H1')
-        mol.set('name','HT2',sel='(protein or resname '+aa+') and name H2')
-        mol.set('name','HT3',sel='(protein or resname '+aa+') and name H3')
+        mol.set('name','HT1',sel='(resname '+aa+') and name H1')
+        mol.set('name','HT2',sel='(resname '+aa+') and name H2')
+        mol.set('name','HT3',sel='(resname '+aa+') and name H3')
     else:
-        mol.remove('(protein or resname '+aa+')and name H1 H2 H3')
+        mol.remove('(resname '+aa+')and name H1 H2 H3')
     if last in {'CTER','CNEU','CTP','CT1'}:
-        mol.set('name','OT1',sel='(protein or resname '+aa+') and name O1')
-        mol.set('name','OT2',sel='(protein or resname '+aa+') and name O2')
+        mol.set('name','OT1',sel='(resname '+aa+') and name O1')
+        mol.set('name','OT2',sel='(resname '+aa+') and name O2')
         #fix
-        mol.remove('(protein or resname '+aa+') and name OT2')
+        mol.remove('(resname '+aa+') and name OT2')
     else:
-        mol.set('name','O',sel='(protein or resname '+aa+') and name O1')
-        mol.remove('(protein or resname '+aa+') and name O2')
+        mol.set('name','O',sel='(resname '+aa+') and name O1')
+        mol.remove('(resname '+aa+') and name O2')
     mol.set('name','HG1',sel='resname CYS and name HG')
     mol.set('name','HN',sel='resname HIS and name H')
     
@@ -1743,7 +1734,7 @@ def fix_and_prepare_input(inputmol,pdbcode,modresdict,first='NTER',last='CTER'):
     else:
         modres_string = ''
     # Establish segids for receptor protein
-    prot_sel = '(protein or resname '+aa+modres_string+')'
+    prot_sel = '(protein and resname '+aa+modres_string+')'
     peplig_sel = '(segid PEP L L0 L1 L2)'
     mol.set('segid', 'PX', sel=prot_sel+' and not '+peplig_sel)
     mol = autoSegment(mol,sel='segid PX', basename = 'P')
@@ -1816,10 +1807,11 @@ def force_protonation_state(resid, target_resnames, to_resname, prep_table, mol_
         d.loc[(d.resid == int(resid)) & (d.resname == prev_resname), 'forced_protonation'] = to_resname
     return prep_table
 
-def find_gennum(pdbcode, genumdict):
+def find_gennum(pdbcode):
     """
     Use GPCRdb to find ResID of selected generic numbering positions in GPCRdb
     """
+    
     # Download GPCRdb structure's website, and extract residue table from it
     structure_data = requests.get('https://gpcrdb.org/structure/refined/'+pdbcode).content
     soup = BeautifulSoup(structure_data, 'html.parser')
@@ -1828,13 +1820,63 @@ def find_gennum(pdbcode, genumdict):
     rows = table_body.find_all('tr')
 
     # ANalyze online table with generic numbering
+    gennum_dict = {}
+    resid_dict = {}
     for row in rows:
         cols = row.find_all('td')
         cols = [ele.text.strip() for ele in cols]
-        if any([cols[3].startswith(genum) for genum in genumdict]):
-            genumdict[genum] = cols[1]
+        gennum = re.sub('.\d+x','x',cols[3]) # We preffer second nomenclature type
+        resid = cols[1]
+        gennum_dict[resid] = gennum
+        resid_dict[gennum] = resid
+        
+    return(gennum_dict,resid_dict)
 
-    return genumdict
+def find_gennum_unrefined(pdbcode):
+    """
+    Find the Ballesteros Wanstein nomenclature for structures not yet refined in GPCRdb
+    """
+    # Generic numbering from this receptor via GPCRdb
+    protname = requests.get('https://gpcrdb.org/services/structure/'+pdbcode).json()['protein']
+    generic_nums = requests.get('https://gpcrdb.org/services/residues/extended/'+protname+'/').json()
+
+    # Resid as key, standard nomenclature thingy as value
+    gennum_dict = {}
+    resid_dict = {}
+    for pos in generic_nums:
+        gennum = pos['display_generic_number']
+        resid = str(pos['sequence_number'])
+        if gennum:
+            gennum_dict[resid] = gennum
+            resid_dict[gennum] = resid
+
+    return(gennum_dict,resid_dict)
+
+
+def resids_helix(pdbcode):
+    """
+    Filter resids belonging to helices (only one character before dot)
+    """
+
+
+    resids = ' '
+    try:
+        # Get standard GPCR nomenclature
+        (gennum_dict,resid_dict) = find_gennum(pdbcode)
+        sep_gen = 'x'
+
+    except Exception as e:
+        print("No refined structure found. Trying secondary method to get gennum...")
+        (gennum_dict,resid_dict) = find_gennum_unrefined(pdbcode)
+        sep_gen = '.'
+
+    for (resid,gennum) in gennum_dict.items():
+        gennum_split = gennum.split(sep_gen)
+        if (len(gennum_split[0]) == 1) and not (gennum_split[0]=="8"):
+            resids += " "+resid  
+
+    return(resids)
+
 
 def prepare_system(mol_aligned, pdbcode, thickness = None, sod2x50 = False, aminergic = False, adenosine = False):
     """
@@ -1887,7 +1929,7 @@ def prepare_system(mol_aligned, pdbcode, thickness = None, sod2x50 = False, amin
 
     # If this is an adenosine receptor, force protonation states of HIS 6.52 and 7.43 as Hugo said
     if adenosine:
-        hiset = {'HID', 'HIS', 'HIE', 'HIP'} 
+        hiset = {'HID', 'HIS', 'HIE', 'HIP', 'HSD', 'HSP', 'HSE'}
         prep_table = force_protonation_state(his7x43, hiset, 'HID', prep_table, mol_aligned)
         prep_table = force_protonation_state(his6x52, hiset, 'HIE', prep_table, mol_aligned)
 
@@ -2017,8 +2059,8 @@ def get_caps(prot_segids, mol_solvated):
         min_res = str(min(resids))
         max_res = str(max(resids))
         # If first residue is a regular residue, cap it
-        resname_min = mol_solvated.get('resname', 'segid %s and resid %s and protein'%(segid,min_res))[0] 
-        resname_max = mol_solvated.get('resname', 'segid %s and resid %s and protein'%(segid,max_res))[0]
+        resname_min = mol_solvated.get('resname', 'segid %s and resid %s'%(segid,min_res))[0] 
+        resname_max = mol_solvated.get('resname', 'segid %s and resid %s'%(segid,max_res))[0]
         if resname_min in aa:
             if segid.startswith('P'):
                 caps[segid].append(caps_receptor[0])
@@ -2472,7 +2514,7 @@ def get_uniprot_alignment(mymol, segpos, uniprotkbac, isoform, entry_segs):
     uniseq = ''.join(response.text.split('\n')[1:-1])
     # Match this uniprot to our protein segments, and save matches
     for seg,myseq in mymol.sequence().items():
-        
+
         # Align our molecule segments to the pdb chains
         aligs = pairwise2.align.localms(myseq, uniseq, 5,-1, -1, -0.5)
         # For every alignment
@@ -2737,7 +2779,7 @@ def get_refseq_alignment(mymol, segpos, refseq, poly_id, entry_segs):
 
     # Match this uniprot to our protein segments, and save matches
     for seg,myseq in mymol.sequence().items():
-        
+
         # Align our molecule segments to the pdb chains
         aligs = pairwise2.align.localms(myseq, refseq, 5,-1, -1, -0.5)
         # For every alignment
@@ -2960,7 +3002,7 @@ def new_submission(s, mainurl):
     print('new submission %s created'%subm_id)
     return subm_id
 
-def new_step1(s, subm_id, pdbcode, trajperiod, timestep, prodpath, modelfile, method_id, sysname, apo):
+def new_step1(s, subm_id, pdbcode, trajperiod, timestep, prodpath, method_id, sysname, apo):
     """
     Fullfill and send the step 1 of the new submissionform
     # Looone liiie the fieeeelds of Athenryyyyy...
@@ -2980,7 +3022,7 @@ def new_step1(s, subm_id, pdbcode, trajperiod, timestep, prodpath, modelfile, me
         'software': 'ACEMD3',
         'sversion': 'GPUGRID', # TODO: Is that correct??,
         'ff': 'CHARMM',
-        'ffversion': '36m Feb 2016',
+        'ffversion': 'c36 Jul 2020', # For 3th round change to c36 Jul 2021
         'id_assay_types': 1, # Orthosteric (un)/binding,
         'id_dynamics_membrane_types': 2, # Homogeneus membrane,
         'id_dynamics_solvent_types': 2, # TIP3P solvent,
@@ -2989,8 +3031,7 @@ def new_step1(s, subm_id, pdbcode, trajperiod, timestep, prodpath, modelfile, me
         'add_info': ' Classical unbiased (NVT ensemble) complex flexibility assay.', 
     }
     files_submit = {
-        'dynamics' : open(prodpath+'structure.pdb', 'rb'),
-        'model' : open(modelfile, 'rb')
+        'dynamics' : open(prodpath+'structure.pdb', 'rb')
     }
 
     # Submit step 1
@@ -3148,6 +3189,7 @@ def new_step3(s, subm_id, pdbcode, protdict):
         method_segs = entry_data['method_segs']
 
         # Retrieve info using uniprot code
+        print(uniprotkbac)
         unidict = s.get(mainurl+'/dynadb/prot_info/'+subm_id+'/',
                           params = {
                               'uniprotkbac' : uniprotkbac,
@@ -3233,7 +3275,7 @@ def new_step3(s, subm_id, pdbcode, protdict):
             'prot_uniprot'+ii : uniprotkbac,
             'name'+ii : name,
             'aliases'+ii : other_names,
-            'species_code'+ii : unidict['Organism ID'],
+            'species_code'+ii : unidict['Organism (ID)'],
             'species_name'+ii : unidict['Organism'],
             'unisequence'+ii : unidict['Sequence'],
         }

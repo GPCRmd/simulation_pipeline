@@ -1,0 +1,3 @@
+# Ignore paramechem-parameters folders
+toppar/Ligands
+toppar/mod_residues

@@ -21,7 +21,11 @@ NG2R60 CG2R61 CG1T1  CG1T1      0.0000  2   180.00 ! dummy dihedral for triple b
 CG2R61 CG2R61 CG1T1  CG1T1      0.0000  2   180.00 ! dummy dihedral for triple bond
 CG2R61 CG1T1  CG1T1  CG2R61     0.0000  2   180.00 ! dummy dihedral for triple bond
 CG1T1  CG1T1  CG2R61 CG2R61     0.0000  2   180.00 ! dummy dihedral for triple bond
-
+NG3P0  CG324  CG1T1  CG1T1      0.0000  2   180.00 ! dummy dihedral for triple bond
+CG324  CG1T1  CG1T1  CG321      0.0000  2   180.00 ! dummy dihedral for triple bond
+CG1T1  CG1T1  CG321  OG301      0.0000  2   180.00 ! dummy dihedral for triple bond
+CG1T1  CG1T1  CG321  HGA2       0.0000  2   180.00 ! dummy dihedral for triple bond
+CG1T1  CG1T1  CG324  HGP5       0.0000  2   180.00 ! dummy dihedral for triple bond
 END
 RETURN
 
