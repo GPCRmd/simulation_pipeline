@@ -1,0 +1,115 @@
+[
+	{
+		"sys_info" : {
+			"name" : "Your_system_name",
+			"type" : "COMPLEX/APO", 
+			"pdbid" : "4EJ4", 
+			"description" : "Classical unbiased (NVT ensemble) complex flexibility assay.",
+			"source_type" : "XRAY/NMR/EM/OTH",  
+			"id_dynamics_methods": "MM/QM/NMR/MONTECARLO/MSM/METADYN/UMBRELLA/BIAS/SCALED", 
+			"software": "ACEMD3",
+			"sversion": "GPUGRID", 
+			"ff": "CHARMM",
+			"ffversion": "c36 Jul 2021", 
+			"id_assay_types": "ORTO/ACT/OLIGO/ALLOBIND/ALLOMOD/GPROTCOUP/BARRCOUP", 
+			"id_dynamics_membrane_types": "IMP/HOMO/HETE",
+			"id_dynamics_solvent_types": "IMP/TIP3/TIP4/TIPS/SPC/SPCE/OTH",  
+			"timestep": 4.0,
+			"delta": 0.2, 
+			"add_info": " Classical unbiased (NVT ensemble) complex flexibility assay."
+		},
+
+		"smallmolecules" : [ 
+			{
+				"type" : "ORT/ALLO/EION/ELIP/EWAT/OTHC/BWAT/BLIP/BION/BOTH", 
+				"resname" : "TIP3",
+				"inchikey" : "XLYOFNOQVPJJNP-UHFFFAOYSA-N"	
+		},
+			{
+				"type" : "ORT/ALLO/EION/ELIP/EWAT/OTHC/BWAT/BLIP/BION/BOTH", 
+				"resname" : "POPC",
+				"inchikey" : "WTJKGGKOPKCXLL-VYOBOKEXSA-N"
+			}
+		],
+
+		"proteins" : [
+			{
+				"isoform" : "1", 
+				"uniprotkbac" : "P28223", 
+				"segs" : [ 
+					{
+						"chainid" : "P",
+						"segid" : "P",
+						"beg" : 32,
+						"end" : 52,
+						"bond" : false,
+						"source_type" : "XRAY/NMR/ABIN/HOMO/THR/MD/EM/OTH" 
+					},
+					{
+						"chainid" : "P",
+						"segid" : "P1",
+						"beg" : 69,
+						"ebd" : 329,
+						"bond" : false,
+						"source_type" : "XRAY/NMR/ABIN/HOMO/THR/MD/EM/OTH" 
+					}
+				],
+				
+				"isgpcr" : true,  
+				"organism_id" : "9606", 
+				"organism" : "Homo", 
+				"name" : "5-hydroxytryptamine receptor 2A", 
+				"other_names" : "5-HT-2;5-HT-2A;Serotonin receptor 2A"
+			},
+			{
+				"isoform" : "1", 
+				"uniprotkbac" : "P28223", 
+				"segs" : [ 
+					{
+						"chainid" : "P",
+						"segid" : "P",
+						"beg" : 32,
+						"end" : 52,
+						"bond" : false,
+						"source_type" : "XRAY/NMR/ABIN/HOMO/THR/MD/EM/OTH"
+					},
+					{
+						"chainid" : "P",
+						"segid" : "P1",
+						"beg" : 69,
+						"ebd" : 329,
+						"bond" : false,
+						"source_type" : "XRAY/NMR/ABIN/HOMO/THR/MD/EM/OTH"
+					}
+				],
+				
+				"isgpcr" : true,  
+				"organism_id" : "9606", 
+				"organism" : "Homo", 
+				"name" : "5-hydroxytryptamine receptor 2A", 
+				"other_names" : "5-HT-2;5-HT-2A;Serotonin receptor 2A" 
+			}
+		],
+		
+		"files" : {
+			"coords" : "path/to/my/pdb",
+			"topo" : "path/to/my/psf",
+			"trajs" : ["path/to/my/traj1", "path/to/my/traj2", "path/to/my/traj3"],
+			"params" : "path/to/my/params",
+			"other" : "path/to/my/others.tar.gz"
+		},
+
+		"references" : { 
+			"doi" : "",
+			"authors" : "",
+			"title" : "",
+			"pmid" : "",
+			"journal" : "",
+			"issue" : "",
+			"volume" : "",
+			"pages" : "",
+			"publication_year" : "",
+			"URL" : ""
+		}
+	}
+]

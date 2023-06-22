@@ -69,7 +69,7 @@ membrane_lipid_segid = 'MEM'
 coldist = 1.3 # Distance bellow which two atoms are considered to collide
 buffer = 2.4 # Distance between solvation waters and the rest of the system
 water_thickness = 20 # Size in Z-axis of the solvation water layers
-membrane_distance = 20 # Distance between the pbc box and the rest of the system atoms, to be filled with membrane
+membrane_distance = 20 # Distance between the pbc box and the space to be filled with membrane atoms
 water_margin = 4 # Distance in the Z-axis to be penetrated by the solvation box 
                  # to avoid the formation of a V O I D between the system and the solvation boxes
 lipidlike_blacklist = {'OLA','OLB','BOG','OLC','PLM','HTG','LPP','PEF','2CV','SOG','TWT','STE','LMT',
@@ -100,10 +100,7 @@ repnum = 3 # number of replicates
 
 # Dummy atom stored in separated pdb
 # It is used during removal of aromatic insertions by placing it on the middle of the ring and measuring distances  
-try:
-    dummymol = Molecule("dummy.pdb")
-except Exception: 
-    dummymol = Molecule("dummy.pdb", validateElements = False)
+
 dummy_sel = 'name DUM'
 
 # Topologies filenames and paths
@@ -1656,7 +1653,7 @@ def fix_and_prepare_input(inputmol,pdbcode,modresdict,first='NTER',last='CTER'):
     """
     
     mol = inputmol.copy()
-    aa= ' LYR LYN ALA ARG AR0 ASN ASP ASH CYS CYM GLU GLH GLN GLY HIS HID HIE HIP ILE LEU LYS MET PHE PRO SER THR TRP TYR TYM VAL HSE HSD HSP '
+    aa= ' LYR LYN ALA ARG AR0 ASN ASP ASH CYX CYS CYM GLU GLH GLN GLY HIS HID HIE HIP ILE LEU LYS MET PHE PRO SER THR TRP TYR TYM VAL HSE HSD HSP '
     mol.set('resname','TIP3',sel='water')
     mol.set('chain','X',sel='resname TIP3')
     mol.set('segid','WAT',sel='water')    
@@ -2131,6 +2128,11 @@ def extra_parameters(pdbcode, ligandsdict, modresdict, blacklist, covligs, basep
     return modresstreams+ligstreams
 
 def add_dummy_atom(inputmol,property_dict):
+    try:
+        dummymol = Molecule("dummy.pdb")
+    except Exception: 
+        dummymol = Molecule("dummy.pdb", validateElements = False)
+
     for prop in property_dict:
         dummymol.set(prop,property_dict[prop])
     inputmol.append(dummymol,coldist=None)
@@ -2278,7 +2280,7 @@ def define_equilibration(const_sel = 'protein and name C CA N O or not (protein 
     md.runtime = simtime
     md.timeunits = 'ns'
     md.temperature = 310
-    md.nvtsteps = 0
+    # md.nvtsteps = 0
     md.acemd.barostatconstratio = 'on'
     md.acemd.minimize = minimize
     md.acemd.restart = 'off'
@@ -2441,7 +2443,6 @@ def moecurated_paramchem(username,password,ligpath,ligcode,pdbcode):
                     if not re.match(lph_pat, line):
                         f.write(line)
             """
-
 
 def resp_to_dict(resp):
     # Convert a json reponse into a dictionary
@@ -2745,20 +2746,20 @@ def login(s, username='XXXXXXXXXXXX', password="XXXXXXXXXXXX"):
     # Login into GPCRmd 
     # Will you go, lassie, go? And we'll all gooo toghetheeeer
     headers = {
-        'Cookie': 'csrftoken=ZYa0n3mNBjwBMlpDh4lnbBJQdi7GdlP4',
+        'Cookie': 'csrftoken=II5zdSvPpkVzLV3siBFHv5kGdtbsZr2C',
         'Referer': mainurl+'/accounts/login/',
     }
     datalogin = {
         'username': username,
         'password': password,
         'next' : '/accounts/memberpage/',
-        'csrfmiddlewaretoken' : 'ZYa0n3mNBjwBMlpDh4lnbBJQdi7GdlP4'
+        'csrfmiddlewaretoken' : 'II5zdSvPpkVzLV3siBFHv5kGdtbsZr2C'
     }
     print('loging into GPCRmd')
     logo = s.post(mainurl+'/accounts/login/', 
                data=datalogin,
                headers=headers)
-    return s
+    return(s)
 
 
 def get_uniprot_sequence(uniprotkbac, isoform):
@@ -2997,6 +2998,7 @@ def new_submission(s, mainurl):
 
     response_new = s.get(mainurl + '/dynadb/step0/')
     soup = BeautifulSoup(response_new.text, 'html.parser')
+    print(soup)
     step1_link = soup.find('form',attrs={'id' : 'mainform'}).get('action')
     subm_id = step1_link.split('/')[-2]
     print('new submission %s created'%subm_id)
@@ -3081,8 +3083,14 @@ def smalmol_getdata(s, molid, inchikey, subm_id, moltype, resname, sdfpath=""):
         "image_path"+molid :  rep_dict['imagepath']
     }
     
-    # Add SDFfile to the submission if required
-    mol_files = {} if rep_dict['inGPCRmd'] else {"sdfmol"+molid : open(sdfpath)} 
+    # Download ligand, store it into temporary file, and load it into submit if necessary
+    if rep_dict['inGPCRmd']:
+        mol_files = {}
+    else:
+        response = requests.get("https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/%s/SDF"%rep_dict['cid'])
+        with open('tmpfile.sdf','wb') as tmpout:
+            tmpout.write(response.content)
+        mol_files = {"sdfmol"+molid : open('tmpfile.sdf')} 
     
     return(mol_datasubmit,mol_files)
 
@@ -3125,21 +3133,16 @@ def new_step2(s, subm_id, ligdict, apo):
         # Avoid blacklisted molecules or ions
         if (lig in detergent_blacklist) or (lig in glucids_blacklist)  or (len(lig) == 2):
             continue
-        # Download ligand, store it into temporary file
-        response = requests.get('https://files.rcsb.org/ligands/view/'+lig+'_ideal.sdf')
-        with open('tmpfile.sdf','wb') as tmpout:
-            tmpout.write(response.content)
 
         # CLR (cholesterol) is usually a experimental lipid 
         moltype = '3' if lig=='CLR' else '0'
             
         # Retrieve molecule information
-        (mol_datasubmit, mol_files) = smalmol_getdata(s, str(i), inchikey, subm_id, moltype, lig, 'tmpfile.sdf')
+        (mol_datasubmit, mol_files) = smalmol_getdata(s, str(i), inchikey, subm_id, moltype, lig)
         step2_data.update(mol_datasubmit)
         step2_files.update(mol_files)
         num_entries.append(i)
         i+=1
-        os.remove('tmpfile.sdf')
     
     # Add number of entries
     step2_data['num_entries'] = ','.join(map(str, num_entries))
@@ -3189,7 +3192,6 @@ def new_step3(s, subm_id, pdbcode, protdict):
         method_segs = entry_data['method_segs']
 
         # Retrieve info using uniprot code
-        print(uniprotkbac)
         unidict = s.get(mainurl+'/dynadb/prot_info/'+subm_id+'/',
                           params = {
                               'uniprotkbac' : uniprotkbac,
@@ -3370,6 +3372,7 @@ def new_step4(s, subm_id, prodpath, repath):
     else:
         with open(prodpath+'submitted.txt','w') as out:
             out.write(subm_id)
+
 def check_completeness(prodpath):
     """
     Check if we actually have the three necessary replicates for submission
