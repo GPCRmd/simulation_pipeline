@@ -1,3 +1,6 @@
 # Ignore paramechem-parameters folders
-toppar/Ligands
-toppar/mod_residues
+#./toppar
+./__pycache__
+./fake_slurm_shiva
+./toppar/mod_residues/
+./toppar/Ligands/
