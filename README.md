@@ -58,6 +58,7 @@ ONce run is done, files will be in simulation_output
 ACTUAL SIMULATION STEP
 3 REPLICATES BY DEFAULT, CHANGE AT WILL
 AGAIN, EXPECTED TO RUN IN CLUSTER WITH ACEMD3. USE RUN.SH SCRIPT
+IN OUR CLUSTER IT TOOK 5 DAYS
 
 ## Wrapping and aliging of simulated systems
 Depends on VMD
