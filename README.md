@@ -26,11 +26,11 @@
 
 ## Input preparation
 This pipeline uses a .json file as main input. This json must have the following structure:
+
 [
     {
         "name" : "whatever name you wish for your system",
         "pdbfile" : "/path/to/your/input/structure.pdb",
-
         "modres" : ["residue name 1","residue name 1"], (all residue names for any non-cannonical protein residues present in your sequence) 
         "ligands" : [{
                         "resname":"residue name of your non-protein ligand molecule in the PDB file",
