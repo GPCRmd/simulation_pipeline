@@ -60,18 +60,18 @@ This pipeline uses a .json file as main input. This json must have the following
 ```
 An input.json example is included in the demo folder
 
-## Ligand parametrization
-SOME MOLECULES PARAMETERS ARE NOT PRESENT IN CGENFF
-WE USE PARAMCHEM TO OBTAIN ITS TOPLOGY AND PARAMETERS
-PLEASE ENSURE LIGAND MOLECULES HAVE HYDROGENS FOR PROPER TOPOLOGY GUESSING. PARAMCHEM MIGHT FAIL OTEHRWISE
+## Force field and ligand parametrization
+To build and simulate our systems we always use the most recent version of CHARMM General Force Field (CGenFF, https://mackerell.umaryland.edu/charmm_ff.shtml#charmm). A partial copy of this force field is included in 'toppar/' to run the demo set. 
+It is most likely that your ligand molecules are not included in CGenFF. For that reason, this pipeline automatically obtains both parameters and topologies for all specified ligand molecules in your structure using "paramchem" (https://cgenff.silcsbio.com/initguess/). The resulting '.str' file for each ligand will be saved in toppar/Ligands/
+**WARNING**: ligand molecules in your PDB structure **must** be properly protonated and hydrogenated. Otherwise, parametrization is likely to fail, returning an empty '.str' file.
 
-## BUILDING 
-BUILDING OF SIMULABLE SYSTEMS FROM INPUT PDB
-1.INTERNAL WATERS ADDED WITH HOMOLWAT (LINK)
-2. REMOVE CRYSTALIZATION ARTIFACTS (BLACKLIST)
-3. CHANGE RESIDUE AND SEGMENT NAMES
-4. ALIGN STRUCTURE TO OPM COUNTERPART,FOR MEMBRANE ADDITION, USING CHIMERA
-5. PREPARE SYSTEM WITH HTMD SYSTEMPREPARE: TRITATION STATES, SIDECHAIN ROTATION, PROTONATION STATES. SKIP IF PDB IS ALREADY PROPERLY PROTONATED
+## System building
+The third cell in 'simulate_frompdb_structures.ipynb' builds a system for every entry in input.json. The main tasks performed in this part of the script are:
+1. Addition of internal GPCR waters (if system is a GPCR) through homology using HomolWat web server ([LINK](https://alf06.uab.es/homolwat/))
+2. Remove potentially unwanted co-crystallized molecules. This mainly adresses detergents and other compoonents required for crystallization, but of no biological significance. The exact list of 'blacklisted' molecules we remove is included in 'simulate_structures_functions.py'.
+3. Setting of segment IDs for each component in the system, and some residue and atom renaming for the proper funcitoning of charmm.build() in successive steps
+4. Alignment of your input structure its equivalent in Orientations of Proteins in Membranes database (OPM, https://opm.phar.umich.edu/) using USCF chimera. This is required for proper membrane placing and requires the PDB id of an at least somewhat similar structure present in OPM.
+5. If "curated" is 'false' we apply HTMD's systemprepare function (https://software.acellera.com/htmd/tutorials/protein-preparation.html). This function adresses matters such as assigning titration states at the user-chosen pH; flipping the side chains of HIS, ASN, and GLN residues; and optimizing the overall hydrogen bonding network. 
 6. ADD MEMBRANE FROM EXISTING MEMBRANE PATCH
 7. SOLVATE IN A WATER BOX. PARAMETERS OF WATER BOX INCLUDED IN SIMULATE_STRUCTURES_FUNCTIONS.PY
 8. ADD CAPS: ONLY TO MAIN PROTEIN (PEPTIDE LIGANDS EXCLUDED)
