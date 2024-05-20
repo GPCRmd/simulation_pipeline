@@ -59,6 +59,7 @@ This pipeline uses a .json file as main input. This json must have the following
 ]
 ```
 An input.json example is included in the demo folder
+IMPORTANT: if your system includes a peptide ligand, please set "L" as its chain ID in the input PDB file.
 
 ## Force field and ligand parametrization
 To build and simulate our systems we always use the most recent version of CHARMM General Force Field (CGenFF, https://mackerell.umaryland.edu/charmm_ff.shtml#charmm). A partial copy of this force field is included in 'toppar/' to run the demo set. 
@@ -72,11 +73,20 @@ The third cell in 'simulate_frompdb_structures.ipynb' builds a system for every 
 3. Setting of segment IDs for each component in the system, and some residue and atom renaming for the proper funcitoning of charmm.build() in successive steps
 4. Alignment of your input structure its equivalent in Orientations of Proteins in Membranes database (OPM, https://opm.phar.umich.edu/) using USCF chimera. This is required for proper membrane placing and requires the PDB id of an at least somewhat similar structure present in OPM.
 5. If "curated" is 'false' we apply HTMD's systemprepare function (https://software.acellera.com/htmd/tutorials/protein-preparation.html). This function adresses matters such as assigning titration states at the user-chosen pH; flipping the side chains of HIS, ASN, and GLN residues; and optimizing the overall hydrogen bonding network. 
-6. ADD MEMBRANE FROM EXISTING MEMBRANE PATCH
-7. SOLVATE IN A WATER BOX. PARAMETERS OF WATER BOX INCLUDED IN SIMULATE_STRUCTURES_FUNCTIONS.PY
-8. ADD CAPS: ONLY TO MAIN PROTEIN (PEPTIDE LIGANDS EXCLUDED)
-9. 3 BUILD ROUNDS WITH CHARMM.BUILD() : FIRST TO OBTAIN THE SYSTEM TOPOLOGY, SECOND TO IONIZE SYSTEM, THIRD TO ACTUALLY BUILD THE SYSTEM. 
-EACH BUILD SAVED SEPARATEDLY IN SIMULATION_OUTPUT
+6. Membrane addition: since this system has been already aligned to membrane orientation, the membrane is now creating by adding tiles of our defined membrane patch (in 'membrane/popc36_box_renumbered.pdb') and removing those lipids coliding with the protein. The membrane patch we provide is POPC-only, feel free to change it by any membrane composition of your preference. Parameters (included in 'simulate_structures_functions.py'):
+  + _coldist_: minimum distance at which two atoms are considered to colide
+  + _membrane_distance_: 'size' of the membrane, understood as distance from the protein to the edge of the box (in x/y direction)
+8. Solvate system, including it in a TIP3 waterbox. Parameters:
+  + _water_thickness_: Distance in the Z-axis from the membrane to the top/bottom of the PBC box
+  + _water_margin_: Distance in the Z-axis to be penetrated by the solvation box
+  + _buffer_: Distance between solvation waters and the rest of the system
+9. Addition of cappings to the system's protein chains. By default we use ACE and CT3 cappings for the main proteins, and NTER and CTER (=no capping) for peptide ligands. **IMPORTANT**: Any protein sequence with chain ID L is assumed to be a peptide ligand.
+10. Actual "building" of the system using charmm.build() function integrated in HTMD and CGenFF topologies. Systems are build in three rounds:
+    1. A first one to stablish the system topology
+    2. A second, to properly ionize the build system
+    3. A third, to fully build the system
+
+Built systems are saved in simulation_output/build/name_of_your_system
 
 ## equiliBRATION
 DEFAULT PARAMETERS IN SIMULATE_STRUCTURES_FUNCTIONS()
