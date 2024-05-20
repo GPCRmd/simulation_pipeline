@@ -25,8 +25,39 @@
 3. Open "simulate_frompdb_structures.ipynb as a jupyter notebook
 
 ## Input preparation
-DESCRIPTION INPUT JSON
-AN EXAMPLE IS GIVEN IN DEMO
+This pipeline uses a .json file as main input. This json must have the following structure:
+[
+    {
+        "name" : "whatever name you wish for your system",
+        "pdbfile" : "/path/to/your/input/structure.pdb",
+
+        "modres" : ["residue name 1","residue name 1"], (all residue names for any non-cannonical protein residues present in your sequence) 
+        "ligands" : [{
+                        "resname":"residue name of your non-protein ligand molecule in the PDB file",
+                        "name" : "name of this molecule",
+                        "covalently_bound" : false/True (is the ligand covalently bound to the protein???), 
+                        "inchikey" : "inchikey of this molecule"
+                    },
+                    {
+                        "resname":"residue name of your second non-protein ligand molecule in the PDB file",
+                        "name" : "name of this molecule",
+                        "covalently_bound" : false/True (is the ligand covalently bound to the protein???), 
+                        "inchikey" : "inchikey of this molecule"
+                    },
+                    .....],
+        "apo": false/true (do you wish to simulate an apo-version of this structure, by removing all ligands and not-main-proteins of it??),
+        "prot_chain" : "chain id of the main protein in this system (a GPCR, for us)",
+        "pdbcode" : "pdb ID of the structure you are trying to run (or its most similar counterpart)", 
+        "curated": false/true (if false, the structure will be reprotonated during the building process. Set as true if you wish to preserve your manual protonations), 
+        "sod2x50": true/false (do you wish to add the conserved sodium near 2x50??(added using homolwat)), 
+        "isgpcr": true/false (does this system contain a GPCR?) 
+    },
+    {
+      (Add as many systems as you wish to build and simulate)
+    },........
+]
+
+An input.json example is included in the demo folder
 
 ## Ligand parametrization
 SOME MOLECULES PARAMETERS ARE NOT PRESENT IN CGENFF
