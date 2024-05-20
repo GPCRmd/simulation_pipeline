@@ -1,3 +1,0 @@
-#!/bin/bash
-ssh -p 5511 daranda@localhost "scontrol $@" || ssh daranda@shiva "scontrol $@"
-sleep 5

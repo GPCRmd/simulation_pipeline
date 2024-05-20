@@ -1,6 +1,12 @@
 # Ignore paramechem-parameters folders
 #./toppar
-./__pycache__
-./fake_slurm_shiva
-./toppar/mod_residues/
-./toppar/Ligands/
+__pycache__
+fake_slurm_shiva/
+fake_slurm/
+toppar/Ligands/
+toppar/mod_residues/
+simulate_GPCRdb_structures.ipynb
+simulate_mutated_structures.ipynb
+simulation_output/
+input_structures/
+.ipynb_checkpoints

@@ -1,0 +1,20 @@
+[
+    {
+        "name" : "delta_opioid_naltrindole",
+        "pdbfile" : "demo/4EJ4.pdb",
+
+        "modres" : [],
+        "ligands" : [{
+                        "resname":"EJ4",
+                        "name" : "Naltrindole",
+                        "covalently_bound" : false, 
+                        "inchikey" : "WIYUZYBFCWCCQJ-IFKAHUTRSA-N"
+                    }],
+        "apo" : false,
+        "prot_chain" : "A",
+        "pdbcode" : "4EJ4", 
+        "curated" : false, 
+        "sod2x50" : true, 
+        "isgpcr" : true 
+    }
+]

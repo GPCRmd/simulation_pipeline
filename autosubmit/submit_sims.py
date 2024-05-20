@@ -205,7 +205,7 @@ def autosubmit_step2(s, subm_id, smalmols):
 	
 	# Replace empty entries with an empty string
 	for key,val in step2_data.items():
-		if not val:
+		if (not val) and (val!= 0):
 			step2_data[key] = ''
 	
 	# Submit step2

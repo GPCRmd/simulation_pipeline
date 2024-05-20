@@ -1,0 +1,32 @@
+read param card flex append
+* Hand-made parameters David Aranda. 
+* Created to adress the problem of ACEMD3 demanding dihedral parameters for atoms that are not actually making any dihedral (e.g: N≡C-CH2-CH3)
+* CHARMM General Force Field (CGenFF) program version 2.4.0
+
+DIHEDRALS
+NG1T1  CG1N1  CG321  CG321      0.0000  2   180.00 ! dummy dihedral for triple bond
+NG1T1  CG1N1  CG321  HGA2       0.0000  2   180.00 ! dummy dihedral for triple bond
+NG1T1  CG1N1  CG2R51 CG2R51     0.0000  2   180.00 ! dummy dihedral for triple bond
+NG1T1  CG1N1  CG2R51 NG2R51     0.0000  2   180.00 ! dummy dihedral for triple bond
+NG2R51 CG2R51 CG1N1  NG1T1      0.0000  2   180.00 ! dummy dihedral for triple bond
+NG2R51 CG2R51 CG1N1  NG1T1      0.0000  2   180.00 ! dummy dihedral for triple bond
+CG2R51 CG2R51 CG1N1  NG1T1      0.0000  2   180.00 ! dummy dihedral for triple bond
+NG1T1  CG1N1  CG2R61 CG2R64     0.0000  2   180.00 ! dummy dihedral for triple bond
+NG1T1  CG1N1  CG2R52 NG2R50     0.0000  2   180.00 ! dummy dihedral for triple bond
+NG1T1  CG1N1  CG2R52 CG3C52     0.0000  2   180.00 ! dummy dihedral for triple bond
+CG2RC0 CG2R61 CG1T1  CG1T2      0.0000  2   180.00 ! dummy dihedral for triple bond
+CG2R61 CG1T1  CG1T2  HGPAM1     0.0000  2   180.00 ! dummy dihedral for triple bond
+CG1T2  CG1T1  CG2R61 CG2R61     0.0000  2   180.00 ! dummy dihedral for triple bond
+NG2R60 CG2R61 CG1T1  CG1T1      0.0000  2   180.00 ! dummy dihedral for triple bond
+CG2R61 CG2R61 CG1T1  CG1T1      0.0000  2   180.00 ! dummy dihedral for triple bond
+CG2R61 CG1T1  CG1T1  CG2R61     0.0000  2   180.00 ! dummy dihedral for triple bond
+CG1T1  CG1T1  CG2R61 CG2R61     0.0000  2   180.00 ! dummy dihedral for triple bond
+NG3P0  CG324  CG1T1  CG1T1      0.0000  2   180.00 ! dummy dihedral for triple bond
+CG324  CG1T1  CG1T1  CG321      0.0000  2   180.00 ! dummy dihedral for triple bond
+CG1T1  CG1T1  CG321  OG301      0.0000  2   180.00 ! dummy dihedral for triple bond
+CG1T1  CG1T1  CG321  HGA2       0.0000  2   180.00 ! dummy dihedral for triple bond
+CG1T1  CG1T1  CG324  HGP5       0.0000  2   180.00 ! dummy dihedral for triple bond
+END
+!RETURN
+
+
