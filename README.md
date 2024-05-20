@@ -27,6 +27,7 @@
 ## Input preparation
 This pipeline uses a .json file as main input. This json must have the following structure:
 
+```
 [
     {
         "name" : "whatever name you wish for your system",
@@ -56,7 +57,7 @@ This pipeline uses a .json file as main input. This json must have the following
       (Add as many systems as you wish to build and simulate)
     },........
 ]
-
+```
 An input.json example is included in the demo folder
 
 ## Ligand parametrization
