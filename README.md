@@ -75,12 +75,12 @@ The 'Part 2 in 'simulate_frompdb_structures.ipynb' builds a system for every ent
 4. Alignment of your input structure to its equivalent in Orientations of Proteins in Membranes database (OPM, https://opm.phar.umich.edu/) using USCF chimera. This is required for proper membrane placing and requires the PDB id of an at least somewhat similar structure present in OPM.
 5. If "curated" is 'false' we apply HTMD's systemprepare function (https://software.acellera.com/htmd/tutorials/protein-preparation.html). This function addresses matters such as assigning titration states at the user-chosen pH; flipping the side chains of HIS, ASN, and GLN residues; and optimizing the overall hydrogen bonding network. 
 6. Membrane addition: since this system has been already aligned to membrane orientation, the membrane is now creating by adding tiles of our defined membrane patch (in 'membrane/popc36_box_renumbered.pdb') and removing those lipids colliding with the protein. The membrane patch we provide is POPC-only, feel free to change it by any membrane composition of your preference. Parameters (included in 'simulate_structures_functions.py'):
-  + _coldist_: minimum distance at which two atoms are considered to colide
-  + _membrane_distance_: 'size' of the membrane, understood as distance from the protein to the edge of the box (in x/y direction)
+    1. _coldist_: minimum distance at which two atoms are considered to colide
+    2. _membrane_distance_: 'size' of the membrane, understood as distance from the protein to the edge of the box (in x/y direction)
 8. Solvate system, including it in a TIP3 waterbox. Parameters:
-  + _water_thickness_: Distance in the Z-axis from the membrane to the top/bottom of the PBC box
-  + _water_margin_: Distance in the Z-axis to be penetrated by the solvation box
-  + _buffer_: Distance between solvation waters and the rest of the system
+    1. _water_thickness_: Distance in the Z-axis from the membrane to the top/bottom of the PBC box
+    2. _water_margin_: Distance in the Z-axis to be penetrated by the solvation box
+    3. _buffer_: Distance between solvation waters and the rest of the system
 9. Addition of cappings to the system's protein chains. By default we use ACE and CT3 cappings for the main proteins and NTER and CTER (=no capping) for peptide ligands. **IMPORTANT**: Any protein sequence with chain ID L is assumed to be a peptide ligand.
 10. Actual "building" of the system using charmm.build() function integrated into HTMD and CGenFF topologies. Systems are built in three rounds:
     1. The first one to establish the system topology
