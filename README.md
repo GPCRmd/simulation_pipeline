@@ -68,33 +68,39 @@ It is most likely that your ligand molecules are not included in CGenFF. For tha
 
 ## System building
 The third cell in 'simulate_frompdb_structures.ipynb' builds a system for every entry in input.json. The main tasks performed in this part of the script are:
-1. Addition of internal GPCR waters (if system is a GPCR) through homology using HomolWat web server ([LINK](https://alf06.uab.es/homolwat/))
-2. Remove potentially unwanted co-crystallized molecules. This mainly adresses detergents and other compoonents required for crystallization, but of no biological significance. The exact list of 'blacklisted' molecules we remove is included in 'simulate_structures_functions.py'.
-3. Setting of segment IDs for each component in the system, and some residue and atom renaming for the proper funcitoning of charmm.build() in successive steps
-4. Alignment of your input structure its equivalent in Orientations of Proteins in Membranes database (OPM, https://opm.phar.umich.edu/) using USCF chimera. This is required for proper membrane placing and requires the PDB id of an at least somewhat similar structure present in OPM.
-5. If "curated" is 'false' we apply HTMD's systemprepare function (https://software.acellera.com/htmd/tutorials/protein-preparation.html). This function adresses matters such as assigning titration states at the user-chosen pH; flipping the side chains of HIS, ASN, and GLN residues; and optimizing the overall hydrogen bonding network. 
-6. Membrane addition: since this system has been already aligned to membrane orientation, the membrane is now creating by adding tiles of our defined membrane patch (in 'membrane/popc36_box_renumbered.pdb') and removing those lipids coliding with the protein. The membrane patch we provide is POPC-only, feel free to change it by any membrane composition of your preference. Parameters (included in 'simulate_structures_functions.py'):
+1. Addition of internal GPCR waters (if the system is a GPCR) through homology using HomolWat web server ([LINK](https://alf06.uab.es/homolwat/))
+2. Remove potentially unwanted co-crystallized molecules. This mainly addresses detergents and other components required for crystallization but of no biological significance. The exact list of 'blacklisted' molecules we remove is included in 'simulate_structures_functions.py'.
+3. Setting of segment IDs for each component in the system, and some residue and atom renaming for the proper functioning of charmm.build() in successive steps
+4. Alignment of your input structure to its equivalent in Orientations of Proteins in Membranes database (OPM, https://opm.phar.umich.edu/) using USCF chimera. This is required for proper membrane placing and requires the PDB id of an at least somewhat similar structure present in OPM.
+5. If "curated" is 'false' we apply HTMD's systemprepare function (https://software.acellera.com/htmd/tutorials/protein-preparation.html). This function addresses matters such as assigning titration states at the user-chosen pH; flipping the side chains of HIS, ASN, and GLN residues; and optimizing the overall hydrogen bonding network. 
+6. Membrane addition: since this system has been already aligned to membrane orientation, the membrane is now creating by adding tiles of our defined membrane patch (in 'membrane/popc36_box_renumbered.pdb') and removing those lipids colliding with the protein. The membrane patch we provide is POPC-only, feel free to change it by any membrane composition of your preference. Parameters (included in 'simulate_structures_functions.py'):
   + _coldist_: minimum distance at which two atoms are considered to colide
   + _membrane_distance_: 'size' of the membrane, understood as distance from the protein to the edge of the box (in x/y direction)
 8. Solvate system, including it in a TIP3 waterbox. Parameters:
   + _water_thickness_: Distance in the Z-axis from the membrane to the top/bottom of the PBC box
   + _water_margin_: Distance in the Z-axis to be penetrated by the solvation box
   + _buffer_: Distance between solvation waters and the rest of the system
-9. Addition of cappings to the system's protein chains. By default we use ACE and CT3 cappings for the main proteins, and NTER and CTER (=no capping) for peptide ligands. **IMPORTANT**: Any protein sequence with chain ID L is assumed to be a peptide ligand.
-10. Actual "building" of the system using charmm.build() function integrated in HTMD and CGenFF topologies. Systems are build in three rounds:
-    1. A first one to stablish the system topology
+9. Addition of cappings to the system's protein chains. By default we use ACE and CT3 cappings for the main proteins and NTER and CTER (=no capping) for peptide ligands. **IMPORTANT**: Any protein sequence with chain ID L is assumed to be a peptide ligand.
+10. Actual "building" of the system using charmm.build() function integrated into HTMD and CGenFF topologies. Systems are built in three rounds:
+    1. The first one to establish the system topology
     2. A second, to properly ionize the build system
     3. A third, to fully build the system
 
 Built systems are saved in simulation_output/build/name_of_your_system
 
-## equiliBRATION
-DEFAULT PARAMETERS IN SIMULATE_STRUCTURES_FUNCTIONS()
-WE USE ACEMD3 BY DEFAULT AS SIMULATION SOFTWARE
-SYSTEMS WILL BE PREPARED TO RUN A EQUILLIBRATION IN ACEMD3. USE RUN.SH SCRIPT
-EQUILLIBRATIONS AND SIMULATIONS ARE EXPECTED TO RUN IN CLUSTER, NOT WORKSTATIONS. 
-PROVIDED DEMO TOOK 1-2 DAYS OF COMPUTATION TO BE EQUILLIBRATIED IN CLUSTER, WITH A GPU GTX 1080Ti
-ONce run is done, files will be in simulation_output
+## System equilibration
+In the fourth cell, we set up the files required to equilibrate this system using ACEMD3 (https://software.acellera.com/acemd/index.html). Running this cell will produce a folder 'simulation_output/equil/system_name/' for each one of your systems, with the following content:
+  + input: text file with the ACEMD parameters for your equilibration
+  + parameters: CGenFF parameters to use in this equilibration.
+  + run.sh: run to start equilibration.
+  + structure.pdb/psf: starting coordinates and topology files, copied straight from 'simulation_output/build/system_name/'
+Equillibrations in this pipeline are run with the following parameters, as defined in 'simulate_structures_functions.py':
+ + const_sel: htmd selection of system elements to constrained during the equilibration, a process required in GPCRs to avoid the disintegration of the membrane-protein system (default includes protein backbone atoms, ligand molecules and non-solvation waters)
+ + minim_steps: Number of minimization steps (default: 5000)
+ + equil_timestep = Timestep, in fs (d.: 2)
+ + temperature = Temparature in Kº (d.: 310) 
+ + equil_simtime = Duration of equilibration in ns (d.: 40)
+Equilllibrations are run by default in NPT conditions. Please notice that simulations are simulations are computationally very expensive processes, and as such are meant to be run in dedicated computing servers, not regular workstations. The provided demo set took approximately 1 day to equillibrate in our server, with a GTX 1080Ti GPU. 
 
 ## Production
 ACTUAL SIMULATION STEP
