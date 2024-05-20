@@ -94,19 +94,22 @@ In the fourth cell, we set up the files required to equilibrate this system usin
   + parameters: CGenFF parameters to use in this equilibration.
   + run.sh: run to start equilibration.
   + structure.pdb/psf: starting coordinates and topology files, copied straight from 'simulation_output/build/system_name/'
-Equillibrations in this pipeline are run with the following parameters, as defined in 'simulate_structures_functions.py':
+Equilibrations in this pipeline are run with the following parameters, as defined in 'simulate_structures_functions.py':
  + const_sel: htmd selection of system elements to constrained during the equilibration, a process required in GPCRs to avoid the disintegration of the membrane-protein system (default includes protein backbone atoms, ligand molecules and non-solvation waters)
  + minim_steps: Number of minimization steps (default: 5000)
- + equil_timestep = Timestep, in fs (d.: 2)
- + temperature = Temparature in Kº (d.: 310) 
- + equil_simtime = Duration of equilibration in ns (d.: 40)
-Equilllibrations are run by default in NPT conditions. Please notice that simulations are simulations are computationally very expensive processes, and as such are meant to be run in dedicated computing servers, not regular workstations. The provided demo set took approximately 1 day to equillibrate in our server, with a GTX 1080Ti GPU. 
+ + equil_timestep: Timestep, in fs (d.: 2)
+ + temperature: Temparature in Kº (d.: 310) 
+ + equil_simtime: Duration of equilibration in ns (d.: 40)
+Equilibrations are run by default in NPT conditions. Please notice that simulations are computationally expensive processes, and are meant to be run in dedicated computing servers, not regular workstations. The provided demo set took approximately 1 day to equilibrate in our server, with a GTX 1080Ti GPU. 
 
 ## Production
-ACTUAL SIMULATION STEP
-3 REPLICATES BY DEFAULT, CHANGE AT WILL
-AGAIN, EXPECTED TO RUN IN CLUSTER WITH ACEMD3. USE RUN.SH SCRIPT
-IN OUR CLUSTER IT TOOK 5 DAYS
+Once equilibrated, the system can be now simulated. Running the fifth cell in this pipeline, and assuming all equillibration output files are contained in 'simulation_output/equil/system_name/', will produce another set of folders in 'simulation_output/production/system_name/rep_n/'. Once again, this folder contains the necessary inputs to run this system simulation in ACEMD3 with the specified parameters. Notice a subfolder 'rep_n' will be created for every system replicate (3 by default)
+Parameters: 
+  + timestep: simulation timestep in fs (d: 4) 
+  + trajperiod: A frame will be saved to make this simulation every 'trajperiod' timesteps (d: 50000) 
+  + repnum: Number of simulation replicates per system (d: 3) 
+  + prod_simtime: duration of each simulation replicate in ns (d: 500) 
+Simulation productions are run by default in NVT conditions. The provided demo set 3 replicates took approximately 6-7 days each to run in our server, with a GTX 1080Ti GPU.  
 
 ## Wrapping and aliging of simulated systems
 Depends on VMD
