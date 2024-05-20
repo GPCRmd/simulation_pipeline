@@ -12,6 +12,7 @@
 + Linux-based OS (tested successfully in Ubuntu 20.04.6 LTS and CentOS Linux release 7.5.1804) 
 + Visual Molecular Dynamics (VMD, must be available from the PATH)
 + UCSF Chimera (again, must be available from PATH)
++ mdconvert
 + Python (min. 3.10) and the following modules:
   + HTMD
   + MDAnalyisis
@@ -67,7 +68,7 @@ It is most likely that your ligand molecules are not included in CGenFF. For tha
 **WARNING**: ligand molecules in your PDB structure **must** be properly protonated and hydrogenated. Otherwise, parametrization is likely to fail, returning an empty '.str' file.
 
 ## System building
-The third cell in 'simulate_frompdb_structures.ipynb' builds a system for every entry in input.json. The main tasks performed in this part of the script are:
+The 'Part 2 in 'simulate_frompdb_structures.ipynb' builds a system for every entry in input.json. The main tasks performed in this part of the script are:
 1. Addition of internal GPCR waters (if the system is a GPCR) through homology using HomolWat web server ([LINK](https://alf06.uab.es/homolwat/))
 2. Remove potentially unwanted co-crystallized molecules. This mainly addresses detergents and other components required for crystallization but of no biological significance. The exact list of 'blacklisted' molecules we remove is included in 'simulate_structures_functions.py'.
 3. Setting of segment IDs for each component in the system, and some residue and atom renaming for the proper functioning of charmm.build() in successive steps
@@ -89,23 +90,23 @@ The third cell in 'simulate_frompdb_structures.ipynb' builds a system for every 
 Built systems are saved in simulation_output/build/name_of_your_system
 
 ## System equilibration
-In the fourth cell, we set up the files required to equilibrate this system using ACEMD3 (https://software.acellera.com/acemd/index.html). Running this cell will produce a folder 'simulation_output/equil/system_name/' for each one of your systems, with the following content:
+In 'Part 3' we set up the files required to equilibrate this system using ACEMD3 (https://software.acellera.com/acemd/index.html). Running this cell will produce a folder 'simulation_output/equil/system_name/' for each one of your systems, with the following content:
   + input: text file with the ACEMD parameters for your equilibration
   + parameters: CGenFF parameters to use in this equilibration.
   + run.sh: run to start equilibration.
   + structure.pdb/psf: starting coordinates and topology files, copied straight from 'simulation_output/build/system_name/'
-  + 
+
 Equilibrations in this pipeline are run with the following parameters, as defined in 'simulate_structures_functions.py':
  + const_sel: htmd selection of system elements to constrained during the equilibration, a process required in GPCRs to avoid the disintegration of the membrane-protein system (default includes protein backbone atoms, ligand molecules and non-solvation waters)
  + minim_steps: Number of minimization steps (default: 5000)
  + equil_timestep: Timestep, in fs (d.: 2)
  + temperature: Temparature in Kº (d.: 310) 
  + equil_simtime: Duration of equilibration in ns (d.: 40)
- + 
+ 
 Equilibrations are run by default in NPT conditions. Please notice that simulations are computationally expensive processes, and are meant to be run in dedicated computing servers, not regular workstations. The provided demo set took approximately 1 day to equilibrate in our server, with a GTX 1080Ti GPU. 
 
 ## Production
-Once equilibrated, the system can be now simulated. Running the fifth cell in this pipeline, and assuming all equillibration output files are contained in 'simulation_output/equil/system_name/', will produce another set of folders in 'simulation_output/production/system_name/rep_n/'. Once again, this folder contains the necessary inputs to run this system simulation in ACEMD3 with the specified parameters. Notice a subfolder 'rep_n' will be created for every system replicate (3 by default)
+Once equilibrated, the system can be now simulated. Running 'Part 4' of this pipeline, and assuming all equilibration output files are contained in 'simulation_output/equil/system_name/', will produce another set of folders in 'simulation_output/production/system_name/rep_n/'. Once again, this folder contains the necessary inputs to run this system simulation in ACEMD3 with the specified parameters. Notice a subfolder 'rep_n' will be created for every system replicate (3 by default)
 Parameters: 
   + timestep: simulation timestep in fs (d: 4) 
   + trajperiod: A frame will be saved to make this simulation every 'trajperiod' timesteps (d: 50000) 
@@ -115,20 +116,12 @@ Parameters:
 Simulation productions are run by default in NVT conditions. The provided demo set 3 replicates took approximately 6-7 days each to run in our server, with a GTX 1080Ti GPU.  
 
 ## Wrapping and aliging of simulated systems
-Depends on VMD
-Aligns systems around transmembrane protein atoms
+To be properly visualized, simulated systems need to be wrapped and aligned. In 'Part 5' of the pipeline systems are wrapped and aligned using VMD's pbctools package around the transmembrane part of the system's main protein. VMD's output is a dcd file, that gets converted into an XTC by mdconvert.
 
 ## Other
-A ligand RMSD calculator is provided, to ensure stability of ligand
-Another script is provided to submit your simulation into GPCRmd, if necessary. A password and username must be specified first
-
-
-# Instructions
-+ Explain demo 
+Once wrapped and aligned, the system can be considered finished. and no further steps are required. However, the pipeline also includes two post-simulation cells:
++ A tool to calculate the RMSD of the systems' ligands, to ensure their stability
++ A more complex script to automatically submit your simulations to GPCRmd, if you so wish. Notice a GPCRmd account is required to make this part work.
 
 # Demo
-+ Prepare input.json for 4EJ4, alonside structure
-+ Describe what to do to run build pipeline
-+ Add also compressed file with output of 4EJ4 build
-+ Mention time to build usually (max. 15min)
-+ Mention equillibration and proudcion times in our computer server
+A demo set is included to try out this pipeline. It comprises a the structure Delta Opioid receptor in complex with Naltrindole (pdb ID: 4EJ4). The pipeline is set out by default to run this example, although an initial path for paramchem should be set by the user. The building in total should not take more than 30min.
