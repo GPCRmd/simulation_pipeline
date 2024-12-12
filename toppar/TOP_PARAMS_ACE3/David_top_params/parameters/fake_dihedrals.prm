@@ -1,7 +1,15 @@
 read param card flex append
 * Hand-made parameters David Aranda. 
-* Created to adress the problem of ACEMD3 demanding dihedral parameters for atoms that are not actually making any dihedral (e.g: N≡C-CH2-CH3)
+* Bonds created to compensate the existance of dummy Lone Pair Hallogen (LPH) atoms in CGenFF
+* Dihedrals created to adress the problem of ACEMD3 demanding dihedral parameters for atoms that are not actually making any dihedral (e.g: N≡C-CH2-CH3)
 * CHARMM General Force Field (CGenFF) program version 2.4.0
+
+!Improvise params
+BONDS
+LPH CLGR1 0.00 0.0000 ! aromatic halogen to lone pair
+LPH BRGR1 0.00 0.0000 ! aromatic halogen to lone pair
+LPH IGR1 0.00 0.0000 ! aromatic halogen to lone pair
+END
 
 DIHEDRALS
 NG1T1  CG1N1  CG321  CG321      0.0000  2   180.00 ! dummy dihedral for triple bond
@@ -27,6 +35,5 @@ CG1T1  CG1T1  CG321  OG301      0.0000  2   180.00 ! dummy dihedral for triple b
 CG1T1  CG1T1  CG321  HGA2       0.0000  2   180.00 ! dummy dihedral for triple bond
 CG1T1  CG1T1  CG324  HGP5       0.0000  2   180.00 ! dummy dihedral for triple bond
 END
-!RETURN
 
 

@@ -9,8 +9,9 @@ import numpy as np
 from bs4 import BeautifulSoup   
 import random
 import tempfile
-import MDAnalysis as mda
-from MDAnalysis.analysis import rms
+import time
+# import MDAnalysis as mda
+# from MDAnalysis.analysis import rms
 from Bio import pairwise2
 from Bio.Align import substitution_matrices 
 import tarfile
@@ -31,7 +32,8 @@ except Exception:
     from htmd.protocols.equilibration_v2 import Equilibration
 from htmd.protocols.production_v6 import Production
 from htmd.builder.builder import removeLipidsInProtein, tileMembrane, minimalRotation,removeAtomsInHull
-from moleculekit.util import rotationMatrix, sequenceID, opm
+from moleculekit.util import rotationMatrix, sequenceID
+# from moleculekit.opm import get_opm_pdb
 from htmd.config import config
 from htmd.builder.charmm import _recoverProtonations
 
@@ -99,7 +101,9 @@ prod_simtime = 500 # Production time per replicate
 dummy_sel = 'name DUM'
 
 # Topologies filenames and paths
-toposfilenames = ['General_top_params/topologies/top_all36_prot.rtf',
+toposfilenames = [
+                  'General_top_params/topologies/top_all36_cgenff.rtf',
+                  'General_top_params/topologies/top_all36_prot.rtf',
                   'General_top_params/topologies/top_all36_na.rtf',
                   'General_top_params/topologies/top_all36_lipid.rtf',
                   'General_top_params/topologies/top_all36_carb.rtf',
@@ -114,6 +118,7 @@ toposfilenames = ['General_top_params/topologies/top_all36_prot.rtf',
 
 # Parameters filenames and paths
 paramsfilenames = [
+                   'General_top_params/parameters/par_all36_cgenff.prm',
                    'General_top_params/parameters/par_all36m_prot.prm',
                    'General_top_params/parameters/par_all36_na.prm',
                    'General_top_params/parameters/par_all36_lipid.prm',
@@ -590,10 +595,8 @@ def download_structures(pdbcode, outfile):
     else:
         print("No PDB file avalible for "+pdbcode+" in rcsb.org")
 
-def paramchem(username,password,ligpath,ligcode,pdbcode):
-    """
-    Submit ligand to paramchem to obtain topology-parametrs file
-    """
+"""def paramchem(username,password,ligpath,ligcode,pdbcode):
+    # Submit ligand to paramchem to obtain topology-parametrs file OBSOLETE
     
     # Make two paramchems: one with legacy parameters and the other with modern ones (for hallogen systems)
     for c_option in ['c','']:
@@ -676,16 +679,140 @@ def paramchem(username,password,ligpath,ligcode,pdbcode):
                 return
 
             #Delete lines with LPH (new feature from CHARMM not tolerated by HTMD)
-            """
             with open(topparfile_path, "r") as f:
                 lines = f.readlines()
             with open(topparfile_path, "w") as f:
                 for line in lines:
                     if not re.match(lph_pat, line):
                         f.write(line)
-            """
+"""        
 
+def get_params_cgenff(username,password,mol2path,outfolder):
+    """
+    Obtain parameters for molecule in mol2path using CGenFF app web service
+    """
+
+    # URLs for the Identity Toolkit API
+    API_KEY = 'AIzaSyA_k5QDKh2dAZLzcg9MsG4tB_BfSIiEGJw'
+    SIGN_IN_URL = 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key='+API_KEY
+    SECURE_RESOURCE_URL = 'https://app.cgenff.com/homepage'  # Replace with the actual secure resource URL
+
+    def sign_in(email, password):
+        payload = {
+            'email': email,
+            'password': password,
+            'returnSecureToken': True
+        }
+        response = requests.post(SIGN_IN_URL, json=payload)
+        response.raise_for_status()  # Raise an error if the request was unsuccessful
+        return response.json()
+
+    def submit_molecule(file_path, session, user_id, job_id):
+        """Submit mol2 file into CgenFF app"""
+
+        data = {
+            'userId' : user_id,
+            'jobIDFolder' : job_id
+        }
+
+        headers = {
+            'Authorization': f'Bearer {id_token}'
+        }
+
+        # Upload the molecule file
+        files = {'mol2File': open(file_path, 'rb')}
+        response = session.post('https://app.cgenff.com/jobs/file-management/uploadMol2File', files=files, headers=headers, data=data)
+        response.raise_for_status()
         
+        # Return the task ID or results URL if provided
+        print('submited_mol',response)
+
+    def submit_cgenff(session, user_id, job_id, stem):
+        """
+        Process molecule in CGenFF to obtain parameters
+        """
+
+        print('submitting into cgenff....')
+        headers = {
+            'User-Agent': 'python-requests/2.22.0', 
+            'Accept-Encoding': 'gzip, deflate',
+            'Accept': '*/*', 
+            'Connection': 'keep-alive', 
+            'Content-Length': '2705',
+            'Content-Type': 'application/json'
+            }
+
+        data = json.dumps({
+            "userId":user_id,
+            "jobId":job_id,
+            "stem":stem,
+            "options":{"mol2out":True,"warning":False,"debug":False,"copyParams":False}
+            })
+        response = session.post('https://app.cgenff.com/job-managers/submitCGenFF', headers=headers, data=data)
+        response.raise_for_status()
+
+    def str_cgenff(session, user_id, job_id, stem, outfolder='./'):
+        """
+        Download STR file with topologies and parameters
+        """
+
+        data = {
+            "userId":user_id,
+            "jobId":job_id,
+            "stem":stem,
+        }
+
+        headers = {
+            'User-Agent': 'python-requests/2.22.0', 
+            'Accept-Encoding': 'gzip, deflate',
+            'Accept': '*/*', 
+            'Connection': 'keep-alive', 
+            'Content-Length': '2705',
+            }
+
+        # Download both error log file (.err) and the actual .str file with parameters and topology of molecule
+        for filext in ('.err','.str'):
+            response = session.get('https://app.cgenff.com/build/%s/%s/%s%s'%(data['userId'],data['jobId'],stem,filext), headers=headers, data=data)
+            response.raise_for_status()
+
+            # Write returned parameters in a file
+            outfile = outfolder+stem+'_toppar'+filext
+            with open(outfile, 'wb') as filehand:
+                filehand.write(response.content)
+        return(outfile)
+
+    # Extrac filename without folders or filextension (requried for CGenFF parameters)
+    stem = os.path.splitext(os.path.basename(mol2path))[0]
+
+    # Create a session to manage cookies
+    session = requests.Session()
+
+    # Sign in to get the ID token
+    auth_response = sign_in(username, password)
+    id_token = auth_response['idToken']
+    user_id = auth_response['localId']
+
+    # Create a random job id
+    job_id = str(random.randrange(1000000000000, 5555555555555))
+
+    # Submit molecule into CGenFF
+    submit_molecule(mol2path,session, user_id, job_id)
+
+    # Proces molecule parameters
+    submit_cgenff(session, user_id, job_id,stem)
+
+    # Download said parameters
+    outfile = str_cgenff(session, user_id, job_id, stem, outfolder)
+
+    #Delete lines with LPH (feature from CHARMM not tolerated by HTMD)
+    # lph_pat = re.compile('^ATOM.*LPH|LONEPAIR')
+    # with open(outfile, "r") as f:
+    #     lines = f.readlines()
+    # with open(outfile, "w") as f:
+    #     for line in lines:
+    #         if not re.match(lph_pat, line):
+    #             f.write(line)
+
 def get_lig_toppar(ligandsdict, basepath, username, password, pdbfiles = {}):
     """
     Get the topology-parameters string file from paramchem for the submited ligand PDB codes
@@ -697,18 +824,21 @@ def get_lig_toppar(ligandsdict, basepath, username, password, pdbfiles = {}):
     for pdbcode in ligandsdict:
         for ligcode in ligandsdict[pdbcode]:
             
-            # Skip Retinol and cholesterol (we already have parameters for these ones) or ions (unprocessable for paramchem) or blacklisted molecules
+            # Skip Retinol and cholesterol (we already have parameters for these ones) or ions (unprocessable for paramchem) 
+            # or blacklisted molecules
             if (ligcode in noparams_ligs) or (len(ligcode)<3) or (ligcode in detergent_blacklist.union(glucids_blacklist)):
                 continue
             
-            # Stablish folder for ligand parameters (dpending on covalent-bound ligand or not)
+            # Stablish folder for ligand parameters (depending on covalent-bound ligand or not)
             ligcov = ligandsdict[pdbcode][ligcode][1]
             ligpath = basepath+"toppar/Ligands/"+ligcode+'/'
+            mol2file = ligpath+pdbcode+'_'+ligcode+'.mol2'
+            strfile = "%s%s_%s_toppar.str"%(ligpath,pdbcode,ligcode)
 
             # Skip already-parameterized ligands
-            if os.path.exists("%s%s_toppar.str"%(ligpath,pdbcode)) or os.path.exists("%stoppar.str"%(ligpath)):
-                #continue
+            if os.path.exists(strfile):
                 pass
+                continue
             
             print('Getting toppar file for ligand %s ' % (ligcode))
                                 
@@ -716,7 +846,8 @@ def get_lig_toppar(ligandsdict, basepath, username, password, pdbfiles = {}):
             if ligcov:
                 modres_covlig_toppar(pdbcode, ligcode, ligpath, username, password, covlig = True, pdbfiles = pdbfiles)
             else:
-                paramchem(username,password,ligpath,ligcode,pdbcode)
+                # paramchem(username,password,ligpath,ligcode,pdbcode)
+                get_params_cgenff(username,password,mol2file,ligpath)
 
 def fix_ARG(inpath, outpath):
     """
@@ -806,13 +937,13 @@ def modres_covlig_toppar(pdbcode, modres, modrespath, username, password, covlig
     # FIlenames and directories
     mol2chim = modrespath+modres+'_chim.mol2'
     mol2file = modrespath+pdbcode+'_'+modres+'.mol2'
+    topparfile = modrespath+pdbcode+'_'+modres+'.str'
     pdbfile = modrespath+modres+'.pdb'
     pyfile = modrespath+modres+'.py'
     os.makedirs(modrespath, exist_ok = True)
 
     # Skip existing ones
-    print(modrespath+pdbcode+'_toppar.str')
-    if os.path.exists(modrespath+pdbcode+'_toppar.str'):
+    if os.path.exists(topparfile):
         print("toppar file for %s in %s already exists. Skipping"%(modres, pdbcode))
         return
         pass
@@ -837,7 +968,6 @@ def modres_covlig_toppar(pdbcode, modres, modrespath, username, password, covlig
         new_resid = main_pdb.get('resid', 'protein and within 1.55 of (resname %s)'%modres)
         main_pdb.set("resname", "COV", sel)
         main_pdb.set("resid", new_resid, sel)
-        cov_ligcode = modres
         modres = "COV"
     
     # Save in a list the residue's binding atoms
@@ -916,42 +1046,36 @@ def modres_covlig_toppar(pdbcode, modres, modrespath, username, password, covlig
     mol2.write(mol2file)
 
     # Use paramchem to obtain toppar file for our ligand-residue thing
-    if covlig:
-        paramchem(username,password,modrespath,cov_ligcode,pdbcode)
-    else:
-        paramchem(username,password,modrespath,modres,pdbcode)
+    get_params_cgenff(username,password,mol2file,modrespath)
+    # paramchem(username,password,modrespath,modres,pdbcode)
 
-    for topparname in {pdbcode+'_toppar.str', pdbcode+'_legacy_toppar.str'}:
+    #Rename output files from paramchem
+    pre_topparfile = modrespath+'pre_'+pdbcode+'_'+modres+'.str'
+    os.rename(topparfile, pretopparfile)
 
-        #Rename output files from paramchem
-        pre_file = modrespath+'pre_'+topparname
-        os.rename(modrespath+topparname, pre_file)
+    # Create new file for parameters
+    with open(pre_topparfile,'r') as f:
+        topparlines = f.readlines()
+    new_f = open(topparfile,'w')
 
+    Xpat = re.compile(" X\w* ")
+    typepat = re.compile("ATOM \w+\s+(\w+)")
+    for line in topparlines:
+        if line.startswith('ATOM'):
+            # Skip atom lines refering to atoms from neighbor residues
+            if line.startswith(('ATOM X','ATOM Y')):
+                continue
 
-        # Create new file for parameters
-        with open(pre_file,'r') as f:
-            topparlines = f.readlines()
-        new_topparpath = modrespath+topparname
-        new_f = open(new_topparpath,'w')
+        elif line.startswith(('BOND','IMPR')):
+            if Xpat.search(line):
+                continue
+            elif any(a in line for a in replace_atoms):
+                for atom in replace_atoms:
+                    line = line.replace(atom, replace_atoms[atom])
 
-        Xpat = re.compile(" X\w* ")
-        typepat = re.compile("ATOM \w+\s+(\w+)")
-        for line in topparlines:
-            if line.startswith('ATOM'):
-                # Skip atom lines refering to atoms from neighbor residues
-                if line.startswith(('ATOM X','ATOM Y')):
-                    continue
+        new_f.write(line)
 
-            elif line.startswith(('BOND','IMPR')):
-                if Xpat.search(line):
-                    continue
-                elif any(a in line for a in replace_atoms):
-                    for atom in replace_atoms:
-                        line = line.replace(atom, replace_atoms[atom])
-
-            new_f.write(line)
-
-        new_f.close()
+    new_f.close()
 
 def hetatm_nucleotides(pdbpath, name):
     """
@@ -1222,7 +1346,7 @@ def get_thickness(pdbcode):
     """
     
     # Search pdb code in OPM database, and take thickness and opm_id
-    searchlink = 'https://lomize-group-opm.herokuapp.com//primary_structures?search='+pdbcode+'&sort=&pageSize=100'
+    searchlink = 'https://opm-back.cc.lehigh.edu/opm-backend//primary_structures?search='+pdbcode+'&sort=&pageSize=100'
     response_dict=eval(requests.get(searchlink).content.decode('UTF-8')\
                        .replace('true', 'True')\
                        .replace('false','False')\
@@ -1244,24 +1368,30 @@ def get_opm(pdbcode):
     """
     
     # Search pdb code in OPM database, and take thickness and opm_id
-    searchlink = 'https://lomize-group-opm.herokuapp.com//primary_structures?search='+pdbcode+'&sort=&pageSize=100'
-    response_dict=requests.get(searchlink).json()
+    searchlink = 'https://opm-back.cc.lehigh.edu/opm-backend//primary_structures?search='+pdbcode+'&sort=&pageSize=100'
+    headers = {
+        'Accept' : 'application/json, text/plain, */*', 
+        'Accept-Encoding' : 'gzip, deflate, br, zstd', 
+        'Origin' : 'https://opm.phar.umich.edu', 
+        'Referer' : 'https://opm.phar.umich.edu/'
+        }
+    response_dict=requests.get(searchlink, headers=headers).json()
 
     # If the PDBcode has no avaliable OPM structure, use a random pdbcode as reference (4EJ4 in this case)
     if not len(response_dict['objects']):
-        searchlink = 'https://lomize-group-opm.herokuapp.com//primary_structures?search=4EJ4&sort=&pageSize=100'
-        response_dict=requests.get(searchlink).json()
+        searchlink = 'https://opm-back.cc.lehigh.edu/opm-backend//primary_structures?search=4EJ4&sort=&pageSize=100'
+        response_dict=requests.get(searchlink, headers=headers).json()
     
     thickness = response_dict['objects'][0]['thickness']
     opm_id = response_dict['objects'][0]['id']
 
     # Throught opm id, get PDB id of the reference structure in OPM for this pdbcode
-    opmlink = 'https://lomize-group-opm.herokuapp.com//primary_structures/'+str(opm_id)
-    response_dict=requests.get(opmlink).json()
+    opmlink = 'https://opm-back.cc.lehigh.edu/opm-backend//primary_structures/'+str(opm_id)
+    response_dict=requests.get(opmlink, headers=headers).json()
     new_pdbcode = response_dict['pdbid'].lower()
     
     # Download OPM pdb file, and save all lines not involving a DUM residue in a temp file 
-    response_pdb = requests.get('https://opm-assets.storage.googleapis.com/pdb/'+new_pdbcode+'.pdb')
+    response_pdb = requests.get('https://opm-assets.storage.googleapis.com/pdb/'+new_pdbcode+'.pdb', headers=headers)
     line_list = (response_pdb.content.decode('UTF-8').split('\n'))
     tmpout = tempfile.NamedTemporaryFile(mode='w',suffix='.pdb')
     for line in line_list:
@@ -2032,21 +2162,6 @@ def get_caps(prot_segids, mol_solvated):
 
     return caps
 
-
-def cgenff_params(mol, topparpath):
-    """
-    Returns older or newer version of CGenFF depending if the system has or not organic hallogens
-    """
-    has_halo = bool(len(mol.get('name', 'element Br Cl I and not ion')))
-    if has_halo:
-        cgenff_par = [topparpath+'David_top_params/parameters/legacy_par_all36_cgenff.prm']
-        cgenff_top = [topparpath+'David_top_params/topologies/legacy_top_all36_cgenff.rtf']
-    else: 
-        cgenff_par = [topparpath+'General_top_params/parameters/par_all36_cgenff.prm']
-        cgenff_top = [topparpath+'General_top_params/topologies/top_all36_cgenff.rtf']
-    return (cgenff_par, cgenff_top, has_halo)
-
-
 def extra_parameters(pdbcode, ligandsdict, modresdict, blacklist, covligs, basepath, has_halo = False):
     """
     Get toppar files for ligand  molecules and modified residues 
@@ -2056,25 +2171,16 @@ def extra_parameters(pdbcode, ligandsdict, modresdict, blacklist, covligs, basep
     ligstreams = []
     for ligcode in ligandsdict[pdbcode]:
         
-        # Get MOE-curated paramteers (if there are any) for this ligand in this pdbcode
-        if os.path.exists('%stoppar/Ligands/%s/%s_toppar.str'%(basepath,ligcode,pdbcode)):
-            topparname = pdbcode+'_legacy_toppar.str' if has_halo else pdbcode+'_toppar.str'
-        else:
-            topparname = 'legacy_toppar.str' if has_halo else 'toppar.str'
         #Skip blacklisted molecules and retinols or cholesterols 
         #(retinols and cholesterols already have their own parameters)
         if (ligcode not in blacklist) and not (ligcode in noparams_ligs):
-            if ligcode in covligs:
-                ligstreams.append('%stoppar/Ligands/%s/%s'%(basepath,ligcode,topparname))                        
-            else:
-                ligstreams.append('%stoppar/Ligands/%s/%s'%(basepath,ligcode, topparname))
+            ligstreams.append('%stoppar/Ligands/%s/%s_%s_toppar.str'%(basepath,ligcode,pdbcode,ligcode))                        
 
     # Make list of modified-residue stringfiles (if there is any)
     modresstreams = []
     if pdbcode in modresdict:
-        topparname = 'legacy_toppar.str' if has_halo else 'toppar.str'
         for modres in modresdict[pdbcode]:
-            ligstreams.append('%stoppar/mod_residues/%s/%s_%s'%(basepath,modres,pdbcode,topparname))                        
+            ligstreams.append('%stoppar/mod_residues/%s/%s_%s_toppar.str'%(basepath,modres,pdbcode,modres))                        
 
     return modresstreams+ligstreams
 
@@ -2262,12 +2368,15 @@ def job_commands(sourcedir, nodedir):
     And then exit the bash script
     """
     return [
+            'cd',
             'mkdir -p '+nodedir,
             'mv %s* %s'%(sourcedir, nodedir),
-            'touch %ssimrunning' %sourcedir,                
+            'touch %ssimrunning' %sourcedir,
             'eval "$(/opt/miniconda3/bin/conda shell.bash hook)"',
+            'eval "$(conda shell.bash hook)"',
             'cd '+nodedir,
-            nodedir+'run.sh',
+            'bash run.sh',
+            'cd ..',
             'mv %s* %s'%(nodedir, sourcedir),
             'rm -r %s %ssimrunning'% (nodedir,sourcedir),
             'exit'
