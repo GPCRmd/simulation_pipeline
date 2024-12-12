@@ -10,3 +10,4 @@ simulate_mutated_structures.ipynb
 simulation_output/
 input_structures/
 .ipynb_checkpoints
+automatize_cgenff.py
