@@ -231,7 +231,7 @@ def autosubmit_step3(s, subm_id, pdbcode, protlist):
 	# Get headers and stuff
 	(sessionid, csrftoken, headers)=get_headers(s, subm_id)
 	segsrc = ["XRAY","NMR","ABIN","HOMO","THR","MD","EM","OTH"]
-	prot_types = ["GPCR","GPROT","BARR","PEP","OTH"]
+	prot_types = ["OTH","GPCR","GPROT","BARR","PEP"]
 	
 	# Start dict with the data to be send into GPCRmd
 	# But thougth they paved the footways here with goldust, I still would chose... my Isle of Innesfree
