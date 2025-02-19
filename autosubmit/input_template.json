@@ -55,7 +55,7 @@
 					}
 				],
 				
-				"isgpcr" : true,  
+				"prot_type" : "GPCR/GPROT/BARR/PEP/OTH",  
 				"organism_id" : "9606", 
 				"organism" : "Homo", 
 				"name" : "5-hydroxytryptamine receptor 2A", 
@@ -83,7 +83,7 @@
 					}
 				],
 				
-				"isgpcr" : true,  
+				"prot_type" : true,  
 				"organism_id" : "9606", 
 				"organism" : "Homo", 
 				"name" : "5-hydroxytryptamine receptor 2A", 

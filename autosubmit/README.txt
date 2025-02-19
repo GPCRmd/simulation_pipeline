@@ -92,7 +92,12 @@ Should a protein chain be a chimera of two different proteins, make two entries 
 			EM (Electron microscopy)
 			OTH (Other) 
 	
-	4. "isgpcr" : true/false wether this protein is or not a GPCR  
+	4. "prot_type" : What type of protein this entry contains (unrequired if protein has uniprotkbac)
+		GPCR: G Protein-Coupled Receptor
+		GPROT: G protein subunit
+		BARR: Arrestin subunit
+		PEP: Peptide ligand
+		OTH: Other
 	5. "organism_id" : Uniprot ID of this protein's organism (unrequired if protein has uniprotkbac)
 	6. "organism" : Uniprot name of this protein's organism (unrequired if protein has uniprotkbac)
 	7. "name" : Name of the protein (unrequired if protein has uniprotkbac) 
