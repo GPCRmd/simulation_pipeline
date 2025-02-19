@@ -231,6 +231,7 @@ def autosubmit_step3(s, subm_id, pdbcode, protlist):
 	# Get headers and stuff
 	(sessionid, csrftoken, headers)=get_headers(s, subm_id)
 	segsrc = ["XRAY","NMR","ABIN","HOMO","THR","MD","EM","OTH"]
+	prot_types = ["GPCR","GPROT","BARR","PEP","OTH"]
 	
 	# Start dict with the data to be send into GPCRmd
 	# But thougth they paved the footways here with goldust, I still would chose... my Isle of Innesfree
@@ -246,9 +247,9 @@ def autosubmit_step3(s, subm_id, pdbcode, protlist):
 	for prot in protlist:
 		ii = str(i)
 		uniprotkbac = prot['uniprotkbac']
-		isgpcr = prot['isgpcr']
 		isoform = prot['isoform']
 		segs = prot['segs']
+		prot_type_name = prot['prot_type']
 
 		# Retrieve info using uniprot code
 		# If no uniprot code retrieved from input json
@@ -270,7 +271,8 @@ def autosubmit_step3(s, subm_id, pdbcode, protlist):
 			unidict = {
 			'Organism (ID)' : prot['organism_id'],
 			'Organism' : prot['organism'],
-			'Sequence' : '',            
+			'Sequence' : '',
+			'prot_type' : prot_types.index(prot_type_name),
 			}
 			name = prot['name']
 			other_names = prot['other_names']
@@ -352,6 +354,7 @@ def autosubmit_step3(s, subm_id, pdbcode, protlist):
 			'species_code'+ii : unidict['Organism (ID)'],
 			'species_name'+ii : unidict['Organism'],
 			'unisequence'+ii : unidict['Sequence'],
+			'prot_type'+ii : unidict['prot_type'],
 		}
 		step3_data.update(step3_entrydata)
 
