@@ -402,9 +402,9 @@ def autosubmit_step4(s, subm_id, files):
 	step4_files.append(
 		('prm', (os.path.basename(files['params']), open(files['params'],'rb')))
 	)
-	# step4_files.append(
-		# ('prt', (os.path.basename(files['proto']), open(files['proto'],'rb')))
-	# )
+	step4_files.append(
+		('prt', (os.path.basename(files['proto']), open(files['proto'],'rb')))
+	)
 	# Other files are optional, so upload only if there is file
 	if ('other' in files) and (files['other']) :
 		step4_files.append(
@@ -450,20 +450,16 @@ def autosubmit_step5(s, subm_id, ref_info):
 		'issue' : ref_info['issue'],
 		'volume' : ref_info['volume'],
 		'pages' : ref_info['pages'],
-		'pub_year' : ref_info['pub_year'],
-		'url' : ref_info['url'],
+		'pub_year' : ref_info['publication_year'],
+		'url' : ref_info['URL'],
 
 	}
-	files_submit = {
-		'dynamics' : open(pdbpath, 'rb')
-	}
 
-	# Submit step 1
-	rep = s.post(mainurl+'/dynadb/step1_submit/'+subm_id+'/',
+	# Submit step 5
+	rep = s.post(mainurl+'/dynadb/step5_submit/'+subm_id+'/',
 			headers = headers,
-			files = files_submit,
 			data = data_submit)
-	print('step1 finalized ',rep)
+	print('step5 finalized ',rep)
 
 
 ##############################
@@ -537,6 +533,10 @@ for entry in input_dict:
 		## Step 4: Dynamics information
 		autosubmit_step4(s, subm_id, entry['files'])
 	
+		## Step 4: Reference info
+		ref_info = entry['references']
+		autosubmit_step5(s, subm_id, ref_info)
+
 	except Exception as e:
 		print("Simulation "+sysname+" could not be submitted because ",e)
 		print(traceback.format_exc())

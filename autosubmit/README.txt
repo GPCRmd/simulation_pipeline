@@ -118,8 +118,11 @@ Files of your simulation.
 	
 	4. "params" : Parameters used in your simulation. Stored for replicability
 	Accepted formats: any, but must have '.prm' termination. If several files need to be uploaded, compress them in a 'tar.gz' file
-	
-	6. "other" : Any other files relevant to this simulaiton, including the protocol used to run it
+
+	6. "proto" : Compressed file with simulation protocol, to ensure replicability.
+	Accepted formats: any, as long as compressed in a 'zip' or 'tar.gz' file
+
+	7. "other" : Any other files relevant to this simulaiton
 	Accepted formats: any, as long as compressed in a 'zip' or 'tar.gz' file
 
 ### 5. References
