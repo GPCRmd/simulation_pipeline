@@ -96,6 +96,7 @@
 			"topo" : "path/to/my/psf",
 			"trajs" : ["path/to/my/traj1", "path/to/my/traj2", "path/to/my/traj3"],
 			"params" : "path/to/my/params",
+			"proto" : "path/to/my/protocol.tar.gz",
 			"other" : "path/to/my/others.tar.gz"
 		},
 
