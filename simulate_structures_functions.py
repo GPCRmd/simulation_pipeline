@@ -61,7 +61,7 @@ water_thickness = 20 # Size in Z-axis of the solvation water layers
 buffer = 2.4 # Distance between solvation waters and the rest of the system
 water_margin = 4 # Distance in the Z-axis to be penetrated by the solvation box 
                  # to avoid the formation of a V O I D between the system and the solvation boxes
-lipidlike_blacklist = {'OLA','OLB','BOG','OLC','PLM','HTG','LPP','PEF','2CV','SOG','TWT','STE','LMT',
+lipidlike_blacklist = {'OLA','OLB','OLC','PLM','HTG','LPP','PEF','2CV','SOG','TWT','STE','LMT',
                        'MPG','DGA','1WV','POV','FLC','PGW', 'PC1','LDA','J40','BNG'}
 detergent_blacklist = {'OLA','OLB','PEG','GOL','BOG','OLC','P6G','P33','UNL','UNX','PLM','HTG',
                        '12P','LPP','PEF','2CV','SOG','TWT','PGE','SO4','STE','LMT','ACT','ACE',
@@ -344,7 +344,11 @@ def create_files(pdbfile, smalmol, name, smalmol_folder, hydrogenate_ligand=True
 
 
     # Get resid of first instance of smalmol (we only need one molecule of smaloml, regardless of how many there are in the system)
-    resid = mymol.get('resid', 'resname '+smalmol)[0]
+    lig_resids = mymol.get('resid', 'resname "%s"'%smalmol)
+    if not len(lig_resids):
+        print("Ligand %s not found in system %s. Skiping"%(smalmol, name))
+        return
+    resid = lig_resids[0]
 
     # Write PDB file of smalmol 
     os.makedirs(smalmol_folder, exist_ok=True)
@@ -355,7 +359,6 @@ def create_files(pdbfile, smalmol, name, smalmol_folder, hydrogenate_ligand=True
         chimera_addH(smalmol_pdb, smalmol_mol2, smalmol_script, smalmol)
     else:
         chimera_conversion(smalmol_pdb, smalmol_mol2, smalmol_script, smalmol)
-
 
 def ligand_dictionary(struc_dict, ligandsdict_path, modres_path, basepath, blacklist = {}, hydrogenate_ligands=True):
     """
@@ -441,13 +444,13 @@ def ligand_dictionary(struc_dict, ligandsdict_path, modres_path, basepath, black
                 print("Curated file for %s not avaliable. Ligands could not be obtained"%pdbcode)
                 continue
 
-            # For each ligand or modres, create a mol2 file
+            # For each regular ligand, create a mol2 file
             for lig in ligandsdict[pdbcode]:
                 if lig not in noparams_ligs: # There are standard parameters for these two
-                    create_files(pdbfile, lig, pdbcode, '%stoppar/Ligands/%s/'%(basepath,lig), hydrogenate_ligands)
-            if pdbcode in modresdict:
-                for modres in modresdict[pdbcode]:
-                    create_files(pdbfile, modres, pdbcode, '%stoppar/mod_residues/%s/'%(basepath,modres), hydrogenate_ligands)
+                    is_covlig = ligandsdict[pdbcode][lig][1]
+                    # Create mol2 files for regular ligands. Covalent ones go separatedly
+                    if not is_covlig: 
+                        create_files(pdbfile, lig, pdbcode, '%stoppar/Ligands/%s/'%(basepath,lig), is_covlig, hydrogenate_ligands)
 
         except FileNotFoundError as e:
             print("Error: %s"%e)
@@ -552,7 +555,6 @@ from chimera import replyobj,openModels,Molecule
 from WriteMol2 import writeMol2 
 os.chdir(".") 
 rc("open %s") 
-rc("delete element.H")
 rc("addh") 
 rc("setattr m name '%s'") 
 writeMol2(openModels.list(modelTypes=[Molecule]), "%s") 
@@ -784,6 +786,11 @@ def get_params_cgenff(username,password,mol2path,outfolder):
     # Extrac filename without folders or filextension (requried for CGenFF parameters)
     stem = os.path.splitext(os.path.basename(mol2path))[0]
 
+    # Skip if molecule has no mol2
+    if not os.path.exists(mol2path):
+        print("file %s does not exist. Skipping...."%mol2path)
+        return
+
     # Create a session to manage cookies
     session = requests.Session()
 
@@ -937,7 +944,7 @@ def modres_covlig_toppar(pdbcode, modres, modrespath, username, password, covlig
     # FIlenames and directories
     mol2chim = modrespath+modres+'_chim.mol2'
     mol2file = modrespath+pdbcode+'_'+modres+'.mol2'
-    topparfile = modrespath+pdbcode+'_'+modres+'.str'
+    topparfile = modrespath+pdbcode+'_'+modres+'_toppar.str'
     pdbfile = modrespath+modres+'.pdb'
     pyfile = modrespath+modres+'.py'
     os.makedirs(modrespath, exist_ok = True)
@@ -949,10 +956,13 @@ def modres_covlig_toppar(pdbcode, modres, modrespath, username, password, covlig
         pass
 
     # Load main structure
-    if pdbcode in pdbfiles:
-        main_pdb = Molecule(pdbfiles[pdbcode])
-    else:
-        main_pdb = Molecule(pdbcode)
+    if (pdbcode not in pdbfiles):
+        print('pdbfile for %s not avaliable. SKipping...'%pdbcode)
+        return
+    elif not os.path.exists(pdbfiles[pdbcode]):
+        print('mol2file for %s not avaliable. SKipping...'%pdbfiles[pdbcode])
+        return
+    main_pdb = Molecule(pdbfiles[pdbcode])
 
     # Find out if this structure has hallogens
     has_halo = bool(len(main_pdb.get('name', 'element Cl Br I and not ion')))
@@ -964,10 +974,13 @@ def modres_covlig_toppar(pdbcode, modres, modrespath, username, password, covlig
     # If covalent ligand, change resname of ligand+boundresidue to COV
     if covlig:
         main_pdb = renumber_covlig(main_pdb, modres)
-        sel = 'resname %s or same residue as (protein and within 1.55 of (resname %s))' % (modres, modres)
-        new_resid = main_pdb.get('resid', 'protein and within 1.55 of (resname %s)'%modres)
+        sel = 'resname %s or same residue as (protein and within 2 of (resname %s))' % (modres, modres)
+        new_resid = main_pdb.get('resid', 'protein and within 2 of (resname %s)'%modres)[0]
+        new_chain = main_pdb.get('chain', 'protein and within 2 of (resname %s)'%modres)[0]
         main_pdb.set("resname", "COV", sel)
-        main_pdb.set("resid", new_resid, sel)
+        main_pdb.set("resid", str(new_resid), "resname COV")
+        main_pdb.set("chain", str(new_chain), "resname COV")
+        main_pdb.set("segid", 'COV', "resname COV")
         modres = "COV"
     
     # Save in a list the residue's binding atoms
@@ -994,7 +1007,7 @@ def modres_covlig_toppar(pdbcode, modres, modrespath, username, password, covlig
     i=0
     for atom in main_pdb.get('index','resname '+modres):
         atom_name = main_pdb.get('name', 'index '+str(atom))[0]
-        for nearby_atom in main_pdb.get('index', 'not resname %s and within 1.6 of (index %s)'%(modres,atom)):
+        for nearby_atom in main_pdb.get('index', 'not resname %s and within 2 of (index %s)'%(modres,atom)):
             modres_boundatoms.add('ATOM '+atom_name+' ')
             n_atom_name = main_pdb.get('name', 'index '+str(nearby_atom))[0]
             # Skip bonds modresN -> nonmodresC (Repeated bonds give problems in PSF files)
@@ -1020,13 +1033,12 @@ def modres_covlig_toppar(pdbcode, modres, modrespath, username, password, covlig
     main_pdb.set('resname','GLH', 'resname GLU')
     main_pdb.set('resname','ASH', 'resname ASP')
 
-    # Remove any "a priori" hydrogens, set a common segid and write a PDB
-    main_pdb.remove('element H')
+    # Set a common segid and write a PDB
     main_pdb.set('segid', 'X')
     main_pdb.write(pdbfile)
 
     # Add hydrogens with chimera (THIS GIVES A LOT OF PROBLEMS. AVOID USE)
-    # chimera_addH(pdbfile, mol2chim, pyfile, modres)
+    chimera_addH(pdbfile, mol2chim, pyfile, modres)
 
     # Fix arginine bug
     fix_ARG(mol2chim,mol2file)
@@ -1051,7 +1063,7 @@ def modres_covlig_toppar(pdbcode, modres, modrespath, username, password, covlig
 
     #Rename output files from paramchem
     pre_topparfile = modrespath+'pre_'+pdbcode+'_'+modres+'.str'
-    os.rename(topparfile, pretopparfile)
+    os.rename(topparfile, pre_topparfile)
 
     # Create new file for parameters
     with open(pre_topparfile,'r') as f:
@@ -1178,7 +1190,8 @@ def internal_waters(pdbpath, pdbcode, gpcrdb_dict, apo=False, sod="autoselect",c
     """
 
     # If we have no PDB we cannot know if this GPCR requires or not a 2x50 sodium
-    sod = needs_sodium(gpcrdb_dict, pdbcode) if pdbcode else False
+    if sod == "autoselect":
+        sod = needs_sodium(gpcrdb_dict, pdbcode) if pdbcode else False
 
     # Set names 
     name = os.path.splitext(pdbpath)[0]
@@ -1592,26 +1605,26 @@ def remove_apoform_ion():
         except Exception as e:
             print("sod atom in "+pdbcode+" could not be removed because ",e)        
 
-
 def covalent_ligands(mol, name, ligandsdict):
     """
     Check if the protein is covalently bound to anything similar to a ligand (not a protein, lipid or water)
     If so, check if it is a Retinol-Lysing binding. In this case change both residue names for LYR
     """
-    
     # Take ligands marked as covalently-bound to protein residue
     covligs = [ lig for lig in ligandsdict[name] if ligandsdict[name][lig][1] ]
         
     # For every covalently-bound atom in the protein
-    for lig in covligs:
+    for lig in covligs:    
+            
+        # For every covalently-bound atom in the protein
         ligsel = '(resname %s)'%lig
-        withinsel = '(within 1.55 of ('+ligsel+')) and (protein and not element H)'
+        withinsel = '(within 2 of ('+ligsel+')) and (protein and not element H)'
         protres_resname = str(mol.get('resname', withinsel)[0])
         protres_resid = str(mol.get('resid', withinsel)[0])
         protres_chain = str(mol.get('chain', withinsel)[0])
         protres_segid = str(mol.get('segid', withinsel)[0])
         
-        ligres_resid = str(mol.get('resid', 'index '+lig)[0])
+        ligres_resid = str(mol.get('resid', 'resname '+lig)[0])
         ligres_atoms = mol.get('index', 'resname %s and resid %s'%(lig, ligres_resid))
         min_protres = min(list(mol.get('index', 'resid %s and resname %s'%(protres_resid, protres_resname))))
             
@@ -1672,17 +1685,15 @@ def covalent_ligands(mol, name, ligandsdict):
         # IF not a retinol
         else:
 
-            # Set new chain, segment, resname (COV), resid, remove Hs from protein and save in pdbfile
+            # Set new chain, segment, resname (COV), resid, remove Hs from protein 
             mol = renumber_covlig(mol,lig)
             mol.set('resname', 'COV', '(resid %s and resname %s) or resname %s'%(protres_resid, protres_resname, lig))
             mol.set('resid', protres_resid, 'resname COV')
             mol.set('record', 'ATOM', 'resname COV')
             mol.set('chain', protres_chain, 'resname COV')
-            mol.set('segid', 'COV', 'resname COV')
-            mol.remove('resname COV and element H')
+            mol.set('segid', protres_segid, 'resname COV')
 
-    return (mol, covligs)
-
+    return (mol,covligs)
 
 def fix_and_prepare_input(inputmol,sysname,pdbcode,modresdict,isgpcr=True,first='NTER',last='CTER',prot_chain='R'):
     """
@@ -1942,19 +1953,60 @@ def resids_helix(pdbcode):
 
     return(resids)
 
+def set_2x50(mol_aligned, pdbcode, thickness = None, gpcr_chain = False, sod2x50 = False):
+    """
+    Stablish protnation state of residue 2x50
+    """
+    # Download GPCRdb structure's website, and extract residue table from it
+    structure_data = requests.get('https://gpcrdb.org/structure/refined/'+pdbcode).content
+    soup = BeautifulSoup(structure_data, 'html.parser')
+    table = soup.find('table', attrs={'id':'rotamers'})
+    table_body = table.find('tbody')
+    rows = table_body.find_all('tr')
+
+    # Iterate trougth residue table to find 2.50 residue ID in this PDB file
+    # Find also ids for 7.43HIS and 6.52HIS
+    asp2x50 = None
+    for row in rows:
+        cols = row.find_all('td')
+        cols = [ele.text.strip() for ele in cols]
+        if cols[3] == "2.50x50":
+            asp2x50 = cols[1]
+
+    # If required, force protonation of ASP2x50 using reprepare()
+    force_list = []
+    asp2x50_sel = "protein and resid %s and chain %s"%(asp2x50, gpcr_chain)
+    not2x50_sel = "not (%s)" % asp2x50_sel
+    standard2x50 = mol_aligned.get('resname', sel=asp2x50_sel)[0]
+    if sod2x50:
+        force_list.append((asp2x50_sel, standard2x50))
+        # prep_table = force_protonation_state(asp2x50, {'ASP','GLU'}, standard2x50, prep_table, mol_aligned)
+    else:
+        force_list.append((asp2x50_sel, standard2x50[:-1]+'H')) # Use protonated forms ASH and GLH 
+        # prep_table = force_protonation_state(asp2x50, {'ASP','GLU'}, standard2x50[:-1]+'H', prep_table, mol_aligned)
+
+    print(force_list)
+    # Change ONLY residue 2x50, without altering anything else
+    prepared_mol, prep_table = systemPrepare(mol_aligned,
+                                hydrophobic_thickness=thickness,
+                                no_opt = not2x50_sel,
+                                no_titr = not2x50_sel,
+                                no_prot = not2x50_sel,
+                                return_details = True,
+                                ignore_ns_errors=True,
+                                force_protonation=force_list 
+                                )
+
+    # Resetting water residues to TIP3 (they are changed to TIP by proteinPrepare)
+    prepared_mol.set('resname', 'TIP3', 'resname TIP')
+
+    return(prepared_mol)
 
 def prepare_system(mol_aligned, pdbcode, thickness = None, gpcr_chain = False, sod2x50 = False, aminergic = False, adenosine = False):
     """
     Assign protonation states using "proteinPrepare" function from HTMD, and 
     force protonation of ASP2x50 if required
     """
-    
-    # Prepare protein (assign protonation states to residues)
-    prepared_mol, prep_table = systemPrepare(mol_aligned,
-                                  hydrophobic_thickness=thickness,
-                                  return_details = True,
-                                  ignore_ns_errors=True 
-                                 )
 
     if gpcr_chain:
         # Download GPCRdb structure's website, and extract residue table from it
@@ -2008,16 +2060,26 @@ def prepare_system(mol_aligned, pdbcode, thickness = None, gpcr_chain = False, s
             # prep_table = force_protonation_state(his7x43, hiset, 'HID', prep_table, mol_aligned)
             # prep_table = force_protonation_state(his6x52, hiset, 'HIE', prep_table, mol_aligned)
 
-        # Reprepare molecule with applied changes
-        forced_mol = systemPrepare(prepared_mol, force_protonation=force_list)
-        # prepared_mol, reprep_table = prep_table.reprepare()
+        # Prepare protein (assign protonation states to residues)
+        prepared_mol, prep_table = systemPrepare(mol_aligned,
+                                    hydrophobic_thickness=thickness,
+                                    return_details = True,
+                                    ignore_ns_errors=True,
+                                    force_protonation=force_list 
+                                    )
+
     else:
-        forced_mol = prepared_mol
+        # Prepare protein (assign protonation states to residues)
+        prepared_mol, prep_table = systemPrepare(mol_aligned,
+                                    hydrophobic_thickness=thickness,
+                                    return_details = True,
+                                    ignore_ns_errors=True,
+                                    )
 
     # Resetting water residues to TIP3 (they are changed to TIP by proteinPrepare)
-    forced_mol.set('resname', 'TIP3', 'resname TIP')
+    prepared_mol.set('resname', 'TIP3', 'resname TIP')
         
-    return forced_mol
+    return prepared_mol
     
 def add_membrane(pdbmol,membranemol,protsegids,membrane_distance,coldist=1.3):
     # Corrections for rotational difusion
@@ -2621,8 +2683,10 @@ def find_dyn_name(protdict,pdbcode,ligdict,apo):
     # Get first ligand molecule at random 
     lig_name = ''
     if len(ligdict.keys()):
-        first_lig = next(iter(ligdict.items()))
-        lig_name = first_lig[1][1]
+        first_lig_resname = next(iter(ligdict.items()))[0]
+        first_name = ligdict[first_lig_resname]['name']
+        first_inchikey = ligdict[first_lig_resname]['inchikey']
+        lig_name = first_name if len(first_name)<29 else first_inchikey 
     
     # Stablish system name
     if gpcr_name:
@@ -2635,6 +2699,9 @@ def find_dyn_name(protdict,pdbcode,ligdict,apo):
     else:
         apoword = 'apoform' if apo else 'complex'
         dynname = pdbcode+apoword
+    
+    # It doesnt accept more than 100 characters
+    dynname = dynname[0:97]+'...'
 
     return(dynname)
 
@@ -2682,8 +2749,8 @@ def check_chains(pdbcode, mymol):
             # Align our molecule segments to the pdb chains
             aligs = pairwise2.align.localms(seq, myseq, 5,-1, -1.5, 0)
             # Check if any of the alignments has more than 4 score by position
-            shortest_len = mylen if mylen<pdb_len else pdb_len        
-            is_present = any([ (alig.score/shortest_len) > 4 for alig in aligs ]) 
+            shortest_len = mylen if mylen<pdb_len else pdb_len
+            is_present = any([ (alig[2]/shortest_len) > 4 for alig in aligs ]) 
             if is_present:
                 chain_present[chain] = is_present
                 segtochain[seg] = chain
@@ -2850,21 +2917,32 @@ def get_pdb_info(pdbcode, mymol, ligandsdict):
             }\
         }\
         chem_comps(comp_ids: ['+ligs+']) {\
-            rcsb_chem_comp_descriptor {InChIKey}\
-            chem_comp{id,name}\
+            rcsb_chem_comp_descriptor{InChIKey}\
+            rcsb_chem_comp_descriptor{InChI}\
+            rcsb_chem_comp_descriptor{SMILES} \
+            chem_comp{id,name,pdbx_formal_charge} \
         }\
     }').json()['data']
     
     # Get ligand information and classify it (in case the system actually has ligands)
     if len(pdbdict['chem_comps'])>0:
         for lig in pdbdict['chem_comps']:
-            ligandInchi = lig['rcsb_chem_comp_descriptor']['InChIKey']
-            ligandResname = lig['chem_comp']['id']
-            ligandName = lig['chem_comp']['name']
+            InchiKey = lig['rcsb_chem_comp_descriptor']['InChIKey']
+            Inchi = lig['rcsb_chem_comp_descriptor']['InChI']
+            smiles = lig['rcsb_chem_comp_descriptor']['SMILES']
+            Resname = lig['chem_comp']['id']
+            Name = lig['chem_comp']['name']
+            Charge = lig['chem_comp']['pdbx_formal_charge']
     
             # Exclude ligands not present in our simulated system
-            if ligandResname in ligset:
-                ligdict[ligandResname] = (ligandName,ligandInchi)
+            if Resname in ligset:
+                ligdict[Resname] = {
+                    'inchikey' : InchiKey,
+                    'inchi' : Inchi,
+                    'smiles' : smiles,
+                    'name' : Name,
+                    'charge' : Charge
+                }
 
     # Extract protein chains information
     for poly in pdbdict['entry']['polymer_entities']:
@@ -3024,7 +3102,7 @@ def new_step1(s, subm_id, pdbcode, trajperiod, timestep, prodpath, modelfile, me
     print('step1 finalized ',rep)
 
     
-def smalmol_getdata(s, molid, inchikey, subm_id, moltype, resname, sdfpath=""):
+def smalmol_getdata(s, molid, inchikey, subm_id, moltype, resname, sdfpath="", pdbdata=""):
     """
     Get data for small molecules 
     """
@@ -3038,30 +3116,51 @@ def smalmol_getdata(s, molid, inchikey, subm_id, moltype, resname, sdfpath=""):
         )
     rep_dict = rep.json()
     
+
     # Prepare submission dictionary with the data of this molecule
-    mol_datasubmit = {
-        "smalmol_type"+molid : moltype,
-        "smalmol_inchikey"+molid : inchikey,
-        "smalmol_name"+molid : rep_dict['name'],
-        "smalmol_resname"+molid : resname,
-        "smalmol_iupac"+molid : rep_dict['iupac'],
-        "smalmol_chemblid"+molid :  rep_dict['chemblid'],
-        "smalmol_cid"+molid :  rep_dict['cid'],
-        "smalmol_inchi"+molid : rep_dict['inchi'],
-        "smalmol_sinchi"+molid :  rep_dict['sinchi'],
-        "smalmol_sinchikey"+molid :  rep_dict['sinchikey'],
-        "smalmol_smiles"+molid :  rep_dict['smiles'],
-        "smalmol_netcharge"+molid :  rep_dict['net_charge'],
-        "smalmol_synonims"+molid :  rep_dict['other_names'],
-        "smalmol_description"+molid :  '',
-        "image_path"+molid :  rep_dict['imagepath']
-    }
-    
+    if rep_dict['smiles']:
+        mol_datasubmit = {
+            "smalmol_type"+molid : moltype,
+            "smalmol_inchikey"+molid : inchikey,
+            "smalmol_name"+molid : rep_dict['name'],
+            "smalmol_resname"+molid : resname,
+            "smalmol_iupac"+molid : rep_dict['iupac'],
+            "smalmol_chemblid"+molid :  rep_dict['chemblid'],
+            "smalmol_cid"+molid :  rep_dict['cid'],
+            "smalmol_inchi"+molid : rep_dict['inchi'],
+            "smalmol_sinchi"+molid :  rep_dict['sinchi'],
+            "smalmol_sinchikey"+molid :  rep_dict['sinchikey'],
+            "smalmol_smiles"+molid :  rep_dict['smiles'],
+            "smalmol_netcharge"+molid :  rep_dict['net_charge'],
+            "smalmol_synonims"+molid :  rep_dict['other_names'],
+            "smalmol_description"+molid :  '',
+            "image_path"+molid :  rep_dict['imagepath']
+        }
+    # If no response, use data from pdb
+    else: 
+        mol_datasubmit = {
+            "smalmol_type"+molid : moltype,
+            "smalmol_inchikey"+molid : inchikey,
+            "smalmol_name"+molid : pdbdata['name'][:60],
+            "smalmol_resname"+molid : resname,
+            "smalmol_iupac"+molid : pdbdata['name'],
+            "smalmol_chemblid"+molid :  '',
+            "smalmol_cid"+molid :  '',
+            "smalmol_inchi"+molid :pdbdata['inchi'],
+            "smalmol_sinchi"+molid : pdbdata['inchi'],
+            "smalmol_sinchikey"+molid : pdbdata['inchikey'],
+            "smalmol_smiles"+molid : pdbdata['smiles'],
+            "smalmol_netcharge"+molid : pdbdata['charge'],
+            "smalmol_synonims"+molid :  '',
+            "smalmol_description"+molid :  '',
+            "image_path"+molid : ''
+        }
+
     # Add SDFfile to the submission if required
     mol_files = {} if rep_dict['inGPCRmd'] else {"sdfmol"+molid : open(sdfpath)} 
     
     return(mol_datasubmit,mol_files)
-
+    
 def new_step2(s, subm_id, ligdict):
     """
     Fullfil and send step2 of new submission form
@@ -3096,10 +3195,15 @@ def new_step2(s, subm_id, ligdict):
 
     # Introduce ligands: all will be defined as orthosteric ligands
     lignames = []
-    for lig,(name,inchikey) in ligdict.items():
+    for lig,ligdata in ligdict.items():
         # Skip this if molecule is apoform
         if apo:
             break
+
+        # Extract basic info
+        name = ligdata['name']
+        inchikey = ligdata['inchikey']
+
         # Avoid blacklisted molecules or ions
         if (lig in detergent_blacklist) or (lig in glucids_blacklist)  or (len(lig) == 2):
             continue
@@ -3112,7 +3216,7 @@ def new_step2(s, subm_id, ligdict):
         moltype = '3' if lig=='CLR' else '0'
             
         # Retrieve molecule information
-        (mol_datasubmit, mol_files) = smalmol_getdata(s, str(i), inchikey, subm_id, moltype, lig, 'tmpfile.sdf')
+        (mol_datasubmit, mol_files) = smalmol_getdata(s, str(i), inchikey, subm_id, moltype, lig, 'tmpfile.sdf', ligdata)
         step2_data.update(mol_datasubmit)
         step2_files.update(mol_files)
         num_entries.append(i)
@@ -3133,7 +3237,8 @@ def new_step2(s, subm_id, ligdict):
         data = step2_data,
         files = step2_files)
     print('step2 finalized ',rep)
-    
+
+   
 def new_step3(s, subm_id, protdict):
     """
     Fullfil and sent the step3 (protein chains) of the new submission form
