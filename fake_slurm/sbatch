@@ -1,0 +1,2 @@
+#!/bin/bash
+ssh daranda@shiva "sbatch $@" || ssh -p 5511 daranda@localhost "sbatch $@" 
