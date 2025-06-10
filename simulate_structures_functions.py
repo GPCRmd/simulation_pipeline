@@ -129,7 +129,7 @@ paramsfilenames = [
                    'Specific_top_params/parameters/toppar_all36_na_nad_ppi.prm',
                    'Specific_top_params/parameters/toppar_all36_prot_na_combined.prm',
                    'Specific_top_params/parameters/toppar_all36_prot_retinol.prm',
-                   'David_top_params/parameters/fake_dihedrals.prm',
+                #    'David_top_params/parameters/fake_dihedrals.prm',
                    'David_top_params/parameters/modres_params.prm',
                    'David_top_params/parameters/modres_crossterm.prm',
                   ]
@@ -189,7 +189,7 @@ def get_complexsignal_pdbs():
 
     # Classify obtained GPCRs pdbcodes by family and type
     complexsignal_byfamily = {}
-    for pdbcode,data in gpcrbd_extradata.items():
+    for pdbcode,data in gprdb_extradata.items():
         family = data['family']
         gpcr_type = data['type'] 
         signal = data['signal_prot']
@@ -206,7 +206,7 @@ def get_complexsignal_pdbs():
                 complexsignal_byfamily[family] = { gpcr_type : [pdbcode] }
             
 
-    return(gprdb_extradata, complex_signal_pdbset, complex_signal_byfamily)
+    return(gprdb_extradata, complex_signal_pdbset, complexsignal_byfamily)
 
 def get_GPCRdb_nonsimulated(gpcrdb_dict):
     """
@@ -321,7 +321,7 @@ def get_GPCRnames(pdbset):
     Get receptor name from pdbcode via GPCRdb
     """
     GPCRdata = []
-    for pdbcode in gprot_yes_nanobody_set:
+    for pdbcode in pdbset:
         pdbdict = requests.get("https://gpcrdb.org/services/structure/"+pdbcode).json()
         GPCRdata.append("%s,%s,%s"%(pdbcode,pdbdict['protein'], pdbdict['signalling_protein']['data']['entity1']['entry_name']))
 
@@ -340,7 +340,7 @@ def create_files(pdbfile, smalmol, name, smalmol_folder, hydrogenate_ligand=True
         pass
 
     # Load full structure of system
-    mymol = Molecule(pdbfile)
+    mymol = Molecule(pdbfile, validateElements=False)
 
 
     # Get resid of first instance of smalmol (we only need one molecule of smaloml, regardless of how many there are in the system)
@@ -450,7 +450,7 @@ def ligand_dictionary(struc_dict, ligandsdict_path, modres_path, basepath, black
                     is_covlig = ligandsdict[pdbcode][lig][1]
                     # Create mol2 files for regular ligands. Covalent ones go separatedly
                     if not is_covlig: 
-                        create_files(pdbfile, lig, pdbcode, '%stoppar/Ligands/%s/'%(basepath,lig), is_covlig, hydrogenate_ligands)
+                        create_files(pdbfile, lig, pdbcode, '%stoppar/Ligands/%s/'%(basepath,lig),  hydrogenate_ligands)
 
         except FileNotFoundError as e:
             print("Error: %s"%e)
@@ -469,7 +469,7 @@ def find_aminergic(ligandsdict, gpcrdb_dict, blacklist, strucpath):
             #Load system of pdbcode (if exists)
             pdbfiles = glob(str("%s%s/*.pdb" % (strucpath,pdbcode)))
             if any(pdbfiles):
-                mol = Molecule(pdbfiles[0])
+                mol = Molecule(pdbfiles[0], validateElements=False)
         
             # For each ligand in this system
             for lig in ligandsdict[pdbcode]:
@@ -482,11 +482,15 @@ def find_aminergic(ligandsdict, gpcrdb_dict, blacklist, strucpath):
     return amiligs
 
 def run_propka(infile, outname, strucpath):
+    """
+    Run propka on a pdbfile (infile) to stablish ionization of residues
+    """
 
+    import propka
     pdbfile = strucpath+outname+'.pdb'
     # Skip if already propkaed
     if os.path.exists(pdbfile):
-        return Molecule(pdbfile)
+        return Molecule(pdbfile, validateElements=False)
     
     # Run propka
     mol = propka.run.single(infile)
@@ -501,7 +505,7 @@ def run_propka(infile, outname, strucpath):
     for a in glob('*propka_input')+glob('*pka'):
         os.remove(a)
 
-    return Molecule(pdbfile)
+    return Molecule(pdbfile, validateElements=False)
 
 def chimera_addH_pdb(infile, outfile, pyfile, resname="COV"):
     """
@@ -578,7 +582,7 @@ def save_smalmol_mol2(input_dict, basepath, hydrogenate_ligands=True):
             ligandsdict[entry['name']][smalmol['resname']] = [smalmol['name'],smalmol['covalently_bound']]
             create_files(pdbfile,smalmol['resname'],entry['name'], '%stoppar/Ligands/%s/'%(basepath,smalmol['resname']), hydrogenate_ligands)
         # For every modified residue in this system
-        for smalmol in entry['modres']:
+        for modres in entry['modres']:
             create_files(pdbfile,smalmol,entry['name'], '%stoppar/mod_residues/%s/'%(basepath,modres), hydrogenate_ligands)
 
     modresdict= { a['name'] : a['modres'] for a in input_dict}
@@ -844,7 +848,6 @@ def get_lig_toppar(ligandsdict, basepath, username, password, pdbfiles = {}):
 
             # Skip already-parameterized ligands
             if os.path.exists(strfile):
-                pass
                 continue
             
             print('Getting toppar file for ligand %s ' % (ligcode))
@@ -962,7 +965,7 @@ def modres_covlig_toppar(pdbcode, modres, modrespath, username, password, covlig
     elif not os.path.exists(pdbfiles[pdbcode]):
         print('mol2file for %s not avaliable. SKipping...'%pdbfiles[pdbcode])
         return
-    main_pdb = Molecule(pdbfiles[pdbcode])
+    main_pdb = Molecule(pdbfiles[pdbcode], validateElements=False)
 
     # Find out if this structure has hallogens
     has_halo = bool(len(main_pdb.get('name', 'element Cl Br I and not ion')))
@@ -1045,7 +1048,7 @@ def modres_covlig_toppar(pdbcode, modres, modrespath, username, password, covlig
     os.remove(mol2chim)
 
     # Open the hydrogenated molecule and prepare it for paramchem
-    mol2 = Molecule(mol2file)
+    mol2 = Molecule(mol2file, validateElements=False)
 
     # Set atom names of non-modres (or bound to modres) as XXX
     if boundatoms:
@@ -1094,7 +1097,7 @@ def hetatm_nucleotides(pdbpath, name):
     Convert all nucleotide residue lines from ATOM into HETATM (they will be excluded 
     by homolwat otherwise).
     """
-    mol = Molecule(pdbpath)
+    mol = Molecule(pdbpath, validateElements=False)
     mol.set('record', 'HETATM', sel='resname ADN GDP GTP')
     mol.write(pdbpath)
     file = open(pdbpath, 'rb')
@@ -1111,13 +1114,13 @@ def add_peplig(filename, pdbcode, gpcrdb_dict):
         return
 
     # Load my input structure
-    mymol = Molecule(filename)
+    mymol = Molecule(filename, validateElements=False)
     # Check if already has PEP ligand for wathever reason
     if len(mymol.get('segid', 'segid PEP')):
         return
 
     # Load PDB standard structure
-    pdbmol = Molecule(pdbcode)
+    pdbmol = Molecule(pdbcode, validateElements=False)
     
     # Align in-preparation molecule system with its original PDB counterpart
     alignment_results = sequenceStructureAlignment(pdbmol, mymol, maxalignments = 1)
@@ -1335,7 +1338,7 @@ def dowser_waters(pdbpath, dowserbin, outpath):
         os.remove(file)
         
 
-def remove_ligmols(gpcrdb_mol, blacklist, gpcrdb_dict, pdbmol, apo):
+def remove_ligmols(gpcrdb_mol, blacklist, gpcrdb_dict, pdbcode, apo):
     """
     Check some stuff concerning to ligand molecules
     """
@@ -1411,7 +1414,7 @@ def get_opm(pdbcode):
         if ' DUM ' not in line:
             tmpout.write(line+'\n')
     name = tmpout.name
-    mol = Molecule(name)
+    mol = Molecule(name, validateElements=False)
     tmpout.close()
     
     return (thickness, mol)
@@ -1472,7 +1475,7 @@ def renumber_resid_vmd(mol,sel,by=3,start=1):
             lsel = '(%s) and (resname %s)' % (sel,resname)
             viewer = renumber_resid_by_resid_vmd(lsel,mol,viewer,start=start)
     viewer.send('animate write pdb {%s} waitfor all top;exit' % tmpout.name)
-    newmol = Molecule(tmpout.name)
+    newmol = Molecule(tmpout.name, validateElements=False)
     tmpout.close()
     return newmol
 
@@ -1548,7 +1551,7 @@ def renumber_segments(inputmol,segids,prefix):
 def renumber_resid_by_resid(sel,mol,ordered=False):
     resids = list(set(mol.get('resid',sel=sel)))
     if ordered:
-        resids = sort(resids)
+        resids = sorted(resids)
     newresid = 1
     for resid in resids:
         mol.set('resid',newresid,sel='(%s) and (resid %s)' % (sel,resid))
@@ -1588,7 +1591,7 @@ def renumber_resid(mol,sel,by=3):
             mol = renumber_resid_by_resid(lsel,mol)
     return mol
 
-def remove_apoform_ion():
+def remove_apoform_ion(pdb_set,basepath = './'):
     """
     Remove ill-placed 2x50 in apoforms. 
     """
@@ -1596,14 +1599,14 @@ def remove_apoform_ion():
     for pdb_code in pdb_set:
         try:
             molname = glob(basepath+'receptor2curate_output/'+pdb_code+'/*apo*.pdb')[0]
-            mymol = Molecule(molname)
+            mymol = Molecule(molname, validateElements=False)
             mymol.set('name', 'O', 'resname NA')
             mymol.set('element', 'O', 'resname NA')
             mymol.set('segid', 'KO', 'resname NA')
             mymol.set('resname', 'HOH', 'resname NA')
             mymol.write(molname)
         except Exception as e:
-            print("sod atom in "+pdbcode+" could not be removed because ",e)        
+            print("sod atom in "+pdb_code+" could not be removed because ",e)        
 
 def covalent_ligands(mol, name, ligandsdict):
     """
@@ -2248,7 +2251,7 @@ def extra_parameters(pdbcode, ligandsdict, modresdict, blacklist, covligs, basep
 
 def add_dummy_atom(inputmol,property_dict):
     try:
-        dummymol = Molecule("dummy.pdb")
+        dummymol = Molecule("dummy.pdb", validateElements=False)
     except Exception: 
         dummymol = Molecule("dummy.pdb", validateElements = False)
 
@@ -2320,7 +2323,7 @@ def equilwrap_structure(equildir):
     if os.path.exists(outfile):
         return
     
-    mol = Molecule(equildir+'structure.psf')
+    mol = Molecule(equildir+'structure.psf', validateElements=False)
     mol.read(equildir+'structure.pdb')
     mol.read(equildir+'output.xtc')
     gpcr_sel = "protein and chain P"
@@ -2337,59 +2340,61 @@ def equilwrap_structure(equildir):
     
     copmol.write(outfile)
 
-def mutate(mol, pdbcode, equildir, mutdir, mutations, protchain, basepath, topparpath):
-    """
-    Create mutant version of structure with PDBcode
-    """
+################# This function is old and hasnt been used in a while
+################# Consider updating if you ever need it back
+# def mutate(mol, pdbcode, equildir, mutdir, mutations, protchain, basepath, topparpath):
+#     """
+#     Create mutant version of structure with PDBcode
+#     """
 
-    # Skip if mutant already exists
-    if os.path.exists(mutdir+'structure.pdb'):
-        return
+#     # Skip if mutant already exists
+#     if os.path.exists(mutdir+'structure.pdb'):
+#         return
     
-    # Load and mutate structure according to what the dict says
-    selection_mutated = "chain %s and resid "%protchain
-    for mut in mutations:
-        mol.mutateResidue('chain %s and resid %s'%(protchain,mut[0]), mut[1])
-        selection_mutated += mut[0]+' '
+#     # Load and mutate structure according to what the dict says
+#     selection_mutated = "chain %s and resid "%protchain
+#     for mut in mutations:
+#         mol.mutateResidue('chain %s and resid %s'%(protchain,mut[0]), mut[1])
+#         selection_mutated += mut[0]+' '
 
-    # Use proteinPrepare to put side-chains in mutated residues
-    # proteinPrepare will be applied only to protein, ligand and protein waters
-    nonprot_chains_set = set(mol.get('chain', sel='not protein'))
-    nonprot_chains = 'chain '+' '.join(item for item in nonprot_chains) 
-    scafmol = mol.copy()
-    mol.remove(nonprot_chains)
-    scafmol.filter(nonprot_chains)
-    # prepared_mol = systemPrepare(mol, ## Temporarely disabled because acellera people cant do anything stright
-    #                       no_opt= "not (%s)" %selection_mutated,
-    #                       no_titr= "not (%s)" %selection_mutated,
-    #                       no_prot= "not (%s)" %selection_mutated,
-    #                      )
-    prepared_mol = mol
-    prepared_mol.append(scafmol)
-    prepared_mol.set('resname', 'TIP3', 'resname TIP')
+#     # Use proteinPrepare to put side-chains in mutated residues
+#     # proteinPrepare will be applied only to protein, ligand and protein waters
+#     nonprot_chains_set = set(mol.get('chain', sel='not protein'))
+#     nonprot_chains = 'chain '+' '.join(item for item in nonprot_chains) 
+#     scafmol = mol.copy()
+#     mol.remove(nonprot_chains)
+#     scafmol.filter(nonprot_chains)
+#     # prepared_mol = systemPrepare(mol, ## Temporarely disabled because acellera people cant do anything stright
+#     #                       no_opt= "not (%s)" %selection_mutated,
+#     #                       no_titr= "not (%s)" %selection_mutated,
+#     #                       no_prot= "not (%s)" %selection_mutated,
+#     #                      )
+#     prepared_mol = mol
+#     prepared_mol.append(scafmol)
+#     prepared_mol.set('resname', 'TIP3', 'resname TIP')
 
-    #Remove 5 CLA and SOD atoms to leave charmm.build some margin to redo system charge
-    cla_remove = ' '.join(map(str, prepared_mol.get('resid',"segid I and resname CLA")[:5]))
-    sod_remove = ' '.join(map(str, prepared_mol.get('resid',"segid I and resname SOD")[:5]))        
-    prepared_mol.remove("segid I and resid "+cla_remove+sod_remove)
+#     #Remove 5 CLA and SOD atoms to leave charmm.build some margin to redo system charge
+#     cla_remove = ' '.join(map(str, prepared_mol.get('resid',"segid I and resname CLA")[:5]))
+#     sod_remove = ' '.join(map(str, prepared_mol.get('resid',"segid I and resname SOD")[:5]))        
+#     prepared_mol.remove("segid I and resid "+cla_remove+sod_remove)
 
-    # Check if system has lone-pair hallogen atoms. If it does, use legacy CGenFF parameters
-    (cgenff_par,cgenff_top,has_halo) =cgenff_params(mol, topparpath)
+#     # Check if system has lone-pair hallogen atoms. If it does, use legacy CGenFF parameters
+#     (cgenff_par,cgenff_top,has_halo) =get_params_cgenff(mol, topparpath)
 
-    #Obtain extra parameters for ligands and modified residues 
-    ligstreams=extra_parameters(pdbcode, ligandsdict, modresdict, blacklist, [], basepath, has_halo)
+#     #Obtain extra parameters for ligands and modified residues 
+#     ligstreams=extra_parameters(pdbcode, ligandsdict, modresdict, blacklist, [], basepath, has_halo)
 
-    # Caps
-    caps = get_caps(set(mol.get('segid', 'protein and chain %s'%protchain)), mol)
+#     # Caps
+#     caps = get_caps(set(mol.get('segid', 'protein and chain %s'%protchain)), mol)
 
-    #Build system with changes
-    buildmol = charmm.build(prepared_mol, 
-                               topo=topos+cgenff_top, 
-                               param=params+cgenff_par,
-                               stream=streams+ligstreams,
-                               outdir=mutdir,
-                               caps=caps,
-                               saltconc=0.15)
+#     #Build system with changes
+#     buildmol = charmm.build(prepared_mol, 
+#                                topo=topos+cgenff_top, 
+#                                param=params+cgenff_par,
+#                                stream=streams+ligstreams,
+#                                outdir=mutdir,
+#                                caps=caps,
+#                                saltconc=0.15)
 
 def define_equilibration(const_sel = 'protein and name C CA N O or not (protein or lipid or water or ions) and noh or segid IO WAT and noh', 
                          simtime = 40, minimize = 5000, timestep = 2, temperature = 310):
@@ -2436,6 +2441,7 @@ def job_commands(sourcedir, nodedir):
             'touch %ssimrunning' %sourcedir,
             'eval "$(/opt/miniconda3/bin/conda shell.bash hook)"',
             'eval "$(conda shell.bash hook)"',
+            'conda activate acemd4_mod',
             'cd '+nodedir,
             'bash run.sh',
             'cd ..',
@@ -2449,7 +2455,7 @@ def transmem_atoms(strucpath):
     Extract Z-coordinate of P atoms of phospholipids, make the averages of top and bottom layers, 
     select the CA inbetween and return VMD selection of them 
     """
-    mol = Molecule(strucpath)
+    mol = Molecule(strucpath, validateElements=False)
     z_coors = mol.get('coords',sel='lipid and name P')[:, 2]
     z_coor_av = np.average(z_coors)
     top_z_av = np.average([ z for z in z_coors if z>z_coor_av ])
@@ -2472,7 +2478,7 @@ def wrap_alig(strucpdb, mymol_pdb, proddir, prot_sel, transmem_sel):
         return
     
     # Wrap system
-    mymol = Molecule('%sstructure.psf' % (proddir))
+    mymol = Molecule('%sstructure.psf' % (proddir), validateElements=False)
     mymol.read(proddir+'output.xtc')
     mymol.wrap(prot_sel)
 
@@ -2524,14 +2530,14 @@ def wrap_alig_vmd(topopath, strucpath, trajpath, outname, prot_sel, transmem_sel
 
 
 ################# Single-use functions
-def remove_spare_hydrogens(pdb_set):
+def remove_spare_hydrogens(pdb_set,basepath = './'):
     """
     Remove protonation Hydrogens from unprotonated residue names in curator's structures
     """
     for pdb_code in pdb_set:
         for pdbfile in glob(basepath+'receptor2curate_output/'+pdb_code+'/*.pdb'):
             try:
-                mymol = Molecule(pdbfile)
+                mymol = Molecule(pdbfile, validateElements=False)
                 mymol.remove( 'resname ASP and name HD2')
                 mymol.remove( 'resname GLU and name HE2')
                 mymol.remove( 'resname HID and name HE2')
@@ -2543,7 +2549,7 @@ def remove_spare_hydrogens(pdb_set):
                 mymol.write(pdbfile)
 
             except Exception as e:
-                print("sod atom in "+pdbcode+" could not be removed because ",e)    
+                print("sod atom in "+pdb_code+" could not be removed because ",e)    
 
 def count_atoms(pdb_set, basepath):
     """
@@ -2551,7 +2557,7 @@ def count_atoms(pdb_set, basepath):
     """
     for a in pdb_set:
         try:
-            mol = Molecule(basepath+'simulation_output/build/'+a+'_apo/structure.pdb')
+            mol = Molecule(basepath+'simulation_output/build/'+a+'_apo/structure.pdb', validateElements=False)
             l = len(mol.get('resid','all'))
             print(a,' '+str(l))
 
@@ -2715,7 +2721,7 @@ def check_chains(pdbcode, mymol):
 
     # Obtain sequences for original PDB file chains, and classifying them by chainID
     # Also check which segment corresponds to what chain
-    pdbmol = Molecule(pdbcode)
+    pdbmol = Molecule(pdbcode, validateElements=False)
     chainseg = {}
     chainset = set(pdbmol.get('chain', sel='protein'))
     pdbmol_segseqs = pdbmol.sequence()
@@ -3076,6 +3082,7 @@ def new_step1(s, subm_id, pdbcode, trajperiod, timestep, prodpath, modelfile, me
         'pdbid' : pdbcode,
         'description' : 'Classical unbiased (NVT ensemble) complex flexibility assay.',
         'source_type' : method_id,
+        'state_type' : 0, # We'll implement this later
         'id_dynamics_methods': '1', #Molecular mechanics,
         'software': 'ACEMD3',
         'sversion': 'GPUGRID', # TODO: Is that correct??,
@@ -3161,7 +3168,7 @@ def smalmol_getdata(s, molid, inchikey, subm_id, moltype, resname, sdfpath="", p
     
     return(mol_datasubmit,mol_files)
     
-def new_step2(s, subm_id, ligdict):
+def new_step2(s, subm_id, ligdict, basepath='./'):
     """
     Fullfil and send step2 of new submission form
     """    
@@ -3196,9 +3203,6 @@ def new_step2(s, subm_id, ligdict):
     # Introduce ligands: all will be defined as orthosteric ligands
     lignames = []
     for lig,ligdata in ligdict.items():
-        # Skip this if molecule is apoform
-        if apo:
-            break
 
         # Extract basic info
         name = ligdata['name']
@@ -3414,7 +3418,7 @@ def new_step4(s, subm_id, prodpath, repath):
     
     print('step4 finalized ',rep)
 
-def new_step5(s, subm_id, provo_doi, provo_pmid):
+def new_step5(s, subm_id, pub_code, provo_pmid):
     """
     Fullfil and sent the step4 (files) of the new submission form
     """
@@ -3422,7 +3426,7 @@ def new_step5(s, subm_id, provo_doi, provo_pmid):
     (sessionid, csrftoken, headers)=get_headers(s, subm_id)
 
     data_submit = {
-        'doi' : provo_doi,
+        'pub_code' : pub_code,
         'pmid' : provo_pmid,
     }
     

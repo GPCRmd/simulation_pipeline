@@ -5,6 +5,7 @@ fake_slurm_shiva/
 fake_slurm/
 toppar/Ligands/
 toppar/mod_residues/
+covalent_ligands_params.py
 simulate_GPCRdb_structures.ipynb
 simulate_mutated_structures.ipynb
 simulation_output/
