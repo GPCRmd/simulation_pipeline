@@ -15,7 +15,6 @@
 + mdconvert
 + Python (min. 3.10) and the following modules:
   + HTMD
-  + MDAnalyisis
   + Biopython
   + Beautiful Soup
   + requests

@@ -150,6 +150,23 @@ mainurl = 'https://www.gpcrmd.org'
 ## David's functions
 ####################
 
+def load_mol_pdbcode(pdbcode):
+    """
+    Download a PDB id and load it into a Molecule object
+    """
+
+    url = 'https://files.rcsb.org/download/%s.pdb' % pdbcode
+    pdb_data = requests.get(url).content
+
+    # Save to temporary file if needed, or load via Molecule
+    with open('temp.pdb', 'wb') as f:
+        f.write(pdb_data)
+
+    mol = Molecule('temp.pdb')
+    os.system('rm temp.pdb')
+
+    return(mol)
+
 def ligands_by_system(ligandsdict):
     """
     Creates a json with all the systems codes and their ligand molecules 
@@ -1120,7 +1137,7 @@ def add_peplig(filename, pdbcode, gpcrdb_dict):
         return
 
     # Load PDB standard structure
-    pdbmol = Molecule(pdbcode, validateElements=False)
+    pdbmol = load_mol_pdbcode(pdbcode)
     
     # Align in-preparation molecule system with its original PDB counterpart
     alignment_results = sequenceStructureAlignment(pdbmol, mymol, maxalignments = 1)
@@ -1888,49 +1905,101 @@ def force_protonation_state(resid, target_resnames, to_resname, prep_table, mol_
 
 def find_gennum(pdbcode):
     """
+    Use one of our three methods to find generic numbering
+    """
+
+    try:
+        # Get standard GPCR nomenclature
+        (gennum_dict,resid_dict) = find_gennum_gpcrGprot(pdbcode)
+    except Exception as e:
+        print("No generic numbering obtained for %s because no unrefined structure avaliable. Using alternative method... (not completely relaible!)"%(pdbcode))
+        (gennum_dict,resid_dict) = find_gennum_unrefined(pdbcode)
+    return(gennum_dict,resid_dict)
+
+
+def find_gennum_gpcrGprot(pdbcode):
+    """
     Use GPCRdb to find ResID of selected generic numbering positions in GPCRdb
     """
     
-    # Download GPCRdb structure's website, and extract residue table from it
+    # Download GPCRdb structure's website
     structure_data = requests.get('https://gpcrdb.org/structure/refined/'+pdbcode).content
     soup = BeautifulSoup(structure_data, 'html.parser')
+    gennum_dict = {'GPCR': {}, 'Gprot':{}}
+    resid_dict = {'GPCR': {}, 'Gprot':{}}
+
+    # Extract GPCR nomenclature info
     table = soup.find('table', attrs={'id':'rotamers'})
     table_body = table.find('tbody')
     rows = table_body.find_all('tr')
 
-    # ANalyze online table with generic numbering
-    gennum_dict = {}
-    resid_dict = {}
+    # ANalyze GPCR table with generic numbering
     for row in rows:
         cols = row.find_all('td')
         cols = [ele.text.strip() for ele in cols]
         gennum = re.sub('.\d+x','x',cols[3]) # We preffer second nomenclature type
         resid = cols[1]
-        gennum_dict[resid] = gennum
-        resid_dict[gennum] = resid
-        
+        gennum_dict['GPCR'][resid] = gennum
+        resid_dict['GPCR'][gennum] = resid
+
+    # Extract GPCR nomenclature info
+    table = soup.find('table', attrs={'id':'signprot_rotamers'})
+    table_body = table.find('tbody')
+    rows = table_body.find_all('tr')
+
+    # ANalyze GPCR table with generic numbering
+    for row in rows:
+        cols = row.find_all('td')
+        cols = [ele.text.strip() for ele in cols]
+        gennum = cols[3]
+        # gennum = re.sub('.\d+x','x',cols[3]) # We preffer second nomenclature type
+        resid = cols[1]
+        gennum_dict['Gprot'][resid] = gennum
+        resid_dict['Gprot'][gennum] = resid
+
     return(gennum_dict,resid_dict)
 
 def find_gennum_unrefined(pdbcode):
     """
     Find the Ballesteros Wanstein nomenclature for structures not yet refined in GPCRdb
     """
-    # Generic numbering from this receptor via GPCRdb
-    protname = requests.get('https://gpcrdb.org/services/structure/'+pdbcode).json()['protein']
-    generic_nums = requests.get('https://gpcrdb.org/services/residues/extended/'+protname+'/').json()
 
-    # Resid as key, standard nomenclature thingy as value
-    gennum_dict = {}
-    resid_dict = {}
+    # Empty dicts
+    gennum_dict = {'GPCR': {}, 'Gprot':{}}
+    resid_dict = {'GPCR': {}, 'Gprot':{}}
+    
+    # Generic numbering from this receptor via GPCRdb
+    sysinfo = requests.get('https://gpcrdb.org/services/structure/'+pdbcode).json()
+
+    # Extract name of GPCR and (if present) alpha gprot
+    protname = sysinfo["protein"]
+    gprot_name = False
+    if ("signalling_protein" in sysinfo) and sysinfo['signalling_protein']['type']=='G protein':
+        for (ent,ent_data) in sysinfo['signalling_protein']['data'].items():
+            if ent_data['entry_name'].startswith('gna'):
+                gprot_name =  ent_data['entry_name']
+
+    # Resid as key, standard nomenclature thingy as value (GPCR)
+    generic_nums = requests.get('https://gpcrdb.org/services/residues/extended/'+protname+'/').json()
     for pos in generic_nums:
         gennum = pos['display_generic_number']
         resid = str(pos['sequence_number'])
         if gennum:
-            gennum_dict[resid] = gennum
-            resid_dict[gennum] = resid
+            gennum = re.sub('.\d+x','x',gennum) # We preffer second nomenclature type
+            gennum_dict['GPCR'][resid] = gennum
+            resid_dict['GPCR'][gennum] = resid
+
+    # Resid as key, standard nomenclature thingy as value (Gprot)
+    if gprot_name:
+        generic_nums = requests.get('https://gpcrdb.org/services/residues/extended/'+gprot_name+'/').json()
+        for pos in generic_nums:
+            gennum = pos['display_generic_number']
+            resid = str(pos['sequence_number'])
+            if gennum:
+                gennum_dict['Gprot'][resid] = gennum
+                resid_dict['Gprot'][gennum] = resid
 
     return(gennum_dict,resid_dict)
-
 
 def resids_helix(pdbcode):
     """
@@ -2012,30 +2081,17 @@ def prepare_system(mol_aligned, pdbcode, thickness = None, gpcr_chain = False, s
     """
 
     if gpcr_chain:
-        # Download GPCRdb structure's website, and extract residue table from it
-        structure_data = requests.get('https://gpcrdb.org/structure/refined/'+pdbcode).content
-        soup = BeautifulSoup(structure_data, 'html.parser')
-        table = soup.find('table', attrs={'id':'rotamers'})
-        table_body = table.find('tbody')
-        rows = table_body.find_all('tr')
+
+        # Get generic numbering
+        (gennum_dict,resid_dict) = find_gennum(pdbcode)
 
         # Iterate trougth residue table to find 2.50 residue ID in this PDB file
         # Find also ids for 7.43HIS and 6.52HIS
-        his7x43 = None
-        his6x52 = None
-        asp2x50 = None
-        asp3x32 = None
-        for row in rows:
-            cols = row.find_all('td')
-            cols = [ele.text.strip() for ele in cols]
-            if cols[3] == "2.50x50":
-                asp2x50 = cols[1]
-            elif cols[3] == "3.32x32":
-                asp3x32 = cols[1]
-            elif cols[3].startswith("7.43"):
-                his7x43 = cols[1]
-            elif cols[3].startswith("6.52"):
-                his6x52 = cols[1]
+        gennum_gpcr = resid_dict['GPCR']
+        his7x43 = gennum_gpcr['7x43'] if '7x43' in gennum_gpcr else None
+        his6x52 = gennum_gpcr['6x52'] if '6x52' in gennum_gpcr else None
+        asp2x50 = gennum_gpcr['2x50'] if '2x50' in gennum_gpcr else None
+        asp3x32 = gennum_gpcr['3x32'] if '3x32' in gennum_gpcr else None
 
         # If required, force protonation of ASP2x50 using reprepare()
         force_list = []
@@ -2721,7 +2777,7 @@ def check_chains(pdbcode, mymol):
 
     # Obtain sequences for original PDB file chains, and classifying them by chainID
     # Also check which segment corresponds to what chain
-    pdbmol = Molecule(pdbcode, validateElements=False)
+    pdbmol = load_mol_pdbcode(pdbcode)
     chainseg = {}
     chainset = set(pdbmol.get('chain', sel='protein'))
     pdbmol_segseqs = pdbmol.sequence()
@@ -3063,8 +3119,7 @@ def check_completeness(prodpath):
 
     return(incomplete)
 
-
-def new_step1(s, subm_id, pdbcode, trajperiod, timestep, prodpath, modelfile, method_id, apo):
+def new_step1(s, subm_id, dynname, pdbcode, trajperiod, timestep, prodpath, method_id, apo):
     """
     Fullfill and send the step 1 of the new submissionform
     # Looong liiie the fieeeelds of Athenryyyyy...
@@ -3077,7 +3132,7 @@ def new_step1(s, subm_id, pdbcode, trajperiod, timestep, prodpath, modelfile, me
     apoword = 'apoform' if apo else 'complex'
     sysname = pdbcode+' '+apoword
     data_submit = {
-        'name' : sysname,
+        'name' : dynname,
         'type' : 0 if apo else 1, # 0 for apo, 1 for complex
         'pdbid' : pdbcode,
         'description' : 'Classical unbiased (NVT ensemble) complex flexibility assay.',
