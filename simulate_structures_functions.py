@@ -1204,14 +1204,10 @@ def needs_sodium(gpcrdb_dict, pdbcode):
     return sod
 
 
-def internal_waters(pdbpath, pdbcode, gpcrdb_dict, apo=False, sod="autoselect",chain=False):
+def internal_waters(pdbpath, pdbcode, gpcrdb_dict, apo=False, sod=False,chain=False):
     """
     Place internal waters and E2x50 sodium in GPCR structure using homolwat online tool
     """
-
-    # If we have no PDB we cannot know if this GPCR requires or not a 2x50 sodium
-    if sod == "autoselect":
-        sod = needs_sodium(gpcrdb_dict, pdbcode) if pdbcode else False
 
     # Set names 
     name = os.path.splitext(pdbpath)[0]
