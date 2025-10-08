@@ -1,0 +1,1 @@
+/home/agarcia/GitHub/simulation_pipeline/simulation_output/equil/delta_opioid_naltrindole/run.sh: line 4: acemd: command not found
