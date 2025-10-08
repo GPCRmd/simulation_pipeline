@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # Set the Python environment (if needed)
-# module load Miniconda3
-conda activate htmd
+module load Miniconda3
 module load VMD
 module load Chimera
+source activate pipeline/htmd
 
 # Define paths to Python scripts
 SCRIPT_DIR="pipeline"
@@ -26,7 +26,7 @@ run_step() {
     echo -e "\e[34mStep $step_number: Preparing $step_name...\e[0m"
     echo ""
     local start_time=$(date +%s)
-    /home/agarcia/miniconda3/envs/htmd/bin/python $script
+    ./pipeline/htmd/bin/python $script
     if [ $? -ne 0 ]; then
         echo "Error during $step_name. Exiting."
         exit 1

@@ -23,7 +23,7 @@ if not (username and password):
 # Paths to ACEMD3 and its license (REPLACE WITH YOUR OWN)
 acemd_path = "acemd"
 acemd_queue = True
-acemd_conda = "source /home/agarcia/miniconda3/bin/activate htmd"
+acemd_conda = "source activate htmd"
 acemd_license = "SG_LICENSE_FILE=28000@tolkien.prib.upf.edu,ACELLERA_LICENSE_SERVER=28000@tolkien.prib.upf.edu"
 
 import os
@@ -154,6 +154,7 @@ paramsfilenames = [
 streamsfilenames = [
                 ]
 import json
+import subprocess
 json_file=open(basepath + "demo/inputs.json")
 json_str = json_file.read()
 input_dict = json.loads(json_str)
@@ -167,8 +168,14 @@ params = [os.path.join(topparpath, file) for file in paramsfilenames]
 streams = [os.path.join(topparpath, file) for file in streamsfilenames]
 
 # Add Chimera's and VMD paths (replace by your own)
-chimera_path = "/soft/system/software/Chimera/1.16/bin/"
-vmd_path = "/soft/system/software/VMD/1.9.4a57/bin/vmd"
+def detect_path(executable):
+    try:
+        return subprocess.check_output(['which', executable], stderr=subprocess.DEVNULL).decode().strip()
+    except subprocess.CalledProcessError:
+        return None
+
+chimera_path = detect_path("chimera")
+vmd_path = detect_path("vmd")
 psfgenpath = None  # Download and use NAMDs psfgen for optimal results.
 # Otherwise, you can always use the default HTMD one, but it has problems with organic halogens
 os.environ['PATH'] += f":{chimera_path}:{vmd_path}:{slurmpath}"
