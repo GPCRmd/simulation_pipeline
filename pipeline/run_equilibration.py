@@ -1,7 +1,7 @@
 import os
-from config_pipeline import input_dict, resultspath, acemd_path, acemd_license, acemd_queue, acemd_conda
+from config_pipeline import device_gpu, input_dict, resultspath, acemd_path, acemd_license, acemd_queue, acemd_conda
 from simulate_structures_functions import define_equilibration, job_commands, const_sel, equil_simtime, minim_steps, equil_timestep, temperature
-from jobqueues.localqueue import LocalGPUQueue, LocalCPUQueue
+from jobqueues.localqueue import LocalGPUQueue
 
 #########################
 ## Part 3: Equillibration
@@ -38,7 +38,7 @@ for entry in input_dict:
         
         # Prepare nohup command for ACEMD with conda environment activation
         nohup_command = (
-        f"nohup {acemd_path} --input {equildir} --ngpus 1 --ncpus 1 > {equildir}nohup.out 2>&1 &"
+        f"nohup {acemd_path} --input {equildir} --device {device_gpu} > {equildir}nohup.out 2>&1 &"
         )
         with open(equildir + 'run.sh', 'w') as f:
             f.write('#!/bin/bash\n')
@@ -57,7 +57,7 @@ for entry in input_dict:
             os.system(f"{equildir}run.sh")
         else:
             print(f"ACEMD is set to local mode.")
-            local = LocalCPUQueue()
+            local = LocalGPUQueue()
             local.submit(equildir)
             local.wait()
             

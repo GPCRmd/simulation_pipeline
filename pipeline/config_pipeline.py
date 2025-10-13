@@ -20,12 +20,6 @@ password = None
 if not (username and password):
     raise Exception("Please define your password and username for CGenFF app on config_pipeline.py. It is required to parameterize small molecules")
 
-# Paths to ACEMD3 and its license (REPLACE WITH YOUR OWN)
-acemd_path = "acemd"
-acemd_queue = True
-acemd_conda = "source activate htmd"
-acemd_license = "SG_LICENSE_FILE=28000@tolkien.prib.upf.edu,ACELLERA_LICENSE_SERVER=28000@tolkien.prib.upf.edu"
-
 import os
 
 # Our main path
@@ -39,6 +33,13 @@ topparpath = basepath + 'toppar/TOP_PARAMS_ACE3/'  # toppar = topology + paramet
 ligandsdict_path = basepath + 'ligands.json'
 modres_path = basepath + 'modified_residues.json'
 slurmpath = basepath + 'fake_slurm/'
+
+# Paths to ACEMD3 and its license (REPLACE WITH YOUR OWN)
+device_gpu = 4 # Which device GPU to use (0, 1, 2, 3...) 
+acemd_path = "acemd"
+acemd_queue = False
+acemd_conda = f"source activate {scriptspath}htmd/"
+acemd_license = "SG_LICENSE_FILE=28000@tolkien.prib.upf.edu,ACELLERA_LICENSE_SERVER=28000@tolkien.prib.upf.edu"
 
 # Path to slurm queuing system binaries
 # In our case, Ismael designed a bunch of small bash scripts (fake_slurm) which do ssh to Hydra and execute slurm there
@@ -170,8 +171,11 @@ streams = [os.path.join(topparpath, file) for file in streamsfilenames]
 # Add Chimera's and VMD paths (replace by your own)
 def detect_path(executable):
     try:
-        return subprocess.check_output(['which', executable], stderr=subprocess.DEVNULL).decode().strip()
+        path = subprocess.check_output(['which', executable], stderr=subprocess.DEVNULL).decode().strip()
+        print(f"Detected path for {executable}: {path}")
+        return path
     except subprocess.CalledProcessError:
+        print(f"Executable {executable} not found in PATH.")
         return None
 
 chimera_path = detect_path("chimera")
