@@ -93,7 +93,7 @@ done
 if [ -z "$no_prompt" ]; then
     echo "Configuration script will always be executed."
     echo ""
-    echo -e "\033[93mWARNING: Ensure you have checked and updated the script config_pipeline.py and inputs as needed before running the pipeline.\033[0m"
+    echo -e "\033[93mWARNING: Ensure you have checked and updated the script config_pipeline.py and inputs (like inputs.json) as needed before running the pipeline.\033[0m"
     echo -e "\033[93mIf you do not want to see this message again, use the flag --no-prompt.\033[0m"
     echo ""
     read -p "Press Enter to continue..."
