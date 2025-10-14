@@ -2479,7 +2479,8 @@ def define_production(equildir, proddir, timestep, trajperiod, temperature=310, 
         timestep=timestep,
         temperature=temperature,
         barostatconstratio=True,
-        restart=False,         
+        restart=False,  
+        trajectoryperiod=trajperiod,       
     )
 
 def job_commands(sourcedir, nodedir):
