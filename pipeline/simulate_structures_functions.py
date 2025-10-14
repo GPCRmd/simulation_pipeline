@@ -2449,8 +2449,9 @@ def define_equilibration(builddir, outdir, parameters, const_sel = 'protein and 
     """
     Default restraint selection includes main-chain atoms, crystal waters/ions and ligand molecules
     """
-    #restrs = [AtomRestraint(const_sel, 2, [(1,"0"),(1,"%dns" % int(simtime*0.5)),(0,"%dns" % int(simtime*0.75))], "xyz")]
-        
+    # Generate the const_rest variable based on const_sel and restrs
+    const_rest = [{"type": "positionalRestraint", "sel": const_sel, "setpoints": ["1@0", "1@%dns" % int(simtime*0.5), "0@%dns" % int(simtime*0.75)]}]
+    
     setup_equilibration(
         builddir=builddir,
         outdir=outdir,
@@ -2461,9 +2462,8 @@ def define_equilibration(builddir, outdir, parameters, const_sel = 'protein and 
         minimize=minimize,
         barostatconstratio=True,
         restart=False,
+        extforces=const_rest
     )
-    #restraintdecay=restrs,
-
 
 def define_production(equildir, proddir, timestep, trajperiod, temperature=310, runtime=500):
 
