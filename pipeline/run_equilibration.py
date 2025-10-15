@@ -37,21 +37,19 @@ for entry in input_dict:
         )
         
         # Prepare nohup command for ACEMD with conda environment activation
-        nohup_command = (
-        f"nohup {acemd_path} --input {equildir} --device {device_gpu} > {equildir}nohup.out 2>&1 &"
+        command = (
+        f"{acemd_path} --input {equildir} --device {device_gpu} > {equildir}nohup.out 2>&1"
         )
         with open(equildir + 'run.sh', 'w') as f:
             f.write('#!/bin/bash\n')
             f.write(f"{acemd_conda}\n")  # Activate conda environment
-            f.write(nohup_command + '\n') # Run the acemd command
+            f.write(command + '\n') # Run the acemd command
+            f.write('exit')
         
         print(" ")    
         print(f"\033[94mStart running the equilibration script for {modelname}: {equildir}run.sh\033[0m")
         
         if not acemd_queue:
-            # Make the script executable
-            os.chmod(equildir + 'run.sh', 0o755)
-            
             print("Running equilibration...")
             # Execute the run.sh script
             os.system(f"{equildir}run.sh")

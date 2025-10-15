@@ -42,21 +42,19 @@ for entry in input_dict:
                               prod_simtime)
 
             # Prepare nohup command for ACEMD with conda environment activation
-            nohup_command = (
-            f"nohup {acemd_path} --input {proddir} --device {device_gpu} > {proddir}nohup.out 2>&1 &"
+            command = (
+            f"{acemd_path} --input {proddir} --device {device_gpu} > {proddir}nohup.out 2>&1"
             )
             with open(proddir + 'run.sh', 'w') as f:
                 f.write('#!/bin/bash\n')
                 f.write(f"{acemd_conda}\n")  # Activate conda environment
-                f.write(nohup_command + '\n') # Run the acemd command
+                f.write(command + '\n') # Run the acemd command
+                f.write('exit')
             
             print(" ")    
             print(f"\033[94mStart running the equilibration script for {modelname}: {proddir}run.sh\033[0m")
             
             if not acemd_queue:
-                # Make the script executable
-                os.chmod(proddir + 'run.sh', 0o755)
-                
                 print("Running equilibration...")
                 # Execute the run.sh script
                 os.system(f"{proddir}run.sh")

@@ -156,7 +156,7 @@ streamsfilenames = [
                 ]
 import json
 import subprocess
-json_file=open(basepath + "demo/inputs.json")
+json_file=open(scriptspath + "inputs.json")
 json_str = json_file.read()
 input_dict = json.loads(json_str)
 # IMPORTANT: Peptide ligands must have L, L0, L1, L2, or PEP as its segid for
@@ -182,5 +182,5 @@ chimera_path = detect_path("chimera")
 vmd_path = detect_path("vmd")
 psfgenpath = None  # Download and use NAMDs psfgen for optimal results.
 # Otherwise, you can always use the default HTMD one, but it has problems with organic halogens
-os.environ['PATH'] += f":{chimera_path}:{vmd_path}:{slurmpath}"
+os.environ['PATH'] += f":{chimera_path}:{vmd_path}"
 
