@@ -77,6 +77,7 @@ AA={"LYR","ALA","ARG","ASN","ASP","CYS","GLU","GLN","GLY","HIS","ILE","LEU","LYS
 nucl = {"AMP","ADP","ATP","GMP","GDP","GTP","TMP","TDP","TTP","CMP","CDP","CTP"}
 std_modres = {"SEP",'TPO'}
 noparams_ligs = {'RET', 'CLR'}.union(AA).union(nucl).union(std_modres)
+aa= ' ALA AR0 ARG ASH ASN ASP CYM CYS CYX GLH GLN GLU GLY HID HIE HIP HIS HSD HSE HSP ILE LEU LYN LYR LYS MET PHE PRO SER THR TRP TYM TYR VAL '
 
 # Proteins containing this words in their name can be assumed to be GPCRs
 gpcr_names = ['ceptor','rhodopsin','smoothened']
@@ -600,7 +601,7 @@ def save_smalmol_mol2(input_dict, basepath, hydrogenate_ligands=True):
             create_files(pdbfile,smalmol['resname'],entry['name'], '%stoppar/Ligands/%s/'%(basepath,smalmol['resname']), hydrogenate_ligands)
         # For every modified residue in this system
         for modres in entry['modres']:
-            create_files(pdbfile,smalmol,entry['name'], '%stoppar/mod_residues/%s/'%(basepath,modres), hydrogenate_ligands)
+            create_files(pdbfile,modres,entry['name'], '%stoppar/mod_residues/%s/'%(basepath,modres), hydrogenate_ligands)
 
     modresdict= { a['name'] : a['modres'] for a in input_dict}
     pdbfilesdict= { a['name'] : a['pdbfile'] for a in input_dict}
@@ -939,7 +940,7 @@ def get_modres_toppar(modresdict, basepath, username, password, pdbfiles={}):
         # For each PDB structure, iterate on its modified residues
         for modres in modresdict[pdbcode]:
             modrespath = basepath+'toppar/mod_residues/'+modres+'/'
-            modres_covlig_toppar(pdbcode, modres, modrespath, username, password, pdbfiles)
+            modres_covlig_toppar(pdbcode, modres, modrespath, username, password, pdbfiles = pdbfiles)
 
 
 def renumber_covlig(mol, lig):
@@ -1204,7 +1205,7 @@ def needs_sodium(gpcrdb_dict, pdbcode):
     return sod
 
 
-def internal_waters(pdbpath, pdbcode, gpcrdb_dict, apo=False, sod=False,chain=False):
+def internal_waters(pdbpath, pdbcode, apo=False, sod=False,chain=False):
     """
     Place internal waters and E2x50 sodium in GPCR structure using homolwat online tool
     """
@@ -1235,7 +1236,7 @@ def internal_waters(pdbpath, pdbcode, gpcrdb_dict, apo=False, sod=False,chain=Fa
         
         if form_action=="run_hw_multi":
             # Select GPCR chain (first one, if none has been specified)
-            first_chain = soup.find('option').get('value')
+            first_chain = soup.find(id='option_gpcr').get('value')
             chainid = chain if chain else first_chain
             filename = soup.find('input', attrs={'name':'filename'}).get('value')
             response_loadfile = s.post(
@@ -1718,7 +1719,6 @@ def fix_and_prepare_input(inputmol,sysname,pdbcode,modresdict,isgpcr=True,first=
     """
 
     mol = inputmol.copy()
-    aa= ' LYR LYN ALA ARG AR0 ASN ASP ASH CYX CYS CYM GLU GLH GLN GLY HIS HID HIE HIP ILE LEU LYS MET PHE PRO SER THR TRP TYR TYM VAL HSE HSD HSP '
     mol.set('resname','TIP3',sel='water')
     mol.set('chain','X',sel='resname TIP3')
     mol.set('segid','WAT',sel='water')    
@@ -2061,8 +2061,8 @@ def set_2x50(mol_aligned, pdbcode, thickness = None, gpcr_chain = False, sod2x50
                                 no_titr = not2x50_sel,
                                 no_prot = not2x50_sel,
                                 return_details = True,
-                                ignore_ns_errors=True,
-                                force_protonation=force_list 
+                                force_protonation=force_list,
+                                ignore_ns=True
                                 )
 
     # Resetting water residues to TIP3 (they are changed to TIP by proteinPrepare)
@@ -2119,8 +2119,8 @@ def prepare_system(mol_aligned, pdbcode, thickness = None, gpcr_chain = False, s
         prepared_mol, prep_table = systemPrepare(mol_aligned,
                                     hydrophobic_thickness=thickness,
                                     return_details = True,
-                                    ignore_ns_errors=True,
-                                    force_protonation=force_list 
+                                    force_protonation=force_list,
+                                    ignore_ns=True
                                     )
 
     else:
@@ -2128,7 +2128,7 @@ def prepare_system(mol_aligned, pdbcode, thickness = None, gpcr_chain = False, s
         prepared_mol, prep_table = systemPrepare(mol_aligned,
                                     hydrophobic_thickness=thickness,
                                     return_details = True,
-                                    ignore_ns_errors=True,
+                                    ignore_ns=True
                                     )
 
     # Resetting water residues to TIP3 (they are changed to TIP by proteinPrepare)
@@ -2247,7 +2247,6 @@ def get_caps(prot_segids, mol_solvated):
     caps_not_receptor = ['first NTER', 'last CTER']
     nocaps = ['first none', 'last none']
     caps = dict()
-    aa= ' LYR ALA ARG ASN ASP CYS GLU GLN GLY HIS ILE LEU LYS MET PHE PRO SER THR TRP TYR VAL ASH CYM CYX GLH HID HIE HIP HSD HSE HSP LYN TYM AR0'
     for segid in prot_segids:
         caps[segid] = []
         resids = mol_solvated.get('resid','segid '+segid)
