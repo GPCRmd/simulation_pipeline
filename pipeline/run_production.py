@@ -43,11 +43,11 @@ for entry in input_dict:
 
             # Prepare nohup command for ACEMD with conda environment activation
             command = (
-            f"{acemd_path} --input {proddir} --device {device_gpu} > {proddir}nohup.out 2>&1"
+            f"nohup {acemd_path} --input {proddir} --device {device_gpu} > {proddir}nohup.out 2>&1 &"
             )
             with open(proddir + 'run.sh', 'w') as f:
                 f.write('#!/bin/bash\n')
-                f.write(f"{acemd_conda}\n")  # Activate conda environment
+                #f.write(f"{acemd_conda}\n")  # Activate conda environment
                 f.write(command + '\n') # Run the acemd command
                 f.write('exit')
             

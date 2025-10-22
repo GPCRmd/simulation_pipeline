@@ -143,7 +143,7 @@ for entry in input_dict:
         # Save prebuild model topologies in files, and  store prebuild model in molecule object
         prebuild_psffile = prebuildmol.topoloc
         prebuild_pdbfile = os.path.splitext(prebuildmol.topoloc)[0]+'.pdb'
-        prebuildmol = Molecule(prebuild_pdbfile)
+        prebuildmol = Molecule(prebuild_pdbfile, validateElements=False)
         _recoverProtonations(prebuildmol)
 
         # Checking of water/lipid ratio
@@ -169,7 +169,7 @@ for entry in input_dict:
 
         build_psffile = molbuilt.topoloc
         build_pdbfile = os.path.splitext(molbuilt.topoloc)[0]+'.pdb'
-        molbuilt = Molecule(build_pdbfile)
+        molbuilt = Molecule(build_pdbfile, validateElements=False)
         _recoverProtonations(molbuilt)
 
         #Building system

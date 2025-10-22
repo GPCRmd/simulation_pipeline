@@ -4,6 +4,7 @@
 module load Miniconda3
 module load VMD
 module load Chimera
+module load NAMD
 source activate pipeline/htmd
 
 # Define paths to Python scripts

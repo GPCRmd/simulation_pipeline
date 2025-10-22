@@ -180,7 +180,7 @@ def detect_path(executable):
 
 chimera_path = detect_path("chimera")
 vmd_path = detect_path("vmd")
-psfgenpath = None  # Download and use NAMDs psfgen for optimal results.
+psfgenpath = detect_path("psfgen")  # Download and use NAMDs psfgen for optimal results.
 # Otherwise, you can always use the default HTMD one, but it has problems with organic halogens
 os.environ['PATH'] += f":{chimera_path}:{vmd_path}"
 
