@@ -1,0 +1,46 @@
+{
+    "paramchem_credentials": {
+        "username": null,
+        "password": null
+    },
+    "machine_settings": {
+        "device_gpu": null,
+        "strucpath": null,
+        "resultspath": null
+    },
+    "simulation_parameters": {
+        "membrane_path_pdb": null,
+        "topparpath": null,
+        "toposfilenames": [],
+        "paramsfilesnames": [],
+        "streamfilenames": [],
+        "ligandsdict_path": null,
+        "modres_path":null,
+        "preparation": {
+            "new_pdb_chain": null,
+            "membrane_lipid_segid": null,
+            "coldist": null,
+            "membrane_distance": null,
+            "water_thickness": null,
+            "buffer": null,
+            "water_margin": null,
+            "lipidlike_blacklist": {},
+            "detergent_blacklist": {},
+            "glucids_blacklist": {},
+            "noparams_ligs": {}
+        },
+        "equilibration": {
+            "temperature": null,
+            "minim_steps": null,
+            "equil_timestep": null,
+            "equil_simtime": null,
+            "const_sel": null
+        },
+        "production": {
+            "timestep": null,
+            "trajperiod": null,
+            "repnum": null,
+            "prod_simtime": null
+        }
+    }
+}

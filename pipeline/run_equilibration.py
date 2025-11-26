@@ -1,5 +1,5 @@
 import os
-from config_pipeline import device_gpu, input_dict, resultspath, acemd_path, acemd_license, acemd_queue, acemd_conda
+from config_pipeline import device_gpu, input_dict, resultspath, acemd_path, acemd_queue, acemd_conda
 from simulate_structures_functions import define_equilibration, job_commands, const_sel, equil_simtime, minim_steps, equil_timestep, temperature
 from jobqueues.localqueue import LocalGPUQueue
 

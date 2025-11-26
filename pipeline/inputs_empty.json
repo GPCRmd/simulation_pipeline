@@ -1,0 +1,15 @@
+[
+    {
+        "name" : "",
+        "pdbfile" : "",
+
+        "modres" : [],
+        "ligands" : [],
+        "apo" : false,
+        "prot_chain" : "",
+        "pdbcode" : "", 
+        "curated" : false,
+        "sod2x50" : false, 
+        "isgpcr" : false
+    }
+]

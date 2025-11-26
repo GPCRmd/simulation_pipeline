@@ -1,7 +1,7 @@
 import os
 import multiprocessing as mp
 from config_pipeline import input_dict, resultspath, strucpath, repnum
-from simulate_structures_functions import transmem_atoms, wrap_alig_vmd
+from simulate_structures_functions import wrap_alig_vmd, transmem_atoms
 
 ##########################
 ## Part 5: Wrap Structures
@@ -11,16 +11,21 @@ from simulate_structures_functions import transmem_atoms, wrap_alig_vmd
 prot_sel = "protein and segid P P0 P1 P2 P3 P4 P5 P6 P7 P8 P9" #Every chain in our system is assigned a PX segid. I dont think there will ever be more than 10
 for entry in input_dict:    
     name = entry['name']
+    apo = entry['apo'] 
+    if apo == True:
+        modelname = '%s_apo' % name
+    else:
+        modelname = name
     pdbcode = entry['pdbcode']
     isgpcr = entry['isgpcr']
     prot_chain = entry['prot_chain']
 
     # Create a transmembrane selection (for alignment) 
-    topopath = '%sproduction/%s/rep_1/structure.pdb' % (resultspath, modelname)
-    transmem_sel = transmem_atoms(strucpath)
+    topopath = '%sproduction/%s/rep_1/structure.psf' % (resultspath, modelname)
+    transpath = '%sbuild/%s/structure.pdb' % (resultspath, modelname)
+    transmem_sel = transmem_atoms(transpath)
         
-    modelname = name
-    simpath = '%sproduction/%s/' % (resultspath, modelname)
+    simpath = '%sproduction/%s' % (resultspath, modelname)
     # Skip if all replicates are ready
     alldone=True
     for rep in range(1,repnum+1):

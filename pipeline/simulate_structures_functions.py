@@ -1710,7 +1710,7 @@ def covalent_ligands(mol, name, ligandsdict):
 
     return (mol,covligs)
 
-def fix_and_prepare_input(inputmol,sysname,pdbcode,modresdict,isgpcr=True,first='NTER',last='CTER',prot_chain='R'):
+def fix_and_prepare_input(inputmol,sysname,pdbcode,modresdict,isgpcr=True,first='NTER',last='CTER',prot_chain='R', tym_remove = False):
     """
     ISMAEL FUNCTION
     Establish homogeneus nomenclature for protein residue names and segments for the system.
@@ -1783,6 +1783,10 @@ def fix_and_prepare_input(inputmol,sysname,pdbcode,modresdict,isgpcr=True,first=
 
     # Replace possible CYM residues (we dont want ionized cysteins)
     mol.set('resname', 'CYS', 'resname CYM')
+    
+    # Replace possible TYM residues (we dont want ionized tyrosines)
+    if tym_remove:
+        mol.set('resname', 'TYR', 'resname TYM')
 
     # Remove RET hydrogens if any found
     mol.remove('resname RET and element H')
@@ -2018,7 +2022,7 @@ def resids_helix(pdbcode):
 
     return(resids)
 
-def set_2x50(mol_aligned, pdbcode, thickness = None, gpcr_chain = False, sod2x50 = False):
+def set_2x50(mol_aligned, pdbcode, thickness = None, gpcr_chain = False, sod2x50 = False, ph = 7.4):
     """
     Stablish protnation state of residue 2x50
     """
@@ -2058,7 +2062,8 @@ def set_2x50(mol_aligned, pdbcode, thickness = None, gpcr_chain = False, sod2x50
                                 no_prot = not2x50_sel,
                                 return_details = True,
                                 ignore_ns=True,
-                                force_protonation=force_list 
+                                force_protonation=force_list,
+                                pH = ph
                                 )
 
     # Resetting water residues to TIP3 (they are changed to TIP by proteinPrepare)
@@ -2066,7 +2071,7 @@ def set_2x50(mol_aligned, pdbcode, thickness = None, gpcr_chain = False, sod2x50
 
     return(prepared_mol)
 
-def prepare_system(mol_aligned, pdbcode, thickness = None, gpcr_chain = False, sod2x50 = False, aminergic = False, adenosine = False):
+def prepare_system(mol_aligned, pdbcode, thickness = None, gpcr_chain = False, sod2x50 = False, aminergic = False, adenosine = False, ph = 7.4):
     """
     Assign protonation states using "proteinPrepare" function from HTMD, and 
     force protonation of ASP2x50 if required
@@ -2116,7 +2121,8 @@ def prepare_system(mol_aligned, pdbcode, thickness = None, gpcr_chain = False, s
                                     hydrophobic_thickness=thickness,
                                     return_details = True,
                                     ignore_ns=True,
-                                    force_protonation=force_list 
+                                    force_protonation=force_list, 
+                                    pH = ph
                                     )
 
     else:
@@ -2125,6 +2131,7 @@ def prepare_system(mol_aligned, pdbcode, thickness = None, gpcr_chain = False, s
                                     hydrophobic_thickness=thickness,
                                     return_details = True,
                                     ignore_ns=True,
+                                    pH = ph
                                     )
 
     # Resetting water residues to TIP3 (they are changed to TIP by proteinPrepare)
@@ -2548,10 +2555,12 @@ def wrap_alig_vmd(topopath, strucpath, trajpath, outname, prot_sel, transmem_sel
     """
     outdcd = outname+'.dcd'
     outxtc = outname+'.xtc'
-    cmd = ['vmd', topopath]+[' -dispdev', 'text']
+    if not os.path.exists(topopath):
+        raise FileNotFoundError(f"The file {topopath} does not exist.")
+    cmd = ['vmd', topopath,'-dispdev', 'text']
     vmd = Popen(cmd, stdin=PIPE, universal_newlines=True)
     vmd.stdin.write("\n".join([
-    ' package require pbctools',
+    'package require pbctools',
     'set molid top',
     'mol addfile %s type xtc first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all'%trajpath,
     '# Function to wrap',
@@ -2580,8 +2589,33 @@ def wrap_alig_vmd(topopath, strucpath, trajpath, outname, prot_sel, transmem_sel
     vmd.wait()
 
     # Convert dcd to xtc and remove original dcd
+    print("Converting DCD to XTC...")
     os.system("mdconvert %s -f -o %s; rm %s"%(outdcd,outxtc,outdcd))
+    
+def wrap_new_vmd(topopath, trajpath, outname):
+    """
+    Very big systems cannot be properly wrapped with MDanalysis (it core-dumps).
+    FOr those cases, we need to do some shenanigands with VMD
+    """
+    outdcd = outname+'.dcd'
+    outxtc = outname+'.xtc'
+    cmd = ['vmd', topopath]+[' -dispdev', 'text']
+    vmd = Popen(cmd, stdin=PIPE, universal_newlines=True)
+    vmd.stdin.write("\n".join([
+    'package require pbctools',
+    'set molid top',
+    'mol addfile %s type xtc first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all'%trajpath,
+    '# Function to wrap',
+    'pbc wrap -center com -centersel "protein" -compound fragment -all',
+    '# Save trajectory in dcd (silly vmd cannot save xtc) and a PDB of the first frame (for GPCRmd)',
+    'animate write dcd {%s} beg 0 end $orig_lastframe skip 0 waitfor all'%outdcd,
+    'quit',
+    ]))
+    vmd.stdin.close()
+    vmd.wait()
 
+    # Convert dcd to xtc and remove original dcd
+    os.system("mdconvert %s -f -o %s; rm %s"%(outdcd,outxtc,outdcd))
 
 ################# Single-use functions
 def remove_spare_hydrogens(pdb_set,basepath = './'):

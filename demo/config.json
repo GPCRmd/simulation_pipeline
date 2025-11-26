@@ -1,0 +1,73 @@
+{
+    "paramchem_credentials": {
+        "username": null,
+        "password": null
+    },
+    "machine_settings": {
+        "device_gpu": 4,
+        "strucpath": "./input_structures/",
+        "resultspath": "./simulation_output/"
+    },
+    "simulation_parameters": { 
+        "membrane_path_pdb": "membrane/popc36_box_renumbered.pdb",
+        "topparpath": "toppar/TOP_PARAMS_ACE3/",
+        "toposfilenames": [
+            "General_top_params/topologies/top_all36_cgenff.rtf",
+            "General_top_params/topologies/top_all36_prot.rtf",
+            "General_top_params/topologies/top_all36_na.rtf",
+            "General_top_params/topologies/top_all36_lipid.rtf",
+            "General_top_params/topologies/top_all36_carb.rtf",
+            "Specific_top_params/topologies/toppar_all36_lipid_ether.rtf",
+            "Specific_top_params/topologies/toppar_water_ions.rtf",
+            "Specific_top_params/topologies/toppar_all36_na_nad_ppi.rtf",
+            "Specific_top_params/topologies/toppar_all36_prot_na_combined.rtf",
+            "David_top_params/topologies/my_patches.rtf",
+            "David_top_params/topologies/toppar_all36_lipid_cholesterol_CLR.rtf",
+            "David_top_params/topologies/toppar_all36_prot_retinol.rtf"
+        ],
+        "paramsfilesnames": [
+            "General_top_params/parameters/par_all36_cgenff.prm",
+            "General_top_params/parameters/par_all36m_prot.prm",
+            "General_top_params/parameters/par_all36_na.prm",
+            "General_top_params/parameters/par_all36_lipid.prm",
+            "General_top_params/parameters/par_all36_carb.prm",
+            "Specific_top_params/parameters/toppar_all36_lipid_cholesterol.prm",
+            "Specific_top_params/parameters/toppar_all36_lipid_ether.prm",
+            "Specific_top_params/parameters/toppar_water_ions.prm",
+            "Specific_top_params/parameters/toppar_all36_na_nad_ppi.prm",
+            "Specific_top_params/parameters/toppar_all36_prot_na_combined.prm",
+            "Specific_top_params/parameters/toppar_all36_prot_retinol.prm",
+            "David_top_params/parameters/modres_params.prm",
+            "David_top_params/parameters/modres_crossterm.prm"
+        ],
+        "streamfilenames": [],
+        "ligandsdict_path": "./ligands.json",
+        "modresdict_path": "./modified_residues.json",
+        "preparation": {
+            "new_pdb_chain": "R",
+            "membrane_lipid_segid": "MEM",
+            "coldist": 1.3,
+            "membrane_distance": 20,
+            "water_thickness": 20,
+            "buffer": 2.4,
+            "water_margin": 4,
+            "lipidlike_blacklist": ["OLA", "OLB", "OLC", "PLM", "HTG", "LPP", "PEF", "2CV", "SOG", "TWT", "STE", "LMT", "MPG", "DGA", "1WV", "POV", "FLC", "PGW", "PC1", "LDA", "J40", "BNG"],
+            "detergent_blacklist": ["OLA", "OLB", "PEG", "GOL", "BOG", "OLC", "P6G", "P33", "UNL", "UNX", "PLM", "HTG", "12P", "LPP", "PEF", "2CV", "SOG", "TWT", "PGE", "SO4", "STE", "LMT", "ACT", "ACE", "MHA", "CIT", "1PE", "MPG", "EPE", "PG4", "DGA", "PO4", "DMS", "TAR", "1WV", "EDO", "BU1", "ACM", "PG6", "TLA", "SCN", "TCE", "MES", "EDT", "POV", "MLI", "SIN", "PGO", "FLC", "HTO", "PGW", "NO3", "PE5", "NH2", "NME", "NH4", "IOD", "ZN", "BR", "HG", "PC1", "LDA", "C8E", "J40", "BNG"],
+            "glucids_blacklist": ["MAN", "NAG", "BGC", "TRE", "9NS", "BMA", "FUC", "A2G"],
+            "noparams_ligs": ["RET", "CLR", "LYR", "ALA", "ARG", "ASN", "ASP", "CYS", "GLU", "GLN", "GLY", "HIS", "ILE", "LEU", "LYS", "MET", "PHE", "PRO", "SER", "THR", "TRP", "TYR", "VAL", "AMP", "ADP", "ATP", "GMP", "GDP", "GTP", "TMP", "TDP", "TTP", "CMP", "CDP", "CTP", "SEP", "TPO"]
+        },
+        "equilibration": {
+            "temperature": 310,
+            "minim_steps": 5000,
+            "equil_timestep": 2,
+            "equil_simtime": 40,
+            "const_sel": "protein and name C CA N O or not (protein or lipid or water or ions) and noh or segid IO WAT and noh"
+        },
+        "production": {
+            "timestep": 4,
+            "trajperiod": 50000,
+            "repnum": 3,
+            "prod_simtime": 500
+        }
+    }
+}

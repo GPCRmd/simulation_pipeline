@@ -1,4 +1,4 @@
-from config_pipeline import input_dict, basepath, strucpath, resultspath, membranepdb, psfgenpath, topos, params, streams, scriptspath
+from config_pipeline import input_dict, basepath, strucpath, resultspath, membranepdb, psfgenpath, topos, params, streams, strucpath, ph, tym_remove, remove_sod2x50
 from simulate_structures_functions import gpcrdb_dict, blacklist, water_thickness, water_margin, buffer, coldist, membrane_distance, membrane_lipid_segid
 from simulate_structures_functions import internal_waters, fix_and_prepare_input, make_apo, covalent_ligands
 from simulate_structures_functions import get_opm, chimera_superimpose, prepare_system
@@ -17,9 +17,8 @@ import json
 ###########################
 
 # Load modresdict and ligandsdict from JSON files
-
-modresdict_path = os.path.join(scriptspath, "modresdict.json")
-ligandsdict_path = os.path.join(scriptspath, "ligandsdict.json")
+modresdict_path = os.path.join(strucpath, "modresdict.json")
+ligandsdict_path = os.path.join(strucpath, "ligandsdict.json")
 
 with open(modresdict_path, "r") as modres_file:
     modresdict = json.load(modres_file)
@@ -63,10 +62,14 @@ for entry in input_dict:
         # Add waters with homolwat if protein is a GPCR. Sodium 2x50 will also be added if a 
         # non-false pdbcode is added
         if isgpcr:
-            (sod2x50, watered_filename) = internal_waters(pdbfile, pdbcode, gpcrdb_dict, apo,sod=sod2x50)
+            (sod2x50, watered_filename) = internal_waters(pdbfile, pdbcode, gpcrdb_dict, apo, sod=sod2x50)
         else:
             watered_filename=pdbfile
         mol = Molecule(watered_filename)
+        if remove_sod2x50: 
+            # Remove any non-protein, non-ion, non-water thing on the system. 
+            # Delete also sod2x50 (but we will keep 2x50 protonated)
+            mol.remove('element Na')
         # Remove unnecessary ligand molecules: mostly crystalization detergents, quelants, buffers,
         # or post-traductional glicosilations
         mol.remove('resname '+' '.join(blacklist))
@@ -80,7 +83,9 @@ for entry in input_dict:
         mol_fixed,prot_segids = fix_and_prepare_input(mol,name,pdbcode,
                                                         modresdict,
                                                         isgpcr=isgpcr,
-                                                        prot_chain=prot_chain)
+                                                        prot_chain=prot_chain,
+                                                        tym_remove = tym_remove,
+                                                        )
         # If the pipeline is running in 'apoform mode', remove any non-protein, non-ion, non-water thing on the system      
         # Delete also non-receptor proteins
         # If there's any, parameterize and rename covalent-bound ligands
@@ -111,7 +116,7 @@ for entry in input_dict:
         # Prepare protein: asign titration states, flipping side chains of HIS, ASN and GLN; rotate some sidechains, optimize waters, etc.
         # Most of this is done with a HTMD function called proteinPrepare()
         # Skip step if we are working with curators structures
-        prepared_mol = mol_aligned if curated else prepare_system(mol_aligned, pdbcode, thickness, gpcr_chain, sod2x50, aminergic, adenosine)
+        prepared_mol = mol_aligned if curated else prepare_system(mol_aligned, pdbcode, thickness, gpcr_chain, sod2x50, aminergic, adenosine, ph)
         
         #Add membrane
         print('Adding membrane...')

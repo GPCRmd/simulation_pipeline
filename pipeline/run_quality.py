@@ -28,7 +28,8 @@ else:
 
                 # Input files of simulation
                 files_path = resultspath+'production/%s/rep_%s/'%(name, mytrajid)
-                mypdbpath = files_path+'structure.pdb'
+                files_p = resultspath+'build/%s'%(name)
+                mypdbpath = files_p+'structure.pdb'
                 mypsfpath = files_path+'structure.psf'
                 mytrajpath = files_path+'output_wrapped.xtc'
 
