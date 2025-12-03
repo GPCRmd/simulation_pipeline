@@ -852,7 +852,7 @@ def get_lig_toppar(ligandsdict, basepath, username, password, pdbfiles = {}):
             
             # Skip Retinol and cholesterol (we already have parameters for these ones) or ions (unprocessable for paramchem) 
             # or blacklisted molecules
-            if (ligcode in noparams_ligs) or (len(ligcode)<3) or (ligcode in detergent_blacklist.union(glucids_blacklist)):
+            if (ligcode in noparams_ligs) or (len(ligcode)<3) or (ligcode in set(detergent_blacklist).union(set(glucids_blacklist))):
                 continue
             
             # Stablish folder for ligand parameters (depending on covalent-bound ligand or not)
@@ -1445,62 +1445,145 @@ def remove_artifacts(pdbcode, mol, ligdict, accepted_ligdict):
     if tofilter:
         mol.filter('not resname '+tofilter)
     return mol
-                            
+
 #####################
-## Ismael's Functions
+## Miguel's Functions
 #####################
 
-def renumber_resid_vmd(mol,sel,by=3,start=1):
-    tmpin = tempfile.NamedTemporaryFile(suffix='.pdb')
-    mol.write(tmpin.name)
-    viewer = getCurrentViewer(dispdev='text')
-    viewer.send('set molid [mol new {%s}]' % tmpin.name)
-    tmpin.close()
-    tmpout = tempfile.NamedTemporaryFile(suffix='.pdb')
-    mol.write("./tmp.pdb")
-    # What a wierd way of deciding if "by_segid", "by_resname" or by both
+def renumber_resid_vmd(mol, sel, by=3, start=1):
+    """
+    Renumber residues for the selection `sel` in an HTMD Molecule without using VMD.
+    Keeps the same API as the original VMD-based function but works purely in Python.    Parameters
+    ----------
+    mol : htmd.molecule.molecule.Molecule
+        Input molecule.
+    sel : str
+        HTMD selection string (e.g. 'protein').
+    by : int
+        Bitmask: 1 = by_resname, 2 = by_segid, 3 = by_resname+segid (same semantics as original).
+    start : int
+        First residue number to assign.    Returns
+    -------
+    newmol : htmd.molecule.molecule.Molecule
+        A new Molecule object loaded from a temporary PDB containing the renumbered residues.
+        The temporary PDB file is left on disk (named by the returned Molecule).
+    """
+    # Work on a copy to avoid mutating the original
+    mc = mol.copy()    # Validate 'by'
     option_num = 2
     max_value = 2**option_num - 1
     if by > max_value:
         raise ValueError('Maximum value for "by" keyword is %d.' % max_value)
     if by < 1:
-        raise ValueError('Minimum value for "by" keyword is "1".')
-    bin_by = format(by,'0'+str(option_num)+'b')
+        raise ValueError('Minimum value for "by" keyword is "1".')    
+    bin_by = format(by, '0' + str(option_num) + 'b')
     option_array = [bool(int(i)) for i in bin_by]
     by_segid = option_array[0]
-    by_resname = option_array[1]
-    
+    by_resname = option_array[1]    
+    resid_counter = start    
     if by_segid:
-        segids = set(mol.get('segid',sel=sel))      
+        segids = sorted(set(mc.get('segid', sel=sel)))
         for segid in segids:
             if by_resname:
-                resnames = set(mol.get('resname',sel='(%s) and segid %s' % (sel,segid)))
+                resnames = sorted(set(mc.get('resname', sel=f'({sel}) and segid {segid}')))
                 for resname in resnames:
-                    lsel = '(%s) and (segid %s) and (resname %s)' % (sel,segid,resname)
-                    viewer = renumber_resid_by_resid_vmd(lsel,mol,viewer,start=start)
+                    lsel = f'({sel}) and segid {segid} and resname {resname}'
+                    resid_counter = renumber_resid_by_resid_vmd(lsel, mc, resid_counter)
             else:
-                lsel = '(%s) and (segid %s)' % (sel,segid)
-                viewer = renumber_resid_by_resid_vmd(lsel,mol,viewer,start=start)
-    else:                      
-        resnames = set(mol.get('resname',sel=sel))
+                lsel = f'({sel}) and segid {segid}'
+                resid_counter = renumber_resid_by_resid_vmd(lsel, mc, resid_counter)
+    else:
+        resnames = sorted(set(mc.get('resname', sel=sel)))
         for resname in resnames:
-            lsel = '(%s) and (resname %s)' % (sel,resname)
-            viewer = renumber_resid_by_resid_vmd(lsel,mol,viewer,start=start)
-    viewer.send('animate write pdb {%s} waitfor all top;exit' % tmpout.name)
-    newmol = Molecule(tmpout.name, validateElements=False)
+            lsel = f'({sel}) and resname {resname}'
+            resid_counter = renumber_resid_by_resid_vmd(lsel, mc, resid_counter)    # write out and return a fresh Molecule (like the original function did)
+    tmpout = tempfile.NamedTemporaryFile(suffix='.pdb', delete=False)
+    tmpout_name = tmpout.name
     tmpout.close()
+    mc.write(tmpout_name)
+    newmol = Molecule(tmpout_name, validateElements=False)
     return newmol
 
-def renumber_resid_by_resid_vmd(sel,mol,viewer,start=1):
-    resids = sorted(list(set(mol.get('resid',sel=sel))))
-    resids = [str(i) for i in resids]
-    viewer.send('proc renum_resid {molid} {set newresid %d; set resids {%s};' % (start,' '.join(resids)) + \
-                'set asall [atomselect $molid [concat {(%s) and resid } $resids]];' % sel + \
-                '$asall set user 1.00;' + \
-                'foreach resid $resids {' + \
-                'set as [atomselect $molid [concat {user 1.00 and (%s) and resid } $resid]];' % sel + \
-                '$as set resid $newresid; $as set user 0.00; incr newresid}};'+'renum_resid $molid')
-    return viewer
+def renumber_resid_by_resid_vmd(sel, mol, start=1):
+    """
+    Pure-Python replacement of the old VMD Tcl proc.
+    Renumber residues inside selection `sel` on `mol`, starting from `start`.
+    Returns the next available residue number.
+    """
+    # Get all resid values + indices once (stable snapshot)
+    resids_in_sel = mol.get('resid', sel=sel)
+    idxs_in_sel = mol.get('index', sel=sel)    
+    if len(resids_in_sel) == 0:
+        return start    # Build a dict resid -> list of atom indices
+    resid_to_atoms = {}
+    for resid, idx in zip(resids_in_sel, idxs_in_sel):
+        resid_to_atoms.setdefault(resid, []).append(idx)    # Sort resids deterministically
+    try:
+        unique_resids = sorted(resid_to_atoms.keys(), key=int)
+    except Exception:
+        unique_resids = sorted(resid_to_atoms.keys())    # Reassign
+    for old_resid in unique_resids:
+        atoms = resid_to_atoms[old_resid]
+        mol.resid[atoms] = start
+        start += 1    
+    
+    return start
+                            
+#####################
+## Ismael's Functions
+#####################
+
+# def renumber_resid_vmd(mol,sel,by=3,start=1):
+#     tmpin = tempfile.NamedTemporaryFile(suffix='.pdb')
+#     mol.write(tmpin.name)
+#     viewer = getCurrentViewer(dispdev='text')
+#     viewer.send('set molid [mol new {%s}]' % tmpin.name)
+#     tmpin.close()
+#     tmpout = tempfile.NamedTemporaryFile(suffix='.pdb')
+#     mol.write("./tmp.pdb")
+#     # What a wierd way of deciding if "by_segid", "by_resname" or by both
+#     option_num = 2
+#     max_value = 2**option_num - 1
+#     if by > max_value:
+#         raise ValueError('Maximum value for "by" keyword is %d.' % max_value)
+#     if by < 1:
+#         raise ValueError('Minimum value for "by" keyword is "1".')
+#     bin_by = format(by,'0'+str(option_num)+'b')
+#     option_array = [bool(int(i)) for i in bin_by]
+#     by_segid = option_array[0]
+#     by_resname = option_array[1]
+    
+#     if by_segid:
+#         segids = set(mol.get('segid',sel=sel))      
+#         for segid in segids:
+#             if by_resname:
+#                 resnames = set(mol.get('resname',sel='(%s) and segid %s' % (sel,segid)))
+#                 for resname in resnames:
+#                     lsel = '(%s) and (segid %s) and (resname %s)' % (sel,segid,resname)
+#                     viewer = renumber_resid_by_resid_vmd(lsel,mol,viewer,start=start)
+#             else:
+#                 lsel = '(%s) and (segid %s)' % (sel,segid)
+#                 viewer = renumber_resid_by_resid_vmd(lsel,mol,viewer,start=start)
+#     else:                      
+#         resnames = set(mol.get('resname',sel=sel))
+#         for resname in resnames:
+#             lsel = '(%s) and (resname %s)' % (sel,resname)
+#             viewer = renumber_resid_by_resid_vmd(lsel,mol,viewer,start=start)
+#     viewer.send('animate write pdb {%s} waitfor all top;exit' % tmpout.name)
+#     newmol = Molecule(tmpout.name, validateElements=False)
+#     tmpout.close()
+#     return newmol
+
+# def renumber_resid_by_resid_vmd(sel,mol,viewer,start=1):
+#     resids = sorted(list(set(mol.get('resid',sel=sel))))
+#     resids = [str(i) for i in resids]
+#     viewer.send('proc renum_resid {molid} {set newresid %d; set resids {%s};' % (start,' '.join(resids)) + \
+#                 'set asall [atomselect $molid [concat {(%s) and resid } $resids]];' % sel + \
+#                 '$asall set user 1.00;' + \
+#                 'foreach resid $resids {' + \
+#                 'set as [atomselect $molid [concat {user 1.00 and (%s) and resid } $resid]];' % sel + \
+#                 '$as set resid $newresid; $as set user 0.00; incr newresid}};'+'renum_resid $molid')
+#     return viewer
 
 def ordered_unique(seq):
     seen = set()
