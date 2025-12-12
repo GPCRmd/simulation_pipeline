@@ -1,5 +1,6 @@
 {
     "paramchem_credentials": {
+        "parametrization":false,
         "username": null,
         "password": null
     },
