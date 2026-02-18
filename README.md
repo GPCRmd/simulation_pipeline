@@ -1,3 +1,15 @@
+# Notice
+
+This repository contains the standard version of the pipeline used in the group.
+
+A modified version of this pipeline was used to build AlphaFold-derived GPCR systems for the article "AI-seeded exascale computing maps the dark conformational landscape of the druggable GPCRome ". These article-specific modifications are not yet reflected in the current public version of the repository and will be incorporated in a future update.
+The system-building differences used in the article include:
+
+- No ion placement at the conserved sodium binding site (position 2.50), while retaining state-specific protonation states.
+- Neutralization of tyrosine residues (TYM).
+
+The molecular dynamics simulations reported in the article were performed using a mirror simulation protocol implemented in OpenMM, developed to enable large-scale execution on HPC systems.
+
 # File description
 + **autosubmit**: automated script for the submission of multiple simulations into GPCRmd. Instructions contained inside
 + **demo**: Contains an example PDB file (4EJ4.pdb) to run the pipeline with, alongside a fulfilled inputs.json with its data. 
