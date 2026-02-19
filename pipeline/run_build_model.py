@@ -1,7 +1,7 @@
-from config_pipeline import input_dict, basepath, strucpath, resultspath, membranepdb, psfgenpath, topos, params, streams, strucpath, ph, tym_remove, remove_sod2x50
-from simulate_structures_functions import gpcrdb_dict, blacklist, water_thickness, water_margin, buffer, coldist, membrane_distance, membrane_lipid_segid
+from config_pipeline import input_dict, basepath, strucpath, resultspath, membranepdb, psfgenpath, topos, params, streams, strucpath, ph, tym_remove, remove_sod2x50, alphafold, ppmpath
+from simulate_structures_functions import blacklist, water_thickness, water_margin, buffer, coldist, membrane_distance, membrane_lipid_segid
 from simulate_structures_functions import internal_waters, fix_and_prepare_input, make_apo, covalent_ligands
-from simulate_structures_functions import get_opm, chimera_superimpose, prepare_system
+from simulate_structures_functions import get_opm, get_ppm, chimera_superimpose, prepare_system, get_protein_gpcrdb_info
 from simulate_structures_functions import add_membrane, solvate_pdbmol, extra_parameters, get_caps
 from simulate_structures_functions import renumber_resid_vmd, _recoverProtonations
 from simulate_structures_functions import charmm
@@ -29,7 +29,6 @@ with open(ligandsdict_path, "r") as ligands_file:
 # Iterate by GPCRdb structures to simulate
 for entry in input_dict:    
     try:
-
         # Entry's data
         name = entry['name']
         isgpcr = entry['isgpcr']
@@ -40,6 +39,14 @@ for entry in input_dict:
         prot_chain = entry['prot_chain']
         gpcr_chain = entry['prot_chain'] if isgpcr else False
         apo = entry['apo']
+        
+        # Get current GPCRdb data into a Json
+        if alphafold:
+            uniprot_id = entry["uniprot_id"]
+            gpcrdb_dict = get_protein_gpcrdb_info(uniprot_id)
+        else:
+            gpcrdb_data = requests.get('http://gpcrdb.org/services/structure/').json()
+            gpcrdb_dict = { entry['pdb_code'] : entry for entry in gpcrdb_data }
         
         #Starting simulation
         start_time = time.time()        
@@ -53,11 +60,15 @@ for entry in input_dict:
             continue
 
         # Check if simulation is aminergic
-        if isgpcr:
-            aminergic = gpcrdb_dict[pdbcode]['family'].startswith('001_001')
-            adenosine = gpcrdb_dict[pdbcode]['family'].startswith('001_006_001')
+        if alphafold:
+            aminergic = gpcrdb_dict['family'].startswith('001_001')
+            adenosine = gpcrdb_dict['family'].startswith('001_006_001')
         else:
-            aminergic = None; adenosine = None
+            if isgpcr:
+                aminergic = gpcrdb_dict[pdbcode]['family'].startswith('001_001')
+                adenosine = gpcrdb_dict[pdbcode]['family'].startswith('001_006_001')
+            else:
+                aminergic = None; adenosine = None
         
         # Add waters with homolwat if protein is a GPCR. Sodium 2x50 will also be added if a 
         # non-false pdbcode is added
@@ -75,7 +86,7 @@ for entry in input_dict:
         mol.remove('resname '+' '.join(blacklist))
         
         # Remove 2x50Sodium from non-A-class GPCRs
-        if isgpcr:
+        if isgpcr and not alphafold:
             if not gpcrdb_dict[pdbcode]['family'].startswith('001'):
                 mol.remove('element NA')
                 
@@ -96,7 +107,10 @@ for entry in input_dict:
             (mod_mol, covligs) = covalent_ligands(mol_fixed, name, ligandsdict)
 
         # Get aligned OPM structure
-        thickness,opm_mol = get_opm(pdbcode)
+        if alphafold:
+            thickness,opm_mol = get_ppm(strucpath, name, pdbfile)
+        else:    
+            thickness,opm_mol = get_opm(pdbcode)
 
         # Superimpose fixed molecule onto OPM counterpart for proper membrane fitting
         # Bit dirty, I know, but the best option avaliable

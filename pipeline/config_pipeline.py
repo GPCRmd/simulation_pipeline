@@ -255,13 +255,15 @@ membranepdb = updated_data['simulation_parameters']['membrane_path_pdb']
 topparpath = updated_data['simulation_parameters']['topparpath']  # toppar = topology + parameters
 ligandsdict_path = updated_data['simulation_parameters']['ligandsdict_path'] 
 modres_path = updated_data['simulation_parameters']['modres_path'] 
+alphafold = updated_data['simulation_parameters']['alphafold'] 
 
 # Programs paths
 chimera_path = detect_path("chimera")
 vmd_path = detect_path("vmd")
 psfgenpath = detect_path("psfgen")  # Download and use NAMDs psfgen for optimal results.
 # Otherwise, you can always use the default HTMD one, but it has problems with organic halogens
-os.environ['PATH'] += f":{chimera_path}:{vmd_path}:{psfgenpath}"
+ppmpath = detect_path("immers")
+os.environ['PATH'] += f":{chimera_path}:{vmd_path}:{psfgenpath}:{ppmpath}"
 
 # Device machine settings
 device_gpu = updated_data['machine_settings']['device_gpu']  # Which device GPU to use (0, 1, 2, 3...)

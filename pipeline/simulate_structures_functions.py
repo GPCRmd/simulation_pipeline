@@ -41,9 +41,83 @@ from config_pipeline import * #Parameters and paths
 ## Initial variables
 ####################
 
-# Get current GPCRdb data into a Json
-gpcrdb_data = requests.get('http://gpcrdb.org/services/structure/').json()
-gpcrdb_dict = { entry['pdb_code'] : entry for entry in gpcrdb_data }
+# Alejandro code for alphafold cases
+class ResidueInfo:
+
+    def __init__(self, resid, amino_acid, generic_number, segment):
+        self.resid = resid
+        self.amino_acid = amino_acid
+        self.generic_number = generic_number
+        self.segment = segment
+
+        if self.generic_number == None:
+            self.bw_number = None
+        else:
+            self.bw_number = self.generic_number.split("x")[0]
+
+def get_bw_from_gpcrdb(uniprot_name: str) -> dict:
+    '''
+    Get the json from GPCRdb containing BW numbering for this Uniprot ID.
+    Return None if it does not exists.
+    '''
+
+    url = "https://gpcrdb.org/services/residues/extended/"
+
+    response = requests.get(url + uniprot_name)
+    if response.json() == []:
+        return None
+
+    residues_info_dict = {}
+    for residue in response.json():
+        residue_info = ResidueInfo(
+                residue["sequence_number"],
+                residue["amino_acid"],
+                residue["display_generic_number"],
+                residue["protein_segment"]
+            )
+        residues_info_dict[residue_info.resid] = residue_info
+
+    return residues_info_dict
+
+def uniprot_id2uniprot_name(uniprot_id: str) -> str:
+    '''
+    '''
+
+    response = requests.get("https://www.uniprot.org/uniprot/" + uniprot_id +".xml")
+
+    if "Sorry, this page was not found" in response.text:
+        return None
+
+    for line in response.text.split("\n"):
+        line = line.strip()
+        if line.startswith("<name>"):
+            uniprot_name = line.split("<name>")[1].split("</name>")[0]
+            return uniprot_name.lower()
+        
+def get_protein_gpcrdb_info(uniprot_id: str) -> dict:
+    '''
+    '''
+
+    url = "https://gpcrdb.org/services/protein/"
+
+    uniprot_name = uniprot_id2uniprot_name(uniprot_id)
+    
+    response = requests.get(url + uniprot_name)
+
+    if str(response.status_code)[0] != "2":
+        return None
+
+    gpcrdb_dict = response.json()
+    gpcrdb_dict["residues_info_dict"] = get_bw_from_gpcrdb(uniprot_name)
+    return gpcrdb_dict
+
+# # Get current GPCRdb data into a Json
+# if alphafold:
+#     uniprot_id = input_dict[0]
+#     gpcrdb_dict = get_protein_gpcrdb_info(uniprot_id)
+# else:
+#     gpcrdb_data = requests.get('http://gpcrdb.org/services/structure/').json()
+#     gpcrdb_dict = { entry['pdb_code'] : entry for entry in gpcrdb_data }
 
 # Lists of GPCR pdbs
 first_round = {'1u19', '2rh1', '2y00', '2y02', '2y03', '2y04', '2ycw', '3d4s', '3dqb', '3ny8', '3ny9', '3nya', '3odu', '3oe0', '3pbl', '3pds', '3pqr', '3rze', '3uon', '3v2y', '3vw7', '3zpq', '3zpr', '4ami', '4amj', '4bvn', '4djh', '4dkl', '4ea3', '4grv', '4iaq', '4iar', '4ib4', '4k5y', '4l6r', '4lde', '4ldl', '4ldo', '4mbs', '4mqs', '4mqt', '4n6h', '4oo9', '4or2', '4phu', '4pxz', '4py0', '4qkx', '4rwd', '4rws', '4s0v', '4u15', '4u16', '4xee', '4xnv', '4xnw', '4xt1', '4yay', '4z34', '4z35', '4z36', '4zj8', '4zjc', '4zud', '5a8e', '5c1m', '5cgc', '5cgd', '5cxv', '5dhg', '5dhh', '5dsg', '5glh', '5jqh', '5l7d', '5l7i', '5tgz', '5u09', '5uen'}
@@ -1202,7 +1276,6 @@ def needs_sodium(gpcrdb_dict, pdbcode):
 
     return sod
 
-
 def internal_waters(pdbpath, pdbcode, gpcrdb_dict, apo=False, sod=False,chain=False):
     """
     Place internal waters and E2x50 sodium in GPCR structure using homolwat online tool
@@ -1214,7 +1287,7 @@ def internal_waters(pdbpath, pdbcode, gpcrdb_dict, apo=False, sod=False,chain=Fa
     # Check if there is already a watered structure here
     watered_filename = name+'_apoHW.pdb' if apo else name+'_HW.pdb'
     if os.path.exists(watered_filename) > 0:
-        print("Structure %s already has a watered version. Skipping..." % pdbcode)
+        print("Structure %s already has a watered version. Skipping..." % name)
         return ( sod, watered_filename)
     else:
         print("Adding internal waters to structure")
@@ -1269,8 +1342,6 @@ def internal_waters(pdbpath, pdbcode, gpcrdb_dict, apo=False, sod=False,chain=Fa
             apofix = '_apo'
         else:
             apofix = '_'
-
-
 
         # Download results in zip            
         query_name_nofilext = os.path.splitext(query_name)[0]
@@ -1430,6 +1501,51 @@ def get_opm(pdbcode):
     tmpout.close()
     
     return (thickness, mol)
+
+def get_ppm(dirname: str, name: str, pdb_file: str) -> tuple:
+    '''
+    Copy the PDB to the PPM directory and cd inside. Create an input file
+    (ppm_inp) and write a line to execute PPM. Execute it, save the results
+    on ppm_out, read the resulting aligned PDB structure (excluding DUM
+    atoms) and save it to a Molecule. Also read the thickness from ppm_out.
+    Return both the thickness and the Molecule.
+    '''
+
+    print("Calculating membrane thickness with PPM...")
+    ## Need to dirname be the working directory
+    prev_path = os.getcwd()
+    os.chdir(dirname)
+    
+    ppm_inp = name + "_ppm.inp"
+    ppm_out = name + "_ppm.out"
+    with open(ppm_inp, "w") as fh:
+        # IMPORTANT: two spaces in "0_in__"
+        fh.write(" 0 in  " + os.path.basename(pdb_file))
+    
+    # Copy res.lib necessary to run immers
+    os.system("cp " + scriptspath + "res.lib" + " .")
+    os.system("immers <" + ppm_inp + " >" + ppm_out)
+
+    # Read the thickness from the output file
+    for line in open(ppm_out):
+        if "thickn" in line:
+            thickness = float(line.split()[-1])
+
+    # Read the molecule from the aligned PDB
+    aligned_file = os.path.basename(pdb_file).split(".")[0] + "out.pdb"
+    tmpout = tempfile.NamedTemporaryFile(mode='w',suffix='.pdb')
+    for line in open(aligned_file, "r"):
+        if ' DUM ' not in line:
+            tmpout.write(line+'\n')
+    aligned_mol = Molecule(tmpout.name)
+    tmpout.close()
+
+    # Clean everything
+    for file in [ppm_inp, ppm_out, aligned_file, "res.lib", "datapar1", "datasub1"]:
+        os.remove(file)
+        
+    os.chdir(prev_path)
+    return (thickness, aligned_mol)
 
 def remove_artifacts(pdbcode, mol, ligdict, accepted_ligdict):
     """
@@ -1898,7 +2014,7 @@ def fix_and_prepare_input(inputmol,sysname,pdbcode,modresdict,isgpcr=True,first=
     mol = renumber_resid(mol,'segid LIG',by=2)
 
     # Set 'prot_chain' as the chain id for the GPCR
-    if isgpcr:
+    if isgpcr and not alphafold:
         recsegs = get_receptorsegs_frompdb(pdbcode, mol)
         mol.set('chain','T','chain '+prot_chain) # Ensure nothing else has a R chain
         mol.set('chain',prot_chain,'segid '+recsegs)

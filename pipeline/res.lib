@@ -1,0 +1,704 @@
+RES GLY 
+DIP N     1.30
+DIP O     2.30
+N    3
+CA   8
+C    2
+O    6
+RES ALA 
+DIP N     1.30
+DIP O     2.30
+N    3
+CA   8
+CB   1
+C    2
+O    6
+RES SER 
+DIP N     1.30
+DIP O     2.30
+DIP OG    1.66
+N    3
+CA   8
+CB   8
+OG   5
+C    2
+O    6
+RES CYS 
+DIP N     1.30
+DIP O     2.30
+DIP SG    1.51
+N    3
+CA   8
+CB   1
+SG   7
+C    2
+O    6
+RES ASP
+DIP N     1.30
+DIP O     2.30
+DIP OD1   0.82
+DIP OD2   0.82
+PKA OD1  0.50  3.40 -1 -0.5
+PKA OD2  0.50  3.40 -1 -0.5
+N    3
+CA   8
+CB   1
+CG   2
+OD1  9
+OD2  9
+C    2
+O    6
+RES PRO 
+DIP N     1.30
+DIP O     2.30
+N    4
+CA   8
+CB   1
+CG   1
+CD   1
+C    2
+O    6
+RES THR 
+DIP N     1.30
+DIP O     2.30
+DIP OG1   1.66
+N    3
+CA   8
+CB   8
+OG1  5
+CG2  1
+C    2
+O    6
+RES ASN 
+DIP N     1.30
+DIP O     2.30
+DIP ND2   1.30
+DIP OD1   2.30
+N    3
+CA   8
+CB   1
+CG   2
+OD1  6
+ND2  3
+C    2
+O    6
+RES GLU 
+DIP N     1.30
+DIP O     2.30
+DIP OE1   0.82
+DIP OE2   0.82
+PKA OE1  0.50  4.10 -1 -0.5
+PKA OE2  0.50  4.10 -1 -0.5
+N    3
+CA   8
+CB   1
+CG   1
+CD   2
+OE1  9
+OE2  9
+C    2
+O    6
+RES VAL 
+DIP N     1.30
+DIP O     2.30
+N    3
+CA   8
+CB   1
+CG1  1
+CG2  1
+C    2
+O    6
+RES MET 
+DIP N     1.30
+DIP O     2.30
+DIP SE    1.45
+N    3
+CA   8
+CB   1
+CG   1
+SD   7
+CE   1
+C    2
+O    6
+RES GLN 
+DIP N     1.30
+DIP O     2.30
+DIP NE2   1.30
+DIP OE1   2.30
+N    3
+CA   8
+CB   1
+CG   1
+CD   2
+OE1  6
+NE2  3
+C    2
+O    6
+RES HIS 
+DIP N     1.30
+DIP O     2.30
+DIP NE2   4.80
+N    3
+CA   8
+CB   1
+CG   2
+CD2  2
+NE2  3
+CE1  2
+ND1  4
+C    2
+O    6
+RES LEU 
+DIP N     1.30
+DIP O     2.30
+N    3
+CA   8
+CB   1
+CG   1
+CD1  1
+CD2  1
+C    2
+O    6
+RES ILE 
+DIP N     1.30
+DIP O     2.30
+N    3
+CA   8
+CB   1
+CG2  1
+CG1  1
+CD1  1
+C    2
+O    6
+RES PHE 
+DIP N     1.30
+DIP O     2.30
+N    3
+CA   8
+CB   1
+CG   2
+CD1  2
+CD2  2
+CE1  2
+CE2  2
+CZ   2
+C    2
+O    6
+RES TYR 
+DIP N     1.30
+DIP O     2.30
+DIP OH    1.59
+N    3
+CA   8
+CB   1
+CG   2
+CD1  2
+CD2  2
+CE1  2
+CE2  2
+CZ   2
+OH   5
+C    2
+O    6
+RES LYS 
+DIP N     1.30
+DIP O     2.30
+DIP NZ    1.35
+PKA NZ   1.00 10.40  1  1.
+N    3
+CA   8
+CB   1
+CG   1
+CD   1
+CE   8
+NZ  10
+C    2
+O    6
+RES ARG 
+DIP N     1.30
+DIP O     2.30
+DIP NE    1.20
+DIP NH1   1.20
+DIP NH2   1.20
+PKA NE   0.33 12.00  1  0.33
+PKA NH1  0.33 12.00  1  0.33
+PKA NH2  0.33 12.00  1  0.33
+N    3
+CA   8
+CB   1
+CG   1
+CD   8
+NE  10
+CZ   2
+NH1 10
+NH2 10
+C    2
+O    6
+RES TRP 
+DIP N     1.30
+DIP O     2.30
+DIP NE1   2.30
+N    3
+CA   8
+CB   1
+CG   2
+CD1  2
+NE1  3
+CE2  2
+CZ2  2
+CH2  2
+CZ3  2
+CE3  2
+CD2  2
+C    2
+O    6
+RES DLE 
+DIP N     1.30
+DIP O     2.30
+N    3
+CA   8
+CB   1
+CG   1
+CD1  1
+CD2  1
+C    2
+O    6
+RES DVA 
+DIP N     1.30
+DIP O     2.30
+N    3
+CA   8
+CB   1
+CG1  1
+CG2  1
+C    2
+O    6
+RES DAL
+DIP N     1.30
+DIP O     2.30
+N    3
+CA   8
+CB   1
+C    2
+O    6
+RES DGL 
+DIP N     1.30
+DIP O     2.30
+DIP OE1   0.82
+DIP OE2   0.82
+PKA OE1  0.50  4.10 -1 -0.50
+PKA OE2  0.50  4.10 -1 -0.50
+N    3
+CA   8
+CB   1
+CG   1
+CD   2
+OE1  9
+OE2  9
+C    2
+O    6
+RES DSG 
+DIP N     1.30
+DIP O     2.30
+DIP ND2   1.30
+DIP OD1   2.30
+N    3
+CA   8
+CB   1
+CG   2
+OD1  6
+ND2  3
+C    2
+O    6
+RES DSN 
+DIP N     1.30
+DIP O     2.30
+DIP OG    1.66
+N    3
+CA   8
+CB   8
+OG   5
+C    2
+O    6
+RES DPN 
+DIP N     1.30
+DIP O     2.30
+N    3
+CA   8
+CB   1
+CG   2
+CD1  2
+CD2  2
+CE1  2
+CE2  2
+CZ   2
+C    2
+O    6
+RES DTR 
+DIP N     1.30
+DIP O     2.30
+DIP NE1   2.30
+N    3
+CA   8
+CB   1
+CG   2
+CD1  2
+NE1  3
+CE2  2
+CZ2  2
+CH2  2
+CZ3  2
+CE3  2
+CD2  2
+C    2
+O    6
+RES ORN 
+DIP N     1.30
+DIP O     2.30
+DIP NE    1.35
+PKA NE   1.00 10.40  1  1.00
+N    3
+CA   8
+CB   1
+CG   1
+CD   8
+NE  10
+C    2
+O    6
+RES MSE 
+DIP N     1.30
+DIP O     2.30
+DIP E     1.45
+N    3
+CA   8
+CB   1
+CG   1
+E    7
+CE   1
+C    2
+O    6
+RES CSE 
+DIP N     1.30
+DIP O     2.30
+DIP E     1.51
+N    3
+CA   8
+CB   1
+E    7
+C    2
+O    6
+RES CGU
+DIP N     1.30
+DIP O     2.30
+DIP OE1   0.82
+DIP OE2   0.82
+DIP OE3   0.82
+DIP OE4   0.82
+PKA OE1  0.50  5.10 -1 -0.50
+PKA OE2  0.50  5.10 -1 -0.50
+PKA OE3  0.50  5.10 -1 -0.50
+PKA OE4  0.50  5.10 -1 -0.50
+N    3
+CA   8
+C    2
+O    6
+CB   1
+CG   1
+CD1  2
+CD2  2
+OE1  9
+OE2  9
+OE3  9
+OE4  9
+RES AIB Alpha-aminoisobutyric acid
+DIP N     1.30
+DIP O1    2.30
+N    3
+CA   8
+C    2
+O1   6
+CB1  1
+CB2  1
+RES DIV D-isovaline
+DIP N     1.30
+DIP O     2.30
+N    3
+CA   8
+CB1  1
+CG1  1
+CB2  1
+C    2
+O    6
+RES HYP 4-hydroxyproline
+DIP N     1.30
+DIP O     2.30
+DIP OD    1.66
+N    4
+CA   8
+C    2
+O    6
+CB   1
+CG   1
+CD   8
+OD   5
+RES PHL L-phenylalaninol
+DIP N     1.30
+DIP O     2.30
+C    2
+O    6
+CA   8
+N    3
+CB   1
+CG   2
+CD1  2
+CD2  2
+CE1  2
+CE2  2
+CZ   2
+RES TPL L-tryptophanol
+DIP N     1.30
+DIP OXT   2.30
+DIP NE1   2.30
+N    3
+CA   8
+CB1  1
+CG   2
+CD1  2
+CD2  2
+CE3  2
+CE2  2
+NE1  2
+CZ3  2
+CZ2  2
+CH2  2
+C    2
+OXT  6
+RES THO Reduced threonine
+DIP N     1.30
+DIP O     2.30
+DIP OG1   1.66
+N    3
+CA   8
+CB   8
+CG2  1
+OG1  5
+C    2
+O    6
+RES ABA Alpha-aminobutyric acid
+DIP N     1.30
+DIP O     2.30
+N    3
+CA   8
+C    2
+O    6
+CB   1
+CG   1
+RES BHD Beta-hydroxyaspartic acid
+DIP N     1.30
+DIP O     2.30
+DIP OG1   1.66
+DIP OD1   0.82
+DIP OD2   0.82
+PKA OD1  0.50  3.40 -1 -0.5
+PKA OD2  0.50  3.40 -1 -0.5
+N    3
+CA   8
+CB   8
+OB   5
+CG   2
+OD1  9
+OD2  9
+C    2
+O    6
+RES DBU (2E)-2-aminobut-2-enoic acid
+DIP N     1.30
+DIP O     2.30
+N    3
+CA   8
+CB   2
+CG   1
+C    2
+O    6
+RES DHA 2-amino-acrylic acid
+DIP N     1.30
+DIP O     2.30
+N    3
+CA   8
+CB   2
+C    2
+O    6
+RES LNG
+DIP O     2.30
+CA   1
+CB   1
+CG   1
+CD   1
+CE   1
+C1   1
+C2   1
+C3   1
+C4   1
+C5   1
+C6   1
+C7   1
+C8   1
+C    2
+O    6
+RES VLL
+DIP N     1.30
+DIP O     2.30
+N    3
+CA   8
+C    2
+O    6
+CB   1
+CG1  1
+RES CPI
+DIP N     1.30
+DIP O     2.30
+N    4
+CA   8
+C    2
+O    6
+CB   1
+CG   1
+CD   1
+CE   8
+RES 2AS
+DIP N     1.30
+DIP O     2.30
+DIP OD1   0.82
+DIP OD2   0.82
+PKA OD1  0.50  3.40 -1 -0.5
+PKA OD2  0.50  3.40 -1 -0.5
+N    3
+CA   8
+C    2
+O    6
+CB   1
+CG1  1
+CG2  2
+OD1  9
+OD2  9
+RES VDL
+DIP N     1.30
+DIP O     2.30
+DIP NG2   1.35
+PKA NG2  1.00 10.40  1  1.
+N    3
+CA   8
+CB   1
+CG1  1
+C    2
+O    6
+NG2 10
+RES MEG
+DIP N     1.30
+DIP O     2.30
+DIP OE1   0.82
+DIP OE2   0.82
+PKA OE1  0.50  4.10 -1 -0.5
+PKA OE2  0.50  4.10 -1 -0.5
+N    3
+CA   8
+CB   1
+CG   1
+CD   2
+OE1  9
+OE2  9
+C    2
+O    6
+C1   1
+RES KYN
+DIP N     1.30
+DIP O     2.30
+DIP O2    2.80
+DIP N1    1.53
+PKA N1   1.00  9.30  1  1.
+N    3
+CA   8
+CB   1
+CG   2
+CD1  2
+CE1  2
+CZ   2
+CE2  2
+CD2  2
+C    2
+O    6
+C1   2
+O2   6
+N1  10
+RES BMT
+DIP N     1.30
+DIP O     2.30
+DIP OG1   1.66
+N    4
+CN   8
+CA   8
+C    2
+O    6
+CB   8
+OG1  1
+CG2  1
+CD1  1
+CD2  1
+CE   2
+CZ   2
+CH   1
+RES MLE
+DIP N     1.30
+DIP O     2.30
+N    4
+CN   8
+CA   8
+CB   1
+CG   1
+CD1  1
+CD2  1
+C    2
+O    6
+RES MVA
+DIP N     1.30
+DIP O     2.30
+N    4
+CN   8
+CA   8
+CB   1
+CG1  1
+CG2  1
+C    2
+O    6
+RES BIM
+DIP N     1.30
+DIP O     2.30
+DIP O1    3.10
+DIP O2    3.10
+N    3
+CA   8
+C    2
+O    6
+CB   1
+S    7
+N1   4
+N2   4
+C1   2
+C2   2
+C3   2
+C4   2
+C5   2
+C6   2
+C7   2
+C8   2
+C9   2
+C10  2
+O1   6
+O2   6
+RES UNK 
+DIP N     1.30
+DIP O     2.30
+N    3
+CA   8
+CB   1
+C    2
+O    6
